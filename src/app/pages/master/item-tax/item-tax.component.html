@@ -1,0 +1,145 @@
+<div class="top-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu">Test : By Peacock Infotech </li>
+                <li class="topmenu company-name">Administrator (AMG)</li>
+                <li class="topmenu active">Item Tax Master</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
+                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
+                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="companyForm">
+              <div class="head-1">
+                  <div class="row">
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">State: </label>
+                      <div>
+                        <select name="" id="" class="form-control">
+                            <option value=""></option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Item: </label>
+                      <div>
+                        <select name="" id="" class="form-control">
+                            <option value=""></option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Tax: </label>
+                      <div>
+                        <select name="" id="" class="form-control">
+                            <option value=""></option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                        <label class="center-block">Start Date: </label>
+                        <div>
+                            <input type="date" class="form-control" formControlName="std_code">
+                        </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                        <label class="center-block">End Date: </label>
+                        <div>
+                            <input type="date" class="form-control" formControlName="std_code">
+                        </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                    </div>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" datatable >
+                    <thead>
+                        <tr>
+                          <th width="25">Action</th>
+                          <th>State</th>
+                          <th>Item</th>
+                          <th>Tax</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th>Created By</th>
+                          <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let val of data">
+                            <td class="text-center">
+                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
+                                <span class="tooltiptext">EDIT</span>
+                              </span>  | 
+                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
+                                <span class="tooltiptext">DELETE</span>
+                              </span>
+                            </td>
+                            <td>{{val.module_code}}</td>
+                            <td>{{val.module_name}}</td>
+                            <td>{{val.module_slug}}</td>
+                            <td>{{val.parent_madule_code}}</td>
+                            <td>{{val.module_image}}</td>
+                            <td>{{val.is_home}}</td>
+                            <td>{{val.status}}</td>
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.created_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="display-view" style="display: none;">
+  <table class="table" id="table" #pdfTable>
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>Item</th>
+        <th>Tax</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Status</th>
+        <th>Created By</th>
+        <th>Created Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let val of data">
+        <td>{{val.module_code}}</td>
+        <td>{{val.module_code}}</td>
+        <td>{{val.module_name}}</td>
+        <td>{{val.module_slug}}</td>
+        <td>{{val.status}}</td>
+        <td>{{val.created_by}}</td>
+        <td>{{val.created_at}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-footer></app-footer>

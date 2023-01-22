@@ -1,0 +1,23 @@
+.head-1{
+    background-color: #eaecee;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #d3d3d3;
+}
+
+.head-2{
+    background-color: #eaecee;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #d3d3d3;
+}
+
+.head-3{
+    background-color: #eaecee;
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+}
+
+h4 {
+    text-decoration: underline;
+}

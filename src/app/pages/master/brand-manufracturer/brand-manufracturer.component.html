@@ -1,0 +1,42 @@
+<div class="top-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu">Test : By Peacock Infotech </li>
+                <li class="topmenu company-name">Administrator (AMG)</li>
+                <li class="topmenu active">Brand / Manufracturer Master</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
+                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
+                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="row">
+      <div class="col-sm-2">
+        <button class="btn btn-primary" [ngClass]="isManfra ? 'activeBtn' : ''" (click)="isMenuActive('country')">Manufracturer Master</button>
+      </div>
+      <div class="col-sm-2">
+        <button class="btn btn-primary" [ngClass]="isBrand ? 'activeBtn' : ''" (click)="isMenuActive('state')">Brand Master</button>
+      </div>
+    </div>
+    <div *ngIf="isManfra">
+        <app-manufracturer></app-manufracturer>
+    </div>
+    <div *ngIf="isBrand">
+      <app-brand></app-brand>
+    </div>
+</div>
+
+<app-footer></app-footer>

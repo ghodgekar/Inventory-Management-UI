@@ -1,0 +1,139 @@
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="categorySubForm">
+                <div class="row head-1">
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Code: </label>
+                      <div>
+                        <input class="form-control" formControlName="sub_category_code" oninput="this.value = this.value.toUpperCase()">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Name: </label>
+                      <div>
+                        <input class="form-control" formControlName="sub_category_name">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Category: </label>
+                      <div>
+                        <select class="form-control" formControlName="category_code">
+                          <option>Select</option>
+                          <option *ngFor="let val of categorydata" value="{{val.category_code}}">{{val.category_name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Markup: </label>
+                      <div>
+                        <input class="form-control" formControlName="markup">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Markdown: </label>
+                      <div>
+                        <input class="form-control" formControlName="markdown">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Shelf Life Peried: </label>
+                      <div>
+                        <input class="form-control" formControlName="shelf_life_p">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Shelf Life D/M: </label>
+                      <div>
+                        <select class="form-control" formControlName="shelf_life_dm">
+                          <option>Select</option>
+                          <option>Days</option>
+                          <option>Month</option>
+                        </select>
+                      </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" datatable >
+                    <thead>
+                        <tr>
+                          <th width="25">Action</th>
+                          <th>Sub Category Code</th>
+                          <th>Sub Categoory Name</th>
+                          <th>Category Code</th>
+                          <th>Markup</th>
+                          <th>Markdown</th>
+                          <th>Shelf Life Peried</th>
+                          <th>Shelf Life D/M</th>
+                          <th>Status</th>
+                          <th>Created By</th>
+                          <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let val of data">
+                            <td class="text-center">
+                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCategorySubList(val._id)"> 
+                                <span class="tooltiptext">EDIT</span>
+                              </span>  | 
+                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCategorySubList(val._id)"> 
+                                <span class="tooltiptext">DELETE</span>
+                              </span>
+                            </td>
+                            <td>{{val.category_code}}</td>
+                            <td>{{val.sub_category_name}}</td>
+                            <td>{{val.category_code}}</td>
+                            <td>{{val.markup}}</td>
+                            <td>{{val.markdown}}</td>
+                            <td>{{val.shelf_life_p}}</td>
+                            <td>{{val.shelf_life_dm}}</td>
+                            <td>{{val.status}}</td>
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.created_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="display-view" style="display: none;">
+  <table class="table" id="table" #pdfTable>
+    <thead>
+      <tr>
+        <th>Sub Category Code</th>
+        <th>Sub Categoory Name</th>
+        <th>Category Code</th>
+        <th>Markup</th>
+        <th>Markdown</th>
+        <th>Shelf Life Peried</th>
+        <th>Shelf Life D/M</th>
+        <th>Status</th>
+        <th>Created By</th>
+        <th>Created Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let val of data">
+        <td>{{val.category_code}}</td>
+        <td>{{val.sub_category_name}}</td>
+        <td>{{val.category_code}}</td>
+        <td>{{val.markup}}</td>
+        <td>{{val.markdown}}</td>
+        <td>{{val.shelf_life_p}}</td>
+        <td>{{val.shelf_life_dm}}</td>
+        <td>{{val.status}}</td>
+        <td>{{val.created_by}}</td>
+        <td>{{val.created_at}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-footer></app-footer>

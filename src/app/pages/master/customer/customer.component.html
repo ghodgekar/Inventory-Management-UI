@@ -1,0 +1,281 @@
+<div class="top-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu">Test : By Peacock Infotech </li>
+                <li class="topmenu company-name">Administrator (AMG)</li>
+                <li class="topmenu active">Customer Master</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
+                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
+                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="companyForm">
+              <div class="head-1">
+                <div class="row">
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Location: </label>
+                      <div>
+                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Code: </label>
+                      <div>
+                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Name: </label>
+                      <div>
+                        <input class="form-control" formControlName="mobile">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Gender: </label>
+                      <div>
+                        <select name="" id="" class="form-control">
+                            <option value=""></option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                    <label class="center-block">Barcode: </label>
+                    <div>
+                        <input class="form-control" formControlName="std_code">
+                    </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Birth Date: </label>
+                      <div>
+                        <input type="date" class="form-control" formControlName="phone">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Join Date: </label>
+                      <div>
+                        <input type="date" class="form-control" formControlName="mobile">
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="head-2">
+                    <h4>Address Details</h4>
+                    <div class="row">
+                        <div class="col-sm-4 form-group">
+                          <label class="center-block">Address 1: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-4 form-group">
+                          <label class="center-block">Address 2: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-4 form-group">
+                          <label class="center-block">City: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4 form-group">
+                          <label class="center-block">State: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-4 form-group">
+                          <label class="center-block">Country: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-4 form-group">
+                          <label class="center-block">Pin Code: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="head-3">
+                    <h4>Other Details</h4>
+                    <div class="row">
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">Mobile: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">Email: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">PAN: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">Aadhar No: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">GSTIN: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">Customer Type: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">Ref. Customer: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">Credit Limit: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">CR Over days: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-3 form-group">
+                          <label class="center-block">Points: </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                        </div>
+                        <div class="col-sm-3 form-group">
+                        </div>
+                        <div class="col-sm-3 form-group">
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" datatable >
+                    <thead>
+                        <tr>
+                          <th width="25">Action</th>
+                          <th>Location</th>
+                          <th>Code</th>
+                          <th>Name</th>
+                          <th>Gender</th>
+                          <th>Barcode</th>
+                          <th>Birth Date</th>
+                          <th>Join Date</th>
+                          <th>Address 1</th>
+                          <th>Address 2</th>
+                          <th>City</th>
+                          <th>Created By</th>
+                          <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let val of data">
+                            <td class="text-center">
+                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
+                                <span class="tooltiptext">EDIT</span>
+                              </span>  | 
+                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
+                                <span class="tooltiptext">DELETE</span>
+                              </span>
+                            </td>
+                            <td>{{val.module_code}}</td>
+                            <td>{{val.module_name}}</td>
+                            <td>{{val.module_slug}}</td>
+                            <td>{{val.parent_madule_code}}</td>
+                            <td>{{val.module_image}}</td>
+                            <td>{{val.is_home}}</td>
+                            <td>{{val.status}}</td>
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.created_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="display-view" style="display: none;">
+  <table class="table" id="table" #pdfTable>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Page</th>
+        <th>Parent Module</th>
+        <th>Image</th>
+        <th>Is Home</th>
+        <th>Status</th>
+        <th>Created By</th>
+        <th>Created Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let val of data">
+        <td>{{val.module_code}}</td>
+        <td>{{val.module_name}}</td>
+        <td>{{val.module_slug}}</td>
+        <td>{{val.parent_madule_code}}</td>
+        <td>{{val.module_image}}</td>
+        <td>{{val.is_home}}</td>
+        <td>{{val.status}}</td>
+        <td>{{val.created_by}}</td>
+        <td>{{val.created_at}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-footer></app-footer>

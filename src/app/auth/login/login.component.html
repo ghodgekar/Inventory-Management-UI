@@ -1,0 +1,57 @@
+<div class="login-pg container">
+  <div class="login-center-div">
+    <div class="row">
+      <div class="col-sm-6 pt-1">
+        <h1>PEACOCK INFOTECH</h1>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Libero amet quos voluptas! Esse ut recusandae quidem cupiditate at magni explicabo saepe quaerat totam quis. Omnis perspiciatis magnam id corporis impedit.</p>
+        <img [src]="logo_img" alt="" srcset="" class="logo">
+        <p><span><b>Email:</b></span> peacockinfotech86@gmail.com</p>
+        <p><span><b>Tel:</b></span> 126 54789955</p>
+      </div>
+      <div class="col-sm-6 pt-2">
+        <h3>SIGN IN</h3>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+              <label class="center-block">Financial Year: </label>
+              <div>
+                <select class="form-control" formControlName="financial_year" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                  <option value="">Select</option>
+                  <option value="">2020-2021</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="center-block">User Code: </label>
+              <div>
+                <input class="form-control" formControlName="user_code" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+              </div>
+              <span>Administrator</span>
+              <br><br>
+            </div>
+            <div class="form-group">
+              <label class="center-block">Password: </label>
+              <div>
+                <input type="password" class="form-control" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="center-block">Company: </label>
+              <div>
+                <input class="form-control" formControlName="company" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="center-block">Location: </label>
+              <div>
+                <input class="form-control" formControlName="location" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+              </div>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary" type="submit" routerLink="/dashboard">Submit</button> 
+              <!--  [disabled]="!loginForm.valid" -->
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

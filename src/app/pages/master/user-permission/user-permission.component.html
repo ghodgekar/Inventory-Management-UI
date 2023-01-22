@@ -1,0 +1,181 @@
+<div class="top-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu">Test : By Peacock Infotech </li>
+                <li class="topmenu company-name">Administrator (AMG)</li>
+                <li class="topmenu active">User Permission Master</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
+                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
+                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="userForm">
+                <div class="row">
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">User Code: </label>
+                      <div>
+                        <select class="form-control" formControlName="user_code">
+                          <option>Select</option>
+                          <option value="{{val.user_code}}" *ngFor="let val of userdata">{{val.user_code}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Module Name: </label>
+                      <div>
+                        <select class="form-control" formControlName="module_code">
+                          <option>Select</option>
+                          <option value="{{val.module_name}}" *ngFor="let val of moduledata">{{val.module_name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-1 form-group">
+                      <label class="center-block">Open: </label>
+                      <div>
+                        <select class="form-control" formControlName="is_open">
+                          <option>Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-1 form-group">
+                      <label class="center-block">Entry: </label>
+                      <div>
+                        <select class="form-control" formControlName="is_entry">
+                          <option>Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-1 form-group">
+                      <label class="center-block">Modify: </label>
+                      <div>
+                        <select class="form-control" formControlName="is_modify">
+                          <option>Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-1 form-group">
+                      <label class="center-block">Authorize: </label>
+                      <div>
+                        <select class="form-control" formControlName="is_auth">
+                          <option>Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select>
+                      </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" datatable >
+                    <thead>
+                        <tr>
+                          <th width="25">Action</th>
+                          <th>User Code</th>
+                          <th>User Name</th>
+                          <th>Module Code</th>
+                          <th>Module Name</th>
+                          <th>Is Open</th>
+                          <th>Is Entry</th>
+                          <th>Is Modify</th>
+                          <th>Is Authorize</th>
+                          <th>Created By</th>
+                          <th>Created Date</th>
+                          <th>Updated By</th>
+                          <th>Updated Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let val of data">
+                            <td class="text-center">
+                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editUserList(val._id)"> 
+                                <span class="tooltiptext">EDIT</span>
+                              </span>  | 
+                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteUserList(val._id)"> 
+                                <span class="tooltiptext">DELETE</span>
+                              </span>
+                            </td>
+                            <td>{{val.user_code}}</td>
+                            <td>{{val.user_name}}</td>
+                            <td>{{val.module_code}}</td>
+                            <td>{{val.module_name}}</td>
+                            <td>{{val.is_open}}</td>
+                            <td>{{val.is_entry}}</td>
+                            <td>{{val.is_modify}}</td>
+                            <td>{{val.is_auth}}</td>
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.created_at}}</td>
+                            <td>{{val.updated_by}}</td>
+                            <td>{{val.updated_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="display-view" style="display: none;">
+  <table class="table" id="table" #pdfTable>
+    <thead>
+      <tr>
+        <th>User Code</th>
+        <th>User Name</th>
+        <th>Module Code</th>
+        <th>Module Name</th>
+        <th>Is Open</th>
+        <th>Is Entry</th>
+        <th>Is Modify</th>
+        <th>Is Authorize</th>
+        <th>Created By</th>
+        <th>Created Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let val of data">
+        <td>{{val.user_code}}</td>
+        <td>{{val.user_name}}</td>
+        <td>{{val.module_code}}</td>
+        <td>{{val.module_name}}</td>
+        <td>{{val.is_open}}</td>
+        <td>{{val.is_entry}}</td>
+        <td>{{val.is_modify}}</td>
+        <td>{{val.is_auth}}</td>
+        <td>{{val.created_by}}</td>
+        <td>{{val.created_at}}</td>
+        <td>{{val.updated_by}}</td>
+        <td>{{val.updated_at}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-footer></app-footer>
+
+                    
+                    

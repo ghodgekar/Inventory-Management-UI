@@ -1,0 +1,149 @@
+<div class="top-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu">Test : By Peacock Infotech </li>
+                <li class="topmenu company-name">Administrator (AMG)</li>
+                <li class="topmenu active">Payment Mode Master</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
+                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
+                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="companyForm">
+              <div class="head-1">
+                <div class="row">
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Code: </label>
+                      <div>
+                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Name: </label>
+                      <div>
+                        <input class="form-control" formControlName="mobile">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Calculate ON: </label>
+                      <div>
+                        <select name="" id="" class="form-control">
+                            <option value=""></option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                    <label class="center-block">Charge %: </label>
+                    <div>
+                        <input class="form-control" formControlName="std_code">
+                    </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Allow Multi: </label>
+                      <div>
+                        <input class="form-control" formControlName="phone">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Bill Copy: </label>
+                      <div>
+                        <input class="form-control" formControlName="mobile">
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" datatable >
+                    <thead>
+                        <tr>
+                          <th width="25">Action</th>
+                          <th>Code</th>
+                          <th>Name</th>
+                          <th>Calculate On</th>
+                          <th>Charge %</th>
+                          <th>Allow Multi</th>
+                          <th>Bill Copy</th>
+                          <th>Created By</th>
+                          <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let val of data">
+                            <td class="text-center">
+                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
+                                <span class="tooltiptext">EDIT</span>
+                              </span>  | 
+                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
+                                <span class="tooltiptext">DELETE</span>
+                              </span>
+                            </td>
+                            <td>{{val.module_code}}</td>
+                            <td>{{val.module_name}}</td>
+                            <td>{{val.module_slug}}</td>
+                            <td>{{val.parent_madule_code}}</td>
+                            <td>{{val.module_image}}</td>
+                            <td>{{val.is_home}}</td>
+                            <td>{{val.status}}</td>
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.created_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="display-view" style="display: none;">
+  <table class="table" id="table" #pdfTable>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Page</th>
+        <th>Parent Module</th>
+        <th>Image</th>
+        <th>Is Home</th>
+        <th>Status</th>
+        <th>Created By</th>
+        <th>Created Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let val of data">
+        <td>{{val.module_code}}</td>
+        <td>{{val.module_name}}</td>
+        <td>{{val.module_slug}}</td>
+        <td>{{val.parent_madule_code}}</td>
+        <td>{{val.module_image}}</td>
+        <td>{{val.is_home}}</td>
+        <td>{{val.status}}</td>
+        <td>{{val.created_by}}</td>
+        <td>{{val.created_at}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-footer></app-footer>

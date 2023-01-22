@@ -1,0 +1,120 @@
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="categoryForm">
+                <div class="row head-1">
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Code: </label>
+                      <div>
+                        <input class="form-control" formControlName="category_code" oninput="this.value = this.value.toUpperCase()">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Name: </label>
+                      <div>
+                        <input class="form-control" formControlName="category_name">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Type: </label>
+                      <div>
+                        <select class="form-control" formControlName="category_type">
+                          <option>Select</option>
+                          <option>Food</option>
+                          <option>Non-Food</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Group: </label>
+                      <div>
+                        <input class="form-control" formControlName="group">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Inventory: </label>
+                      <div>
+                        <select class="form-control" formControlName="inventory">
+                          <option>Select</option>
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" datatable >
+                    <thead>
+                        <tr>
+                          <th width="25">Action</th>
+                          <th>Code</th>
+                          <th>Name</th>
+                          <th>Type</th>
+                          <th>Group</th>
+                          <th>Inventory</th>
+                          <th>Status</th>
+                          <th>Created By</th>
+                          <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let val of data">
+                            <td class="text-center">
+                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCategoryList(val._id)"> 
+                                <span class="tooltiptext">EDIT</span>
+                              </span>  | 
+                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCategoryList(val._id)"> 
+                                <span class="tooltiptext">DELETE</span>
+                              </span>
+                            </td>
+                            <td>{{val.category_code}}</td>
+                            <td>{{val.category_name}}</td>
+                            <td>{{val.category_type}}</td>
+                            <td>{{val.group}}</td>
+                            <td>{{val.inventory}}</td>
+                            <td>{{val.status}}</td>
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.created_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="display-view" style="display: none;">
+  <table class="table" id="table" #pdfTable>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Group</th>
+        <th>Inventory</th>
+        <th>Status</th>
+        <th>Created By</th>
+        <th>Created Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let val of data">
+        <td>{{val.category_code}}</td>
+        <td>{{val.category_name}}</td>
+        <td>{{val.category_type}}</td>
+        <td>{{val.group}}</td>
+        <td>{{val.inventory}}</td>
+        <td>{{val.status}}</td>
+        <td>{{val.created_by}}</td>
+        <td>{{val.created_at}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-footer></app-footer>

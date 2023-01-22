@@ -1,0 +1,197 @@
+<div class="top-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu">Test : By Peacock Infotech </li>
+                <li class="topmenu company-name">Administrator (AMG)</li>
+                <li class="topmenu active">Tax Master</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
+                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
+                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="taxForm">
+              <div class="head-1">
+                <div class="row">
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Type: </label>
+                      <div>
+                        <select class="form-control" formControlName="tax_type">
+                          <option>GST</option>
+                          <option>VAT</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Code: </label>
+                      <div>
+                        <input class="form-control" formControlName="tax_code" oninput="this.value = this.value.toUpperCase()">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Name: </label>
+                      <div>
+                        <input class="form-control" formControlName="tax_name">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Tax(%): </label>
+                      <div>
+                        <input class="form-control" formControlName="tax_per">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Tax Indicator: </label>
+                      <div>
+                        <input class="form-control" formControlName="tax_indicator">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">IGST (%): </label>
+                      <div>
+                        <input class="form-control" formControlName="igst">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">SGST (%): </label>
+                      <div>
+                        <input class="form-control" formControlName="sgst">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">CGST (%): </label>
+                      <div>
+                        <input class="form-control" formControlName="cgst">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">UTGST (%): </label>
+                      <div>
+                        <input class="form-control" formControlName="utgst">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">CESS (%): </label>
+                      <div>
+                        <input class="form-control" formControlName="cess">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Cess/Peice (%): </label>
+                      <div>
+                        <input class="form-control" formControlName="cessperpiece">
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" datatable >
+                    <thead>
+                        <tr>
+                          <th width="25">Action</th>
+                          <th>Code</th>
+                          <th>Name</th>
+                          <th>Tax(%)</th>
+                          <th>Tax Indicator</th>
+                          <th>IGST (%)</th>
+                          <th>SGST (%)</th>
+                          <th>CGST (%)</th>
+                          <th>UTGST (%)</th>
+                          <th>CESS (%)</th>
+                          <th>Cess/Peice (%)</th>
+                          <th>Status</th>
+                          <th>Created By</th>
+                          <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let val of data">
+                            <td class="text-center">
+                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editTaxList(val._id)"> 
+                                <span class="tooltiptext">EDIT</span>
+                              </span>  | 
+                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteTaxList(val._id)"> 
+                                <span class="tooltiptext">DELETE</span>
+                              </span>
+                            </td>
+                            <td>{{val.tax_code}}</td>
+                            <td>{{val.tax_name}}</td>
+                            <td>{{val.tax_per}}</td>
+                            <td>{{val.tax_indicator}}</td>
+                            <td>{{val.igst}}</td>
+                            <td>{{val.sgst}}</td>
+                            <td>{{val.cgst}}</td>
+                            <td>{{val.utgst}}</td>
+                            <td>{{val.cess}}</td>
+                            <td>{{val.cessperpiece}}</td>
+                            <td>{{val.status}}</td>
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.created_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="display-view" style="display: none;">
+  <table class="table" id="table" #pdfTable>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Tax(%)</th>
+        <th>Tax Indicator</th>
+        <th>IGST (%)</th>
+        <th>SGST (%)</th>
+        <th>CGST (%)</th>
+        <th>UTGST (%)</th>
+        <th>CESS (%)</th>
+        <th>Cess/Peice (%)</th>
+        <th>Status</th>
+        <th>Created By</th>
+        <th>Created Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let val of data">
+        <td>{{val.tax_code}}</td>
+        <td>{{val.tax_name}}</td>
+        <td>{{val.tax_per}}</td>
+        <td>{{val.tax_indicator}}</td>
+        <td>{{val.igst}}</td>
+        <td>{{val.sgst}}</td>
+        <td>{{val.cgst}}</td>
+        <td>{{val.utgst}}</td>
+        <td>{{val.cess}}</td>
+        <td>{{val.cessperpiece}}</td>
+        <td>{{val.status}}</td>
+        <td>{{val.created_by}}</td>
+        <td>{{val.created_at}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-footer></app-footer>
