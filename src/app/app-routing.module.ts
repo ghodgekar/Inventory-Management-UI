@@ -34,7 +34,7 @@ const routes: Routes = [
   { path: 'module', component: ModuleComponent },
   { path: 'company', component: CompanyComponent },
   { path: 'user', component: UserComponent },
-  { path: 'user_permission', component: UserPermissionComponent },
+  { path: 'user-permission', component: UserPermissionComponent },
   { path: 'category-sub-category', component: CategorySubcategoryComponent },
   { path: 'tax', component: TaxComponent },
   { path: 'test', component: TestComponent },
