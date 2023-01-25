@@ -5,26 +5,26 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class BranchService {
+export class CityService {
 
   constructor(private http:HttpClient) { }
 
   list(id?:any){
     if(id == undefined){
-      return this.http.get( environment.api_url +'branch');
+      return this.http.get( environment.api_url +'city');
     }
-    return this.http.get( environment.api_url +'branch/'+id);
+    return this.http.get( environment.api_url +'city/'+id);
   }
   
   save(data:any){
-    return this.http.post( environment.api_url +'branch/save', data);
+    return this.http.post( environment.api_url +'city/save', data);
   }
 
   update(data:any){
-    return this.http.post( environment.api_url +'branch/update', data);
+    return this.http.post( environment.api_url +'city/update', data);
   }
 
   delete(data:any){
-    return this.http.post( environment.api_url +'branch/delete', data);
+    return this.http.post( environment.api_url +'city/delete', data);
   }
 }

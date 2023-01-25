@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { HttpClient  } from '@angular/common/http';
@@ -10,14 +10,16 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-parameter',
   templateUrl: './parameter.component.html',
   styleUrls: ['./parameter.component.css']
 })
-export class ParameterComponent implements OnInit {
-
+export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
+  @ViewChild(DataTableDirective) datatableElement!: DataTableDirective;
   parameterForm!: FormGroup;
   submitted: boolean = false;
   data:any=[];
@@ -26,7 +28,11 @@ export class ParameterComponent implements OnInit {
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
 
-  constructor(private fb: FormBuilder, private http:HttpClient) {
+  
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject();
+
+  constructor(private fb: FormBuilder, private http:HttpClient,private readonly chRef: ChangeDetectorRef) {
     this.createForm();
   }
   
@@ -42,7 +48,27 @@ export class ParameterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      processing: true,
+      lengthMenu: [10,20,30],
+      order:[[1,'desc']],
+      destroy: true
+    };
+    this.dtTrigger.subscribe();
     this.getParameter();
+  }
+
+  ngOnDestroy() {
+    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.destroy();
+    })
+    this.dtTrigger.unsubscribe();
+  }
+
+  ngAfterViewInit() {
+      this.dtTrigger.next(true);
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -53,27 +79,31 @@ export class ParameterComponent implements OnInit {
     this.submitBtn == 'SAVE';
     this.http.get( environment.api_url +'parameters').subscribe((res:any) => {
       this.data = res.data;
-      setTimeout(()=>{   
-        $('.table').DataTable( {
-          pagingType: 'full_numbers',
-          pageLength: 5,
-          processing: true,
-          lengthMenu : [5, 10, 25],
-          destroy: true
-      } );
-      }, 1);
+      this.chRef.detectChanges();
+      this.dtTrigger.next(null);
     })
   }
 
+  public rerender() {
+    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.destroy();
+        this.http.get( environment.api_url +'parameters').subscribe((res:any) => {
+          this.data = res.data;
+          this.chRef.detectChanges();
+          this.dtTrigger.next(null);
+        })
+    });
+  }
+
   onSubmit(): void {
-    this.parameterForm.value['created_by'] = 'admin';
+    this.parameterForm.value['created_by'] = 'Admin';
     this.submitted = true;
     if (this.parameterForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
-        this.http.post( environment.api_url + 'parameters/save', this.parameterForm.value).subscribe((res:any) => {
-          this.getParameter();
+        this.http.post( environment.api_url + 'parameters/save', this.parameterForm.value).subscribe((res:any) => {  
+          // this.getParameter();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;

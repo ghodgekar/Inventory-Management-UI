@@ -25,51 +25,52 @@
 <div class="main">
     <div class="card">
         <div class="card-body">
-            <form [formGroup]="companyForm">
+            <form [formGroup]="CustomerForm">
               <div class="head-1">
                 <div class="row">
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Location: </label>
                       <div>
-                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                        <input class="form-control" formControlName="" oninput="this.value = this.value.toUpperCase()">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Code: </label>
                       <div>
-                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                        <input class="form-control" formControlName="cust_code" oninput="this.value = this.value.toUpperCase()">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Name: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                        <input class="form-control" formControlName="cust_name">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Gender: </label>
                       <div>
-                        <select name="" id="" class="form-control">
-                            <option value=""></option>
+                        <select formControlName="gender" id="" class="form-control">
+                            <option>Female</option>
+                            <option>Male</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                     <label class="center-block">Barcode: </label>
                     <div>
-                        <input class="form-control" formControlName="std_code">
+                        <input class="form-control" formControlName="barcode">
                     </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Birth Date: </label>
                       <div>
-                        <input type="date" class="form-control" formControlName="phone">
+                        <input type="date" class="form-control" formControlName="birth_date">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Join Date: </label>
                       <div>
-                        <input type="date" class="form-control" formControlName="mobile">
+                        <input type="date" class="form-control" formControlName="join_date">
                       </div>
                     </div>
                 </div>
@@ -82,19 +83,19 @@
                         <div class="col-sm-4 form-group">
                           <label class="center-block">Address 1: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="addr1">
                           </div>
                         </div>
                         <div class="col-sm-4 form-group">
                           <label class="center-block">Address 2: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="addr2">
                           </div>
                         </div>
                         <div class="col-sm-4 form-group">
                           <label class="center-block">City: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="city">
                           </div>
                         </div>
                       </div>
@@ -102,19 +103,19 @@
                         <div class="col-sm-4 form-group">
                           <label class="center-block">State: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="state">
                           </div>
                         </div>
                         <div class="col-sm-4 form-group">
                           <label class="center-block">Country: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="country">
                           </div>
                         </div>
                         <div class="col-sm-4 form-group">
                           <label class="center-block">Pin Code: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="pincode">
                           </div>
                         </div>
                     </div>
@@ -133,19 +134,19 @@
                         <div class="col-sm-3 form-group">
                           <label class="center-block">Email: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="email">
                           </div>
                         </div>
                         <div class="col-sm-3 form-group">
                           <label class="center-block">PAN: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="pan_no">
                           </div>
                         </div>
                         <div class="col-sm-3 form-group">
                           <label class="center-block">Aadhar No: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="aadhar_no">
                           </div>
                         </div>
                       </div>
@@ -153,25 +154,25 @@
                         <div class="col-sm-3 form-group">
                           <label class="center-block">GSTIN: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="gstin">
                           </div>
                         </div>
                         <div class="col-sm-3 form-group">
                           <label class="center-block">Customer Type: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="cust_type">
                           </div>
                         </div>
                         <div class="col-sm-3 form-group">
                           <label class="center-block">Ref. Customer: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="ref_cust_code">
                           </div>
                         </div>
                         <div class="col-sm-3 form-group">
                           <label class="center-block">Credit Limit: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="cr_limit">
                           </div>
                         </div>
                       </div>
@@ -179,13 +180,13 @@
                         <div class="col-sm-3 form-group">
                           <label class="center-block">CR Over days: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="cr_overdue_days">
                           </div>
                         </div>
                         <div class="col-sm-3 form-group">
                           <label class="center-block">Points: </label>
                           <div>
-                            <input class="form-control" formControlName="mobile">
+                            <input class="form-control" formControlName="points">
                           </div>
                         </div>
                         <div class="col-sm-3 form-group">
@@ -206,7 +207,6 @@
                     <thead>
                         <tr>
                           <th width="25">Action</th>
-                          <th>Location</th>
                           <th>Code</th>
                           <th>Name</th>
                           <th>Gender</th>
@@ -216,6 +216,7 @@
                           <th>Address 1</th>
                           <th>Address 2</th>
                           <th>City</th>
+                          <th>Status</th>
                           <th>Created By</th>
                           <th>Created Date</th>
                         </tr>
@@ -230,12 +231,15 @@
                                 <span class="tooltiptext">DELETE</span>
                               </span>
                             </td>
-                            <td>{{val.module_code}}</td>
-                            <td>{{val.module_name}}</td>
-                            <td>{{val.module_slug}}</td>
-                            <td>{{val.parent_madule_code}}</td>
-                            <td>{{val.module_image}}</td>
-                            <td>{{val.is_home}}</td>
+                            <td>{{val.cust_code}}</td>
+                            <td>{{val.cust_name}}</td>
+                            <td>{{val.gender}}</td>
+                            <td>{{val.barcode}}</td>
+                            <td>{{val.birth_date}}</td>
+                            <td>{{val.join_date}}</td>
+                            <td>{{val.addr1}}</td>
+                            <td>{{val.addr2}}</td>
+                            <td>{{val.city}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
                             <td>{{val.created_at}}</td>

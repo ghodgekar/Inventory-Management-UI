@@ -8,7 +8,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
-import { CompanyService } from 'src/app/services/master/company.service';
+import { StateService } from 'src/app/services/master/state.service';
+import { Subject } from 'rxjs';
 
 
 
@@ -19,72 +20,72 @@ import { CompanyService } from 'src/app/services/master/company.service';
 })
 export class StateComponent {
 
-  companyForm!: FormGroup;
+  stateForm!: FormGroup;
   submitted: boolean = false;
   data:any=[];
   parent_menu: any=[];
-  dtOptions:any={};
   submitBtn:String ='SAVE';
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+  
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject();
 
-  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService) {
+  constructor(private fb: FormBuilder, private StateHttp:StateService) {
     this.createForm();
   }
   
   createForm() {
-    this.companyForm = this.fb.group({
-      module_code: ['', Validators.required],
-      module_name: ['', Validators.required ],
-      module_slug: ['', Validators.required ],
-      parent_madule_code: ['0', Validators.required ],
-      module_image: ['', Validators.required ],
-      is_home: ['', Validators.required ],
-      status: ['', Validators.required ],
-      created_by: [''],
+    this.stateForm = this.fb.group({
+      state_code: ['', Validators.required],
+      state_name: ['', Validators.required ],
+      country_code: ['', Validators.required ],
+      state_type: ['', Validators.required ],
+      gst_state_code: ['', Validators.required ],
       _id: []
     });
   }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      processing: true,
+      lengthMenu: [10,20,30],
+      order:[[1,'desc']],
+      destroy: true
+    };
     this.getCompanyList();
+    this.dtTrigger.next(null);
   }
 
   get f(): { [key: string]: AbstractControl } {
-    return this.companyForm.controls;
+    return this.stateForm.controls;
   }
 
   getCompanyList(){
-    this.submitBtn == 'SAVE';
-    this.CompanyHttp.list().subscribe((res:any) => {
+    this.StateHttp.list().subscribe((res:any) => {
       this.data = res.data;
-      setTimeout(()=>{   
-        $('.table').DataTable( {
-          pagingType: 'full_numbers',
-          pageLength: 5,
-          processing: true,
-          lengthMenu : [5, 10, 25],
-          destroy: true
-      } );
-      }, 10);
+      this.dtTrigger.next(null);
+      this.dtTrigger.subscribe();
     })
   }
 
   onSubmit(): void {
-    this.companyForm.value['created_by'] = 'admin';
+    this.stateForm.value['created_by'] = 'Admin';
     this.submitted = true;
-    if (this.companyForm.invalid) {
+    if (this.stateForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
-        this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {
+        this.StateHttp.save( this.stateForm.value).subscribe((res:any) => {
           this.getCompanyList();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
             Object.keys(validationError).forEach((index) => {
-              const formControl = this.companyForm.get(
+              const formControl = this.stateForm.get(
                 validationError[index].param
               );
               if (formControl) {
@@ -96,7 +97,7 @@ export class StateComponent {
           }
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CompanyHttp.update(this.companyForm.value).subscribe((res:any) => {
+        this.StateHttp.update(this.stateForm.value).subscribe((res:any) => {
           this.getCompanyList();
         })
       }
@@ -106,27 +107,25 @@ export class StateComponent {
 
   onReset(): void {
     this.submitted = false;
-    this.companyForm.reset();
+    this.stateForm.reset();
   }
 
   editCompanyList(id: any){
     this.submitBtn = 'UPDATE'
-    this.CompanyHttp.list(id).subscribe((res:any) => {
-      this.companyForm.patchValue({
-        module_code: res.data[0].module_code,
-        module_name: res.data[0].module_name,
-        module_slug: res.data[0].module_slug,
-        parent_madule_code: res.data[0].parent_madule_code,
-        module_image: res.data[0].module_image,
-        is_home: res.data[0].is_home,
-        status: res.data[0].status,
+    this.StateHttp.list(id).subscribe((res:any) => {
+      this.stateForm.patchValue({
+        state_code: res.data[0].state_code,
+        state_name: res.data[0].state_name,
+        country_code: res.data[0].country_code,
+        state_type: res.data[0].state_type,
+        gst_state_code: res.data[0].gst_state_code,
         _id: res.data[0]._id
       });
     })
   }
 
   deleteCompanyList(id:any){
-    this.CompanyHttp.delete( {'_id':id} ).subscribe((res:any) => {
+    this.StateHttp.delete( {'_id':id} ).subscribe((res:any) => {
       this.getCompanyList();
     })
   }

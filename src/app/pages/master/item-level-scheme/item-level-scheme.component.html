@@ -25,45 +25,45 @@
 <div class="main">
     <div class="card">
         <div class="card-body">
-            <form [formGroup]="companyForm">
+            <form [formGroup]="itemLevelForm">
               <div class="head-1">
                 <div class="row">
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Location: </label>
                       <div>
-                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                        <input class="form-control" formControlName="loc_code" oninput="this.value = this.value.toUpperCase()">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Promo: </label>
                       <div>
-                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                        <input class="form-control" formControlName="promo_code" oninput="this.value = this.value.toUpperCase()">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Item: </label>
                       <div>
-                        <select name="" id="" class="form-control">
-                            <option value=""></option>
+                        <select formControlName="item_code" name="" id="" class="form-control">
+                            <option>ABC</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Batch: </label>
                       <div>
-                        <input class="form-control" formControlName="std_code">
+                        <input class="form-control" formControlName="batch_no">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                     <label class="center-block">Start Date Time: </label>
                     <div>
-                        <input type="datetime-local" class="form-control" formControlName="std_code">
+                        <input type="datetime-local" class="form-control" formControlName="from_date">
                     </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">End Date Time: </label>
                       <div>
-                        <input type="datetime-local" class="form-control" formControlName="phone">
+                        <input type="datetime-local" class="form-control" formControlName="to_date">
                       </div>
                     </div>
                 </div>
@@ -71,37 +71,37 @@
                     <div class="col-sm-2 form-group">
                       <label class="center-block">From Qty: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                        <input class="form-control" formControlName="from_qty">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">To Qty: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                        <input class="form-control" formControlName="to_qty">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Max Qty: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                        <input class="form-control" formControlName="max_qty">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Fixed Rate: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                        <input class="form-control" formControlName="disc_perc">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Disc Perc: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                        <input class="form-control" formControlName="disc_amt">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Disc Amt: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                        <input class="form-control" formControlName="fix_rate">
                       </div>
                     </div>
                 </div>
@@ -109,24 +109,28 @@
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Calc On: </label>
                       <div>
-                        <select name="" id="" class="form-control">
-                            <option value=""></option>
+                        <select name="" id="" formControlName="calc_on" class="form-control">
+                            <option>MRP</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Cust Type Incl: </label>
                       <div>
-                        <select name="" id="" class="form-control">
-                            <option value=""></option>
+                        <select name="" id="" formControlName="cust_type_incl" class="form-control">
+                            <option>Regular</option>
+                            <option>Family</option>
+                            <option>Gold</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Cust Type Excl: </label>
                       <div>
-                        <select name="" id="" class="form-control">
-                            <option value=""></option>
+                        <select name="" id="" formControlName="cust_type_excl" class="form-control">
+                          <option>Regular</option>
+                          <option>Family</option>
+                          <option>Gold</option>
                         </select>
                       </div>
                     </div>
@@ -155,6 +159,7 @@
                           <th>To Qty</th>
                           <th>Max Qty</th>
                           <th>Fixed Rate</th>
+                          <th>Status</th>
                           <th>Created By</th>
                           <th>Created Date</th>
                         </tr>
@@ -169,12 +174,16 @@
                                 <span class="tooltiptext">DELETE</span>
                               </span>
                             </td>
-                            <td>{{val.module_code}}</td>
-                            <td>{{val.module_name}}</td>
-                            <td>{{val.module_slug}}</td>
-                            <td>{{val.parent_madule_code}}</td>
-                            <td>{{val.module_image}}</td>
-                            <td>{{val.is_home}}</td>
+                            <td>{{val.loc_code}}</td>
+                            <td>{{val.promo_code}}</td>
+                            <td>{{val.item_code}}</td>
+                            <td>{{val.batch_no}}</td>
+                            <td>{{val.from_date}}</td>
+                            <td>{{val.to_date}}</td>
+                            <td>{{val.from_qty}}</td>
+                            <td>{{val.to_qty}}</td>
+                            <td>{{val.max_qty}}</td>
+                            <td>{{val.fix_rate}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
                             <td>{{val.created_at}}</td>

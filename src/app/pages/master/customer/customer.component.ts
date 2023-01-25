@@ -8,7 +8,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
-import { CompanyService } from 'src/app/services/master/company.service';
+import { CustomerService } from 'src/app/services/master/customer.service';
 
 
 @Component({
@@ -18,7 +18,7 @@ import { CompanyService } from 'src/app/services/master/company.service';
 })
 export class CustomerComponent {
 
-  companyForm!: FormGroup;
+  CustomerForm!: FormGroup;
   submitted: boolean = false;
   data:any=[];
   parent_menu: any=[];
@@ -28,19 +28,34 @@ export class CustomerComponent {
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
 
-  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService) {
+  constructor(private fb: FormBuilder, private CustomerHttp:CustomerService) {
     this.createForm();
   }
   
   createForm() {
-    this.companyForm = this.fb.group({
-      module_code: ['', Validators.required],
-      module_name: ['', Validators.required ],
-      module_slug: ['', Validators.required ],
-      parent_madule_code: ['0', Validators.required ],
-      module_image: ['', Validators.required ],
-      is_home: ['', Validators.required ],
-      status: ['', Validators.required ],
+    this.CustomerForm = this.fb.group({
+      cust_code: ['', Validators.required],
+      cust_name: ['', Validators.required ],
+      gender: ['', Validators.required ],
+      aadhar_no: ['', Validators.required ],
+      addr1: ['', Validators.required ],
+      addr2: ['', Validators.required ],
+      city: ['', Validators.required ],
+      state: ['', Validators.required ],
+      country: ['', Validators.required ],
+      pincode: ['', Validators.required ],
+      mobile: ['', Validators.required ],
+      email: ['', Validators.required ],
+      pan_no: ['', Validators.required ],
+      gstin: ['', Validators.required ],
+      birth_date: ['', Validators.required ],
+      join_date: ['', Validators.required ],
+      cust_type: ['', Validators.required ],
+      barcode: ['', Validators.required ],
+      points: ['', Validators.required ],
+      ref_cust_code: ['', Validators.required ],
+      cr_limit: ['', Validators.required ],
+      cr_overdue_days: ['', Validators.required ],
       created_by: [''],
       _id: []
     });
@@ -51,12 +66,12 @@ export class CustomerComponent {
   }
 
   get f(): { [key: string]: AbstractControl } {
-    return this.companyForm.controls;
+    return this.CustomerForm.controls;
   }
 
   getCompanyList(){
     this.submitBtn == 'SAVE';
-    this.CompanyHttp.list().subscribe((res:any) => {
+    this.CustomerHttp.list().subscribe((res:any) => {
       this.data = res.data;
       setTimeout(()=>{   
         $('.table').DataTable( {
@@ -71,19 +86,19 @@ export class CustomerComponent {
   }
 
   onSubmit(): void {
-    this.companyForm.value['created_by'] = 'admin';
+    this.CustomerForm.value['created_by'] = 'Admin';
     this.submitted = true;
-    if (this.companyForm.invalid) {
+    if (this.CustomerForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
-        this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {
+        this.CustomerHttp.save( this.CustomerForm.value).subscribe((res:any) => {
           this.getCompanyList();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
             Object.keys(validationError).forEach((index) => {
-              const formControl = this.companyForm.get(
+              const formControl = this.CustomerForm.get(
                 validationError[index].param
               );
               if (formControl) {
@@ -95,7 +110,7 @@ export class CustomerComponent {
           }
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CompanyHttp.update(this.companyForm.value).subscribe((res:any) => {
+        this.CustomerHttp.update(this.CustomerForm.value).subscribe((res:any) => {
           this.getCompanyList();
         })
       }
@@ -105,27 +120,42 @@ export class CustomerComponent {
 
   onReset(): void {
     this.submitted = false;
-    this.companyForm.reset();
+    this.CustomerForm.reset();
   }
 
   editCompanyList(id: any){
     this.submitBtn = 'UPDATE'
-    this.CompanyHttp.list(id).subscribe((res:any) => {
-      this.companyForm.patchValue({
-        module_code: res.data[0].module_code,
-        module_name: res.data[0].module_name,
-        module_slug: res.data[0].module_slug,
-        parent_madule_code: res.data[0].parent_madule_code,
-        module_image: res.data[0].module_image,
-        is_home: res.data[0].is_home,
-        status: res.data[0].status,
+    this.CustomerHttp.list(id).subscribe((res:any) => {
+      this.CustomerForm.patchValue({
+        cust_code: res.data[0].cust_code,
+        cust_name: res.data[0].cust_name,
+        gender: res.data[0].gender,
+        addr1: res.data[0].addr1,
+        addr2: res.data[0].addr2,
+        city: res.data[0].city,
+        state: res.data[0].state,
+        country: res.data[0].country,
+        pincode: res.data[0].pincode,
+        mobile: res.data[0].mobile,
+        email: res.data[0].email,
+        aadhar_no: res.data[0].aadhar_no,
+        pan_no: res.data[0].pan_no,
+        gstin: res.data[0].gstin,
+        birth_date: res.data[0].birth_date,
+        join_date: res.data[0].join_date,
+        cust_type: res.data[0].cust_type,
+        barcode: res.data[0].barcode,
+        points: res.data[0].points,
+        ref_cust_code: res.data[0].ref_cust_code,
+        cr_limit: res.data[0].cr_limit,
+        cr_overdue_days: res.data[0].cr_overdue_days,
         _id: res.data[0]._id
       });
     })
   }
 
   deleteCompanyList(id:any){
-    this.CompanyHttp.delete( {'_id':id} ).subscribe((res:any) => {
+    this.CustomerHttp.delete( {'_id':id} ).subscribe((res:any) => {
       this.getCompanyList();
     })
   }

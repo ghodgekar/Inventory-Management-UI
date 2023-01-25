@@ -9,6 +9,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CompanyService } from 'src/app/services/master/company.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-company',
@@ -21,11 +22,13 @@ export class CompanyComponent implements OnInit{
   submitted: boolean = false;
   data:any=[];
   parent_menu: any=[];
-  dtOptions:any={};
   submitBtn:String ='SAVE';
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject();
 
   constructor(private fb: FormBuilder, private CompanyHttp:CompanyService) {
     this.createForm();
@@ -33,19 +36,46 @@ export class CompanyComponent implements OnInit{
   
   createForm() {
     this.companyForm = this.fb.group({
-      module_code: ['', Validators.required],
-      module_name: ['', Validators.required ],
-      module_slug: ['', Validators.required ],
-      parent_madule_code: ['0', Validators.required ],
-      module_image: ['', Validators.required ],
-      is_home: ['', Validators.required ],
-      status: ['', Validators.required ],
-      created_by: [''],
+      comp_code: ['', Validators.required],
+      comp_name: ['', Validators.required ],
+      type: ['', Validators.required ],
+      addr1: ['', Validators.required ],
+      addr2: ['', Validators.required ],
+      addr3: ['', Validators.required ],
+      city: ['', Validators.required ],
+      state: ['', Validators.required ],
+      country: ['', Validators.required ],
+      std_code: ['', Validators.required ],
+      phone: ['', Validators.required ],
+      mobile: ['', Validators.required ],
+      gstin: ['', Validators.required ],
+      fassa_no: ['', Validators.required ],
+      cin_no: ['', Validators.required ],
+      pan_no: ['', Validators.required ],
+      tan_no: ['', Validators.required ],
+      lsttinpin_no: ['', Validators.required ],
+      cst_no: ['', Validators.required ],
+      coregn_no: ['', Validators.required ],
+      coregndate: ['', Validators.required ],
+      druglic_no: ['', Validators.required ],
+      importexport: ['', Validators.required ],
+      company_image: [''],
+      status: ['Active', Validators.required ],
+      created_by: ['Admin'],
+      created_at: [''],
       _id: []
     });
   }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      processing: true,
+      lengthMenu: [10,20,30],
+      order:[[1,'desc']],
+      destroy: true
+    };
     this.getCompanyList();
   }
 
@@ -57,20 +87,13 @@ export class CompanyComponent implements OnInit{
     this.submitBtn == 'SAVE';
     this.CompanyHttp.list().subscribe((res:any) => {
       this.data = res.data;
-      setTimeout(()=>{   
-        $('.table').DataTable( {
-          pagingType: 'full_numbers',
-          pageLength: 5,
-          processing: true,
-          lengthMenu : [5, 10, 25],
-          destroy: true
-      } );
-      }, 10);
+      this.dtTrigger.next(null);
     })
   }
 
   onSubmit(): void {
-    this.companyForm.value['created_by'] = 'admin';
+    console.log(this.companyForm.value)
+    this.companyForm.value['created_by'] = 'Admin';
     this.submitted = true;
     if (this.companyForm.invalid) {
       return;
@@ -111,12 +134,31 @@ export class CompanyComponent implements OnInit{
     this.submitBtn = 'UPDATE'
     this.CompanyHttp.list(id).subscribe((res:any) => {
       this.companyForm.patchValue({
-        module_code: res.data[0].module_code,
-        module_name: res.data[0].module_name,
-        module_slug: res.data[0].module_slug,
-        parent_madule_code: res.data[0].parent_madule_code,
-        module_image: res.data[0].module_image,
-        is_home: res.data[0].is_home,
+        comp_code: res.data[0].comp_code,
+        comp_name: res.data[0].comp_name,
+        type: res.data[0].type,
+        addr1: res.data[0].addr1,
+        addr2: res.data[0].addr2,
+        addr3: res.data[0].addr3,
+        city: res.data[0].city,
+        state: res.data[0].state,
+        country: res.data[0].country,
+        std_code: res.data[0].std_code,
+        phone: res.data[0].phone,
+        mobile: res.data[0].mobile,
+        gstin: res.data[0].gstin,
+        fassa_no: res.data[0].fassa_no,
+        cin_no: res.data[0].cin_no,
+        pan_no: res.data[0].pan_no,
+        tan_no: res.data[0].tan_no,
+        lsttinpin_no: res.data[0].lsttinpin_no,
+        cst_no: res.data[0].cst_no,
+        coregn_no: res.data[0].coregn_no,
+        coregndate: res.data[0].coregndate,
+        druglic_no: res.data[0].druglic_no,
+        importexport: res.data[0].importexport,
+        created_by: res.data[0].created_by,
+        created_date: res.data[0].created_date,
         status: res.data[0].status,
         _id: res.data[0]._id
       });

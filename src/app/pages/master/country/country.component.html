@@ -3,24 +3,24 @@
         <div class="col-sm-12" style="padding: 0;">
             <div class="card">
                 <div class="card-body">
-                    <form [formGroup]="companyForm">
+                    <form [formGroup]="countryForm">
                         <div class="row head-1">
                             <div class="col-sm-2 form-group">
                               <label class="center-block">Country Code: </label>
                               <div>
-                                <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                                <input class="form-control" formControlName="country_code" oninput="this.value = this.value.toUpperCase()">
                               </div>
                             </div>
                             <div class="col-sm-2 form-group">
                               <label class="center-block">Country Name: </label>
                               <div>
-                                <input class="form-control" formControlName="comp_name">
+                                <input class="form-control" formControlName="country_name">
                               </div>
                             </div>
                             <div class="col-sm-2 form-group">
-                              <label class="center-block">Country Code: </label>
+                              <label class="center-block">Currency Code: </label>
                               <div>
-                                <input class="form-control" formControlName="std_code">
+                                <input class="form-control" formControlName="currency_code">
                               </div>
                             </div>
                         </div>
@@ -30,7 +30,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" datatable >
+                      <table class="table table-striped table-bordered table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
                             <thead>
                                 <tr>
                                   <th width="25">Action</th>
@@ -43,10 +43,10 @@
                                 <tr *ngFor="let val of data">
                                     <td class="text-center">
                                       <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
-                                        <span class="tooltiptext">EDIT</span>
+                                        <!-- <span class="tooltiptext">EDIT</span> -->
                                       </span>  | 
                                       <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
-                                        <span class="tooltiptext">DELETE</span>
+                                        <!-- <span class="tooltiptext">DELETE</span> -->
                                       </span>
                                     </td>
                                     <td>{{val.country_code}}</td>

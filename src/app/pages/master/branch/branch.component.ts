@@ -8,7 +8,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
-import { CompanyService } from 'src/app/services/master/company.service';
+import { BranchService } from 'src/app/services/master/branch.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-branch',
@@ -17,72 +18,84 @@ import { CompanyService } from 'src/app/services/master/company.service';
 })
 export class BranchComponent {
 
-  companyForm!: FormGroup;
+  branchForm!: FormGroup;
   submitted: boolean = false;
   data:any=[];
   parent_menu: any=[];
-  dtOptions:any={};
   submitBtn:String ='SAVE';
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
 
-  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService) {
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject();
+
+  constructor(private fb: FormBuilder, private BranchHttp:BranchService) {
     this.createForm();
   }
   
   createForm() {
-    this.companyForm = this.fb.group({
-      module_code: ['', Validators.required],
-      module_name: ['', Validators.required ],
-      module_slug: ['', Validators.required ],
-      parent_madule_code: ['0', Validators.required ],
-      module_image: ['', Validators.required ],
-      is_home: ['', Validators.required ],
-      status: ['', Validators.required ],
-      created_by: [''],
+    this.branchForm = this.fb.group({
+      loc_code: ['', Validators.required],
+      loc_no: ['', Validators.required ],
+      loc_name: ['', Validators.required ],
+      comp_code: ['', Validators.required ],
+      addr1: ['', Validators.required ],
+      addr2: ['', Validators.required ],
+      city: ['', Validators.required ],
+      state: ['', Validators.required ],
+      country: ['', Validators.required ],
+      pin: ['', Validators.required ],
+      phone: ['', Validators.required ],
+      gstin: ['', Validators.required ],
+      bank_name: ['', Validators.required ],
+      bank_ac_no: ['', Validators.required ],
+      image: [''],
+      status: ['Active', Validators.required ],
+      created_by: ['Admin'],
+      created_at: [''],
       _id: []
     });
   }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      processing: true,
+      lengthMenu: [10,20,30],
+      order:[[1,'desc']],
+      destroy: true
+    };
     this.getCompanyList();
   }
 
   get f(): { [key: string]: AbstractControl } {
-    return this.companyForm.controls;
+    return this.branchForm.controls;
   }
 
   getCompanyList(){
     this.submitBtn == 'SAVE';
-    this.CompanyHttp.list().subscribe((res:any) => {
+    this.BranchHttp.list().subscribe((res:any) => {
       this.data = res.data;
-      setTimeout(()=>{   
-        $('.table').DataTable( {
-          pagingType: 'full_numbers',
-          pageLength: 5,
-          processing: true,
-          lengthMenu : [5, 10, 25],
-          destroy: true
-      } );
-      }, 10);
+      this.dtTrigger.next(null);
     })
   }
 
   onSubmit(): void {
-    this.companyForm.value['created_by'] = 'admin';
+    this.branchForm.value['created_by'] = 'Admin';
     this.submitted = true;
-    if (this.companyForm.invalid) {
+    if (this.branchForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
-        this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {
+        this.BranchHttp.save( this.branchForm.value).subscribe((res:any) => {
           this.getCompanyList();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
             Object.keys(validationError).forEach((index) => {
-              const formControl = this.companyForm.get(
+              const formControl = this.branchForm.get(
                 validationError[index].param
               );
               if (formControl) {
@@ -94,7 +107,7 @@ export class BranchComponent {
           }
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CompanyHttp.update(this.companyForm.value).subscribe((res:any) => {
+        this.BranchHttp.update(this.branchForm.value).subscribe((res:any) => {
           this.getCompanyList();
         })
       }
@@ -104,27 +117,38 @@ export class BranchComponent {
 
   onReset(): void {
     this.submitted = false;
-    this.companyForm.reset();
+    this.branchForm.reset();
   }
 
   editCompanyList(id: any){
     this.submitBtn = 'UPDATE'
-    this.CompanyHttp.list(id).subscribe((res:any) => {
-      this.companyForm.patchValue({
-        module_code: res.data[0].module_code,
-        module_name: res.data[0].module_name,
-        module_slug: res.data[0].module_slug,
-        parent_madule_code: res.data[0].parent_madule_code,
-        module_image: res.data[0].module_image,
-        is_home: res.data[0].is_home,
+    this.BranchHttp.list(id).subscribe((res:any) => {
+      this.branchForm.patchValue({
+        loc_code: res.data[0].loc_code,
+        loc_no: res.data[0].loc_no,
+        loc_name: res.data[0].loc_name,
+        comp_code: res.data[0].comp_code,
+        addr1: res.data[0].addr1,
+        addr2: res.data[0].addr2,
+        city: res.data[0].city,
+        state: res.data[0].state,
+        country: res.data[0].country,
+        pin: res.data[0].pin,
+        phone: res.data[0].phone,
+        gstin: res.data[0].gstin,
+        bank_name: res.data[0].bank_name,
+        bank_ac_no: res.data[0].bank_ac_no,
+        image: res.data[0].image,
         status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: res.data[0].created_at,
         _id: res.data[0]._id
       });
     })
   }
 
   deleteCompanyList(id:any){
-    this.CompanyHttp.delete( {'_id':id} ).subscribe((res:any) => {
+    this.BranchHttp.delete( {'_id':id} ).subscribe((res:any) => {
       this.getCompanyList();
     })
   }

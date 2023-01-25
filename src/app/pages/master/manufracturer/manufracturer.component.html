@@ -3,25 +3,25 @@
         <div class="col-sm-12" style="padding: 0;">
             <div class="card">
                 <div class="card-body">
-                    <form [formGroup]="companyForm">
+                    <form [formGroup]="manufracturerForm">
                         <div class="row head-1">
                             <div class="col-sm-2 form-group">
                               <label class="center-block">Code: </label>
                               <div>
-                                <input class="form-control" formControlName="comp_name">
+                                <input class="form-control" formControlName="manufact_code">
                               </div>
                             </div>
                             <div class="col-sm-2 form-group">
                               <label class="center-block">Name: </label>
                               <div>
-                                <input class="form-control" formControlName="std_code">
+                                <input class="form-control" formControlName="manufact_name">
                               </div>
                             </div>
                             <div class="col-sm-2 form-group">
                               <label class="center-block">Type: </label>
                               <div>
-                                <select name="" id="" class="form-control">
-                                    <option value=""></option>
+                                <select formControlName="type" id="" class="form-control">
+                                    <option>Test</option>
                                 </select>
                               </div>
                             </div>
@@ -32,13 +32,16 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" datatable >
+                      <table class="table table-striped table-bordered table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
                             <thead>
                                 <tr>
                                   <th width="25">Action</th>
                                   <th>Code</th>
                                   <th>Name</th>
                                   <th>Type</th>
+                                  <th>Status</th>
+                                  <th>Created By</th>
+                                  <th>Created Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,9 +54,12 @@
                                         <span class="tooltiptext">DELETE</span>
                                       </span>
                                     </td>
-                                    <td>{{val.country_code}}</td>
-                                    <td>{{val.country_name}}</td>
-                                    <td></td>
+                                    <td>{{val.manufact_code}}</td>
+                                    <td>{{val.manufact_name}}</td>
+                                    <td>{{val.type}}</td>
+                                    <td>{{val.status}}</td>
+                                    <td>{{val.created_by}}</td>
+                                    <td>{{val.created_at | date}}</td>
                                 </tr>
                             </tbody>
                         </table>

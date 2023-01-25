@@ -79,7 +79,7 @@ export class ModuleComponent implements OnInit{
   }
 
   onSubmit(): void {
-    this.moduleForm.value['created_by'] = 'admin';
+    this.moduleForm.value['created_by'] = 'Admin';
     this.submitted = true;
     if (this.moduleForm.invalid) {
       return;

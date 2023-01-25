@@ -72,8 +72,8 @@
                       <label class="center-block">Status </label>
                       <div>
                         <select class="form-control" formControlName="status">
-                          <option value="Active">YES</option>
-                          <option value="Inactive">NO</option>
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
                         </select>
                       </div>
                     </div>
@@ -117,7 +117,7 @@
                             <td>{{val.is_home}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
-                            <td>{{val.created_at}}</td>
+                            <td>{{val.created_at | date}}</td>
                         </tr>
                     </tbody>
                 </table>

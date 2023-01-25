@@ -10,6 +10,7 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CategoryService } from 'src/app/services/master/category.service';
 import { CategorySubService } from 'src/app/services/master/category_sub.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-category-sub',
@@ -21,13 +22,15 @@ export class CategorySubComponent  implements OnInit {
   categorySubForm!: FormGroup;
   submitted: boolean = false;
   data:any=[];
-  dtOptions: DataTables.Settings = {};
 
   submitBtn:String ='SAVE';
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
   categorydata: any=[];
+  
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject();
 
   constructor(private fb: FormBuilder, private categoryHttp:CategoryService, private categorySubHttp:CategorySubService) {
     this.createForm();
@@ -48,8 +51,17 @@ export class CategorySubComponent  implements OnInit {
   }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      processing: true,
+      lengthMenu: [10,20,30],
+      order:[[1,'desc']],
+      destroy: true
+    };
     this.getCategorySubList();
     this.getCategoryList();
+    this.dtTrigger.next(null);
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -70,15 +82,8 @@ export class CategorySubComponent  implements OnInit {
     this.categorySubHttp.list().subscribe((res:any) => {
       if(res.data){
         this.data = res.data;
-        setTimeout(()=>{   
-          $('.table').DataTable( {
-            pagingType: 'full_numbers',
-            pageLength: 5,
-            processing: true,
-            lengthMenu : [5, 10, 25],
-            destroy: true
-        } );
-        }, 1);
+        this.dtTrigger.next(null);
+        this.dtTrigger.subscribe();
       }
     })
   }

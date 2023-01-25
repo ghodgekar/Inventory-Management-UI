@@ -25,49 +25,52 @@
 <div class="main">
     <div class="card">
         <div class="card-body">
-            <form [formGroup]="companyForm">
+            <form [formGroup]="branchForm">
               <div class="head-1">
                 <div class="row">
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Location Code: </label>
                       <div>
-                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                        <input class="form-control" formControlName="loc_code" oninput="this.value = this.value.toUpperCase()">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Location No: </label>
                       <div>
-                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                        <input class="form-control" formControlName="loc_no">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Location Name: </label>
                       <div>
-                        <input class="form-control" formControlName="comp_name">
+                        <input class="form-control" formControlName="loc_name">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
-                      <label class="center-block">Company Code: </label>
+                      <label class="center-block">Company Name: </label>
                       <div>
-                        <input class="form-control" formControlName="std_code">
+                        <input class="form-control" formControlName="comp_code">
                       </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                    <label class="center-block">User Code: </label>
-                    <div>
-                        <input class="form-control" formControlName="std_code">
-                    </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Status: </label>
                       <div>
-                        <input class="form-control" formControlName="phone">
+                        <select class="form-control" formControlName="status">
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                        </select>
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
-                      <label class="center-block">Date: </label>
+                      <label class="center-block">Created By: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                          <input class="form-control" formControlName="created_by">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Created At: </label>
+                      <div>
+                        <input class="form-control" formControlName="created_at">
                       </div>
                     </div>
                     
@@ -115,13 +118,13 @@
                           <div class="col-sm-4 form-group">
                             <label class="center-block">Pin Code: </label>
                             <div>
-                              <input class="form-control" formControlName="std_code">
+                              <input class="form-control" formControlName="pin">
                             </div>
                           </div>
                           <div class="col-sm-4 form-group">
                             <label class="center-block">Mobile No: </label>
                             <div>
-                              <input class="form-control" formControlName="mobile">
+                              <input class="form-control" formControlName="phone">
                             </div>
                           </div>
                           <div class="col-sm-4"></div>
@@ -135,19 +138,19 @@
                             <div class="col-sm-4 form-group">
                             <label class="center-block">Bank Name: </label>
                             <div>
-                                <input class="form-control" formControlName="module_image">
+                                <input class="form-control" formControlName="bank_name">
                             </div>
                             </div>
                             <div class="col-sm-4 form-group">
                             <label class="center-block">Bank Ac/No: </label>
                             <div>
-                                <input class="form-control" formControlName="module_image">
+                                <input class="form-control" formControlName="bank_ac_no">
                             </div>
                             </div>
                             <div class="col-sm-4 form-group">
                             <label class="center-block">GSTIN: </label>
                             <div>
-                                <input class="form-control" formControlName="module_image">
+                                <input class="form-control" formControlName="gstin">
                             </div>
                             </div>
                         </div>
@@ -155,7 +158,7 @@
                             <div class="col-sm-4 form-group">
                                 <label class="center-block">Image: </label>
                                 <div>
-                                    <input class="form-control" type="file" formControlName="module_image">
+                                    <input class="form-control" type="file" formControlName="image">
 
                                 </div>
                             </div>
@@ -169,16 +172,23 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" datatable >
+                <table class="table table-bordered"  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
                     <thead>
                         <tr>
                           <th width="25">Action</th>
                           <th>Location Code</th>
                           <th>Location No</th>
                           <th>Location Name</th>
-                          <th>Parent Module</th>
                           <th>Company Code</th>
-                          <th>Address</th>
+                          <th>Address 1</th>
+                          <th>Address 2</th>
+                          <th>City</th>
+                          <th>State</th>
+                          <th>Country</th>
+                          <th>Pin Code</th>
+                          <th>Mobile</th>
+                          <th>Bank Name</th>
+                          <th>Bank Acount No</th>
                           <th>Status</th>
                           <th>Created By</th>
                           <th>Created Date</th>
@@ -194,12 +204,19 @@
                                 <span class="tooltiptext">DELETE</span>
                               </span>
                             </td>
-                            <td>{{val.module_code}}</td>
-                            <td>{{val.module_name}}</td>
-                            <td>{{val.module_slug}}</td>
-                            <td>{{val.parent_madule_code}}</td>
-                            <td>{{val.module_image}}</td>
-                            <td>{{val.is_home}}</td>
+                            <td>{{val.loc_code}}</td>
+                            <td>{{val.loc_no}}</td>
+                            <td>{{val.loc_name}}</td>
+                            <td>{{val.comp_code}}</td>
+                            <td>{{val.addr1}}</td>
+                            <td>{{val.addr2}}</td>
+                            <td>{{val.city}}</td>
+                            <td>{{val.state}}</td>
+                            <td>{{val.country}}</td>
+                            <td>{{val.pin}}</td>
+                            <td>{{val.phone}}</td>
+                            <td>{{val.bank_name}}</td>
+                            <td>{{val.bank_ac_no}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
                             <td>{{val.created_at}}</td>

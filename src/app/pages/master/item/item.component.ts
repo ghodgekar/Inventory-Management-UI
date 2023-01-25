@@ -9,6 +9,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CompanyService } from 'src/app/services/master/company.service';
+import { ItemService } from 'src/app/services/master/item.service';
 
 
 @Component({
@@ -18,7 +19,7 @@ import { CompanyService } from 'src/app/services/master/company.service';
 })
 export class ItemComponent {
 
-  companyForm!: FormGroup;
+  ItemForm!: FormGroup;
   submitted: boolean = false;
   data:any=[];
   parent_menu: any=[];
@@ -28,20 +29,47 @@ export class ItemComponent {
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
 
-  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService) {
+  constructor(private fb: FormBuilder, private ItemHttp:ItemService) {
     this.createForm();
   }
   
   createForm() {
-    this.companyForm = this.fb.group({
-      module_code: ['', Validators.required],
-      module_name: ['', Validators.required ],
-      module_slug: ['', Validators.required ],
-      parent_madule_code: ['0', Validators.required ],
-      module_image: ['', Validators.required ],
-      is_home: ['', Validators.required ],
-      status: ['', Validators.required ],
+    this.ItemForm = this.fb.group({
+      item_code: ['', Validators.required],
+      item_name: ['', Validators.required ],
+      item_full_name: ['', Validators.required ],
+      regional_name: ['0', Validators.required ],
+      item_UOM: ['', Validators.required ],
+      item_weight: ['', Validators.required ],
+      item_type: ['', Validators.required],
+      item_parent: ['', Validators.required ],
+      pack_charge: ['', Validators.required ],
+      label_reqd: ['', Validators.required ],
+      qty_in_case: ['', Validators.required ],
+      tax_code: ['', Validators.required ],
+      sub_category_code: ['', Validators.required ],
+      category_code: ['', Validators.required ],
+      inventory: ['', Validators.required ],
+      brand_code: ['', Validators.required ],
+      manufact_code: ['', Validators.required ],
+      markup: ['', Validators.required ],
+      markdown: ['', Validators.required ],
+      rate_upd: ['', Validators.required ],
+      hsn: ['', Validators.required ],
+      exp_req: ['', Validators.required ],
+      shelf_life_period: ['', Validators.required ],
+      shelf_life_dm: ['', Validators.required ],
+      group1: ['', Validators.required ],
+      group2: ['', Validators.required ],
+      group3: ['', Validators.required ],
+      group4: ['', Validators.required ],
+      on_mrp: ['', Validators.required ],
+      created_at: [''],
       created_by: [''],
+      updated_at: [''],
+      updated_by: [''],
+      deactive_reason: [''],
+      deactive_date: [''],
       _id: []
     });
   }
@@ -51,15 +79,15 @@ export class ItemComponent {
   }
 
   get f(): { [key: string]: AbstractControl } {
-    return this.companyForm.controls;
+    return this.ItemForm.controls;
   }
 
   getCompanyList(){
     this.submitBtn == 'SAVE';
-    this.CompanyHttp.list().subscribe((res:any) => {
+    this.ItemHttp.list().subscribe((res:any) => {
       this.data = res.data;
       setTimeout(()=>{   
-        $('.table').DataTable( {
+        $('.table1').DataTable( {
           pagingType: 'full_numbers',
           pageLength: 5,
           processing: true,
@@ -71,19 +99,19 @@ export class ItemComponent {
   }
 
   onSubmit(): void {
-    this.companyForm.value['created_by'] = 'admin';
+    this.ItemForm.value['created_by'] = 'admin';
     this.submitted = true;
-    if (this.companyForm.invalid) {
+    if (this.ItemForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
-        this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {
+        this.ItemHttp.save( this.ItemForm.value).subscribe((res:any) => {
           this.getCompanyList();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
             Object.keys(validationError).forEach((index) => {
-              const formControl = this.companyForm.get(
+              const formControl = this.ItemForm.get(
                 validationError[index].param
               );
               if (formControl) {
@@ -95,7 +123,7 @@ export class ItemComponent {
           }
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CompanyHttp.update(this.companyForm.value).subscribe((res:any) => {
+        this.ItemHttp.update(this.ItemForm.value).subscribe((res:any) => {
           this.getCompanyList();
         })
       }
@@ -105,19 +133,48 @@ export class ItemComponent {
 
   onReset(): void {
     this.submitted = false;
-    this.companyForm.reset();
+    this.ItemForm.reset();
   }
 
   editCompanyList(id: any){
     this.submitBtn = 'UPDATE'
-    this.CompanyHttp.list(id).subscribe((res:any) => {
-      this.companyForm.patchValue({
-        module_code: res.data[0].module_code,
-        module_name: res.data[0].module_name,
-        module_slug: res.data[0].module_slug,
-        parent_madule_code: res.data[0].parent_madule_code,
-        module_image: res.data[0].module_image,
-        is_home: res.data[0].is_home,
+    this.ItemHttp.list(id).subscribe((res:any) => {
+      this.ItemForm.patchValue({
+        item_code: res.data[0].item_code,
+        item_name: res.data[0].item_name,
+        item_full_name: res.data[0].item_full_name,
+        regional_name: res.data[0].regional_name,
+        item_UOM: res.data[0].item_UOM,
+        item_weight: res.data[0].item_weight,
+        item_type: res.data[0].item_type,
+        item_parent: res.data[0].item_parent,
+        pack_charge: res.data[0].pack_charge,
+        label_reqd: res.data[0].label_reqd,
+        qty_in_case: res.data[0].qty_in_case,
+        tax_code: res.data[0].tax_code,
+        sub_category_code: res.data[0].sub_category_code,
+        category_code: res.data[0].category_code,
+        inventory: res.data[0].inventory,
+        brand_code: res.data[0].brand_code,
+        manufact_code: res.data[0].manufact_code,
+        markup: res.data[0].markup,
+        markdown: res.data[0].markdown,
+        rate_upd: res.data[0].rate_upd,
+        hsn: res.data[0].hsn,
+        exp_req: res.data[0].exp_req,
+        shelf_life_period: res.data[0].shelf_life_period,
+        shelf_life_dm: res.data[0].shelf_life_dm,
+        group1: res.data[0].group1,
+        group2: res.data[0].group2,
+        group3: res.data[0].group3,
+        group4: res.data[0].group4,
+        on_mrp: res.data[0].on_mrp,
+        created_by: res.data[0].created_by,
+        created_at: res.data[0].created_at,
+        updated_by: res.data[0].updated_by,
+        updated_at: res.data[0].updated_at,
+        deactive_reason: res.data[0].deactive_reason,
+        deactive_date: res.data[0].deactive_date,
         status: res.data[0].status,
         _id: res.data[0]._id
       });
@@ -125,7 +182,7 @@ export class ItemComponent {
   }
 
   deleteCompanyList(id:any){
-    this.CompanyHttp.delete( {'_id':id} ).subscribe((res:any) => {
+    this.ItemHttp.delete( {'_id':id} ).subscribe((res:any) => {
       this.getCompanyList();
     })
   }

@@ -1,1 +1,19 @@
-<p>test works!</p>
+<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Website</th>
+      </tr>
+    </thead>
+    <tbody>
+     <tr *ngFor="let group of data">
+           <td>{{group.param_code}}</td>
+           <td>{{group.param_value}}</td>
+           <td>{{group.param_desc}}</td>
+       </tr>
+    </tbody>
+  </table>
+
+
+  <button (click)="test()">click</button>

@@ -67,7 +67,7 @@ export class CommonListComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.commonlistForn.value['created_by'] = 'admin';
+    this.commonlistForn.value['created_by'] = 'Admin';
     this.submitted = true;
     if (this.commonlistForn.invalid) {
       return;
@@ -186,5 +186,11 @@ export class CommonListComponent implements OnInit {
       }
     };
     pdfMake.createPdf(documentDefinition).open();
+  }
+
+
+  moveToNext(event:any) {
+    let next = event.target.nextElementSibling;
+    console.log(next)
   }
 } 
