@@ -10,6 +10,7 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { StateService } from 'src/app/services/master/state.service';
 import { Subject } from 'rxjs';
+import { CountryService } from 'src/app/services/master/country.service';
 
 
 
@@ -31,8 +32,9 @@ export class StateComponent {
   
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
+  countryData: any;
 
-  constructor(private fb: FormBuilder, private StateHttp:StateService) {
+  constructor(private fb: FormBuilder, private StateHttp:StateService, private countryHttp:CountryService) {
     this.createForm();
   }
   
@@ -58,6 +60,13 @@ export class StateComponent {
     };
     this.getCompanyList();
     this.dtTrigger.next(null);
+    this.getCountryList();
+  }
+
+  getCountryList(){
+    this.countryHttp.list().subscribe((res:any) => {
+      this.countryData = res.data
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {

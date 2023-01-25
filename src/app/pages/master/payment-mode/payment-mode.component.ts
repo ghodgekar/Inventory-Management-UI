@@ -9,6 +9,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CompanyService } from 'src/app/services/master/company.service';
+import { PaymentModeService } from 'src/app/services/master/payment_mode.service';
 
 
 @Component({
@@ -28,20 +29,19 @@ export class PaymentModeComponent {
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
 
-  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService) {
+  constructor(private fb: FormBuilder, private paymentModeHttp:PaymentModeService) {
     this.createForm();
   }
   
   createForm() {
     this.companyForm = this.fb.group({
-      module_code: ['', Validators.required],
-      module_name: ['', Validators.required ],
-      module_slug: ['', Validators.required ],
-      parent_madule_code: ['0', Validators.required ],
-      module_image: ['', Validators.required ],
-      is_home: ['', Validators.required ],
-      status: ['', Validators.required ],
-      created_by: [''],
+      pmt_code: ['', Validators.required],
+      pmt_name: ['', Validators.required ],
+      calc_on: ['', Validators.required ],
+      charge_per: ['', Validators.required ],
+      allow_multi: ['', Validators.required ],
+      bill_copy: ['', Validators.required ],
+      status: ['Active'],
       _id: []
     });
   }
@@ -56,7 +56,7 @@ export class PaymentModeComponent {
 
   getCompanyList(){
     this.submitBtn == 'SAVE';
-    this.CompanyHttp.list().subscribe((res:any) => {
+    this.paymentModeHttp.list().subscribe((res:any) => {
       this.data = res.data;
       setTimeout(()=>{   
         $('.table').DataTable( {
@@ -77,7 +77,7 @@ export class PaymentModeComponent {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
-        this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {
+        this.paymentModeHttp.save( this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
         }, (err:any) => {
           if (err.status == 400) {
@@ -95,7 +95,7 @@ export class PaymentModeComponent {
           }
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CompanyHttp.update(this.companyForm.value).subscribe((res:any) => {
+        this.paymentModeHttp.update(this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
         })
       }
@@ -110,14 +110,14 @@ export class PaymentModeComponent {
 
   editCompanyList(id: any){
     this.submitBtn = 'UPDATE'
-    this.CompanyHttp.list(id).subscribe((res:any) => {
+    this.paymentModeHttp.list(id).subscribe((res:any) => {
       this.companyForm.patchValue({
-        module_code: res.data[0].module_code,
-        module_name: res.data[0].module_name,
-        module_slug: res.data[0].module_slug,
-        parent_madule_code: res.data[0].parent_madule_code,
-        module_image: res.data[0].module_image,
-        is_home: res.data[0].is_home,
+        pmt_code: res.data[0].pmt_code,
+        pmt_name: res.data[0].pmt_name,
+        calc_on: res.data[0].calc_on,
+        charge_per: res.data[0].charge_per,
+        allow_multi: res.data[0].allow_multi,
+        bill_copy: res.data[0].bill_copy,
         status: res.data[0].status,
         _id: res.data[0]._id
       });
@@ -125,7 +125,7 @@ export class PaymentModeComponent {
   }
 
   deleteCompanyList(id:any){
-    this.CompanyHttp.delete( {'_id':id} ).subscribe((res:any) => {
+    this.paymentModeHttp.delete( {'_id':id} ).subscribe((res:any) => {
       this.getCompanyList();
     })
   }

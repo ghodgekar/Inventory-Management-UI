@@ -10,6 +10,7 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CompanyService } from 'src/app/services/master/company.service';
 import { Subject } from 'rxjs';
+import { CommonListService } from 'src/app/services/master/common-list.service';
 
 @Component({
   selector: 'app-company',
@@ -29,8 +30,9 @@ export class CompanyComponent implements OnInit{
 
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
+  typeData: any;
 
-  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService) {
+  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService, private CommonListHttp:CommonListService) {
     this.createForm();
   }
   
@@ -77,6 +79,13 @@ export class CompanyComponent implements OnInit{
       destroy: true
     };
     this.getCompanyList();
+    this.getTypeList();
+  }
+
+  getTypeList(){
+    this.CommonListHttp.codeList('COMP_TYPE').subscribe((res:any) => {
+      this.typeData = res.data
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {

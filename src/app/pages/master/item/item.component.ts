@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -10,6 +10,11 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CompanyService } from 'src/app/services/master/company.service';
 import { ItemService } from 'src/app/services/master/item.service';
+import { CategoryService } from 'src/app/services/master/category.service';
+import { CategorySubService } from 'src/app/services/master/category_sub.service';
+import { BrandService } from 'src/app/services/master/brand.service';
+import { ManufracturerService } from 'src/app/services/master/manufracturer.service';
+import { TaxService } from 'src/app/services/master/tax.service';
 
 
 @Component({
@@ -28,8 +33,13 @@ export class ItemComponent {
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+  categoryData: any;
+  manufracturerData: any;
+  brandData: any;
+  subcategoryData: any;
+  taxData: any;
 
-  constructor(private fb: FormBuilder, private ItemHttp:ItemService) {
+  constructor(private fb: FormBuilder, private ItemHttp:ItemService, private categoryHttp:CategoryService, private subcategoryHttp:CategorySubService, private brandHttp:BrandService, private manufracturerHttp: ManufracturerService, private taxHttp:TaxService) {
     this.createForm();
   }
   
@@ -70,13 +80,68 @@ export class ItemComponent {
       updated_by: [''],
       deactive_reason: [''],
       deactive_date: [''],
-      _id: []
+      _id: [],
+      barcodes: this.fb.array([])
     });
+    this.addBarcodes()
   }
 
   ngOnInit(): void {
     this.getCompanyList();
+    this.getCategoryList();
+    this.getSubCategoryList();
+    this.getBrandList();
+    this.getManufracturerList();
+    this.getTaxList()
   }
+
+  getCategoryList(){
+    this.categoryHttp.list().subscribe((res:any) => {
+      this.categoryData = res.data
+    })
+  }
+
+  getSubCategoryList(){
+    this.subcategoryHttp.list().subscribe((res:any) => {
+      this.subcategoryData = res.data
+    })
+  }
+
+  getBrandList(){
+    this.brandHttp.list().subscribe((res:any) => {
+      this.brandData = res.data
+    })
+  }
+
+  getManufracturerList(){
+    this.manufracturerHttp.list().subscribe((res:any) => {
+      this.manufracturerData = res.data
+    })
+  }
+
+  getTaxList(){
+    this.taxHttp.list().subscribe((res:any) => {
+      this.taxData = res.data;
+    })
+  }
+
+  barcodes() : FormArray {  
+    return this.ItemForm.get("barcodes") as FormArray  
+  }  
+     
+  newBarcodes(): FormGroup {  
+    return this.fb.group({  
+      barcode: ''
+    })  
+  }  
+     
+  addBarcodes() {  
+    this.barcodes().push(this.newBarcodes());  
+  }  
+     
+  removeBarcodes(i:number) {  
+    this.barcodes().removeAt(i);  
+  }  
 
   get f(): { [key: string]: AbstractControl } {
     return this.ItemForm.controls;

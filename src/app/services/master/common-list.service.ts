@@ -28,4 +28,8 @@ export class CommonListService {
     return this.http.post( environment.api_url +'common_list/delete', data);
   }
 
+  codeList(code?:string){
+    return this.http.get( environment.api_url +'common_list_by_code/'+code);
+  }
+
 }

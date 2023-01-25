@@ -10,6 +10,9 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { ItemTaxService } from 'src/app/services/master/item_tax.service';
 import { Subject } from 'rxjs';
+import { StateService } from 'src/app/services/master/state.service';
+import { ItemService } from 'src/app/services/master/item.service';
+import { TaxService } from 'src/app/services/master/tax.service';
 
 @Component({
   selector: 'app-item-tax',
@@ -29,8 +32,11 @@ export class ItemTaxComponent {
   
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
+  stateData: any;
+  itemData: any;
+  taxData: any;
 
-  constructor(private fb: FormBuilder, private ItemTaxHttp:ItemTaxService) {
+  constructor(private fb: FormBuilder, private ItemTaxHttp:ItemTaxService, private stateHttp:StateService, private itemHttp:ItemService, private taxHttp:TaxService) {
     this.createForm();
   }
   
@@ -56,7 +62,28 @@ export class ItemTaxComponent {
       destroy: true
     };
     this.getCompanyList();
+    this.getStateList();
+    this.getItemList();
+    this.getItemTaxList();
     this.dtTrigger.next(null);
+  }
+
+  getStateList(){
+    this.stateHttp.list().subscribe((res:any) => {
+      this.stateData = res.data
+    })
+  }
+
+  getItemList(){
+    this.itemHttp.list().subscribe((res:any) => {
+      this.itemData = res.data
+    })
+  }
+
+  getItemTaxList(){
+    this.taxHttp.list().subscribe((res:any) => {
+      this.taxData = res.data
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {

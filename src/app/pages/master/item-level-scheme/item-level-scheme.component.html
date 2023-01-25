@@ -44,7 +44,7 @@
                       <label class="center-block">Item: </label>
                       <div>
                         <select formControlName="item_code" name="" id="" class="form-control">
-                            <option>ABC</option>
+                            <option [value]="val.item_name" *ngFor="let val of itemData">{{val.item_name}}</option>
                         </select>
                       </div>
                     </div>

@@ -14,7 +14,9 @@
                             <div class="col-sm-2 form-group">
                               <label class="center-block">State Code: </label>
                               <div>
-                                <input class="form-control" formControlName="state_code">
+                                <select class="form-control" formControlName="state_code" id="">
+                                  <option [value]="val.state_code" *ngFor="let val of stateData">{{val.state_name}}</option>
+                                </select>
                               </div>
                             </div>
                         </div>

@@ -10,6 +10,7 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CityService } from 'src/app/services/master/city.service';
 import { Subject } from 'rxjs';
+import { StateService } from 'src/app/services/master/state.service';
 
 
 
@@ -31,8 +32,9 @@ export class CityComponent {
   
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
+  stateData: any;
 
-  constructor(private fb: FormBuilder, private CityHttp:CityService) {
+  constructor(private fb: FormBuilder, private CityHttp:CityService, private stateHttp:StateService) {
     this.createForm();
   }
   
@@ -55,7 +57,14 @@ export class CityComponent {
       destroy: true
     };
     this.getCompanyList();
+    this.getStateList();
     this.dtTrigger.next(null);
+  }
+
+  getStateList(){
+    this.stateHttp.list().subscribe((res:any) => {
+      this.stateData = res.data
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {

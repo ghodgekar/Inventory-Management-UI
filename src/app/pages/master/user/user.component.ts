@@ -9,6 +9,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { UserService } from 'src/app/services/master/user.service';
+import { CommonListService } from 'src/app/services/master/common-list.service';
 
 
 @Component({
@@ -25,12 +26,11 @@ export class UserComponent  implements OnInit {
 
   submitBtn:String ='SAVE';
 
-  role:any=["Accts.Assistant","Accts.Executive","Accts.Manager","Asst.Manager","Ast.Manager/Hd.Cashr","Auditor","Br.Manager","Ca","Cashier","Cashier/Acc","Cashier/Inv","Checker","Clu.Manager","Delivery Boy","Dept.Assistant","Head Cashier","Helper","Hod.Marketting","Inv.Branch","Inv.Clerk","Inv.Who","It.Admin","It.Edp","Mat.Manager","Pur.Manager","Rwadmin","Wh_Picker"]
-
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+  roleData: any;
 
-  constructor(private fb: FormBuilder, private userHttp:UserService) {
+  constructor(private fb: FormBuilder, private userHttp:UserService, private CommonListHttp:CommonListService) {
     this.createForm();
   }
   
@@ -38,7 +38,7 @@ export class UserComponent  implements OnInit {
     this.userForm = this.fb.group({
       user_code: ['', Validators.required ],
       user_name: ['', Validators.required ],
-      password: ['', Validators.required ],
+      user_pass: ['', Validators.required ],
       role: ['', Validators.required ],
       mobile: ['', Validators.required ],
       email: ['', Validators.required ],
@@ -50,6 +50,13 @@ export class UserComponent  implements OnInit {
 
   ngOnInit(): void {
     this.getUserList();
+    this.getUserRoleList();
+  }
+
+  getUserRoleList(){
+    this.CommonListHttp.codeList('USER_ROLE').subscribe((res:any) => {
+      this.roleData = res.data
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -119,7 +126,7 @@ export class UserComponent  implements OnInit {
         _id: res.data[0]._id,
         user_code: res.data[0].user_code,
         user_name: res.data[0].user_name,
-        password: res.data[0].password,
+        user_pass: res.data[0].user_pass,
         role: res.data[0].role,
         mobile: res.data[0].mobile,
         email: res.data[0].email,

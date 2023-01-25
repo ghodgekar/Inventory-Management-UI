@@ -20,8 +20,7 @@
                       <div>
                         <select class="form-control" formControlName="category_type">
                           <option>Select</option>
-                          <option>Food</option>
-                          <option>Non-Food</option>
+                          <option [value]="val.list_value" *ngFor="let val of categoryTypeData">{{val.list_desc}}</option>
                         </select>
                       </div>
                     </div>

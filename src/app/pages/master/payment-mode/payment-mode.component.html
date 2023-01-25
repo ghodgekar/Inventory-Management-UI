@@ -31,39 +31,43 @@
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Code: </label>
                       <div>
-                        <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+                        <input class="form-control" formControlName="pmt_code" oninput="this.value = this.value.toUpperCase()">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Name: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                        <input class="form-control" formControlName="pmt_name">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Calculate ON: </label>
                       <div>
-                        <select name="" id="" class="form-control">
-                            <option value=""></option>
+                        <select formControlName="calc_on" id="" class="form-control">
+                            <option>MRP</option>
+                            <option>Sale</option>
                         </select>
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                     <label class="center-block">Charge %: </label>
                     <div>
-                        <input class="form-control" formControlName="std_code">
+                        <input class="form-control" formControlName="charge_per">
                     </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Allow Multi: </label>
                       <div>
-                        <input class="form-control" formControlName="phone">
+                        <select formControlName="allow_multi" id="" class="form-control">
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Bill Copy: </label>
                       <div>
-                        <input class="form-control" formControlName="mobile">
+                        <input class="form-control" formControlName="bill_copy">
                       </div>
                     </div>
                 </div>
@@ -84,6 +88,7 @@
                           <th>Charge %</th>
                           <th>Allow Multi</th>
                           <th>Bill Copy</th>
+                          <th>Status</th>
                           <th>Created By</th>
                           <th>Created Date</th>
                         </tr>
@@ -98,12 +103,12 @@
                                 <span class="tooltiptext">DELETE</span>
                               </span>
                             </td>
-                            <td>{{val.module_code}}</td>
-                            <td>{{val.module_name}}</td>
-                            <td>{{val.module_slug}}</td>
-                            <td>{{val.parent_madule_code}}</td>
-                            <td>{{val.module_image}}</td>
-                            <td>{{val.is_home}}</td>
+                            <td>{{val.pmt_code}}</td>
+                            <td>{{val.pmt_name}}</td>
+                            <td>{{val.calc_on}}</td>
+                            <td>{{val.charge_per}}</td>
+                            <td>{{val.allow_multi}}</td>
+                            <td>{{val.bill_copy}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
                             <td>{{val.created_at}}</td>
@@ -132,12 +137,12 @@
     </thead>
     <tbody>
       <tr *ngFor="let val of data">
-        <td>{{val.module_code}}</td>
-        <td>{{val.module_name}}</td>
-        <td>{{val.module_slug}}</td>
-        <td>{{val.parent_madule_code}}</td>
-        <td>{{val.module_image}}</td>
-        <td>{{val.is_home}}</td>
+        <td>{{val.pmt_code}}</td>
+        <td>{{val.pmt_name}}</td>
+        <td>{{val.calc_on}}</td>
+        <td>{{val.charge_per}}</td>
+        <td>{{val.allow_multi}}</td>
+        <td>{{val.bill_copy}}</td>
         <td>{{val.status}}</td>
         <td>{{val.created_by}}</td>
         <td>{{val.created_at}}</td>

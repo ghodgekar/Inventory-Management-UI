@@ -10,6 +10,7 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CategoryService } from 'src/app/services/master/category.service';
 import { Subject } from 'rxjs';
+import { CommonListService } from 'src/app/services/master/common-list.service';
 
 
 @Component({
@@ -30,8 +31,9 @@ export class CategoryComponent implements OnInit {
   
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
+  categoryTypeData: any;
 
-  constructor(private fb: FormBuilder, private categoryHttp:CategoryService) {
+  constructor(private fb: FormBuilder, private categoryHttp:CategoryService, private CommonListHttp:CommonListService) {
     this.createForm();
   }
   
@@ -57,7 +59,14 @@ export class CategoryComponent implements OnInit {
       destroy: true
     };
     this.getCategoryList();
+    this.getCategoryTypeList();
     this.dtTrigger.next(null);
+  }
+
+  getCategoryTypeList(){
+    this.CommonListHttp.codeList('CAT_TYPE').subscribe((res:any) => {
+      this.categoryTypeData = res.data
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {

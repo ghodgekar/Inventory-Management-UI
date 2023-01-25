@@ -14,16 +14,16 @@
             <div class="form-group">
               <label class="center-block">Financial Year: </label>
               <div>
-                <select class="form-control" formControlName="financial_year" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                <select class="form-control" formControlName="financial_year" [ngClass]="{ 'is-invalid': submitted && f['financial_year'].errors }">
                   <option value="">Select</option>
-                  <option value="">2020-2021</option>
+                  <option value="">2022-2023</option>
                 </select>
               </div>
             </div>
             <div class="form-group">
               <label class="center-block">User Code: </label>
               <div>
-                <input class="form-control" formControlName="user_code" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                <input class="form-control" formControlName="user_code" [ngClass]="{ 'is-invalid': submitted && f['user_code'].errors }">
               </div>
               <span>Administrator</span>
               <br><br>
@@ -31,23 +31,23 @@
             <div class="form-group">
               <label class="center-block">Password: </label>
               <div>
-                <input type="password" class="form-control" formControlName="password" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                <input type="password" class="form-control" formControlName="user_pass" [ngClass]="{ 'is-invalid': submitted && f['password'].errors }">
               </div>
             </div>
             <div class="form-group">
               <label class="center-block">Company: </label>
               <div>
-                <input class="form-control" formControlName="company" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                <input class="form-control" formControlName="company" [ngClass]="{ 'is-invalid': submitted && f['company'].errors }">
               </div>
             </div>
             <div class="form-group">
               <label class="center-block">Location: </label>
               <div>
-                <input class="form-control" formControlName="location" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                <input class="form-control" formControlName="location" [ngClass]="{ 'is-invalid': submitted && f['location'].errors }">
               </div>
             </div>
             <div class="form-group">
-              <button class="btn btn-primary" type="submit" routerLink="/dashboard">Submit</button> 
+              <button class="btn btn-primary" type="submit">Submit</button> 
               <!--  [disabled]="!loginForm.valid" -->
             </div>
         </form>

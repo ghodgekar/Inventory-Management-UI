@@ -11,6 +11,7 @@ import htmlToPdfmake from 'html-to-pdfmake';
 import { CompanyService } from 'src/app/services/master/company.service';
 import { Subject } from 'rxjs';
 import { BrandService } from 'src/app/services/master/brand.service';
+import { ManufracturerService } from 'src/app/services/master/manufracturer.service';
 
 @Component({
   selector: 'app-brand',
@@ -31,8 +32,9 @@ export class BrandComponent {
 
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
+  manufraturerData: any;
 
-  constructor(private fb: FormBuilder, private brandHttp:BrandService) {
+  constructor(private fb: FormBuilder, private brandHttp:BrandService, private manufraturerService:ManufracturerService) {
     this.createForm();
   }
   
@@ -56,7 +58,14 @@ export class BrandComponent {
       destroy: true
     };
     this.getCompanyList();
+    this.getmanufraturerList();
     this.dtTrigger.next(null);
+  }
+
+  getmanufraturerList(){
+    this.manufraturerService.list().subscribe((res:any) => {
+      this.manufraturerData = res.data;
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {

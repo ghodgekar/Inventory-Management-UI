@@ -41,6 +41,7 @@ import { VendorComponent } from './pages/master/vendor/vendor.component';
 import { CustomerComponent } from './pages/master/customer/customer.component';
 import { PaymentModeComponent } from './pages/master/payment-mode/payment-mode.component';
 import { PaymentIncludeExcludeComponent } from './pages/master/payment-include-exclude/payment-include-exclude.component';
+import { OpningStockComponent } from './pages/transactions/opning-stock/opning-stock.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { PaymentIncludeExcludeComponent } from './pages/master/payment-include-e
     VendorComponent,
     CustomerComponent,
     PaymentModeComponent,
-    PaymentIncludeExcludeComponent
+    PaymentIncludeExcludeComponent,
+    OpningStockComponent
   ],
   imports: [
     BrowserModule,

@@ -42,7 +42,7 @@
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Password: </label>
                       <div>
-                        <input type="password" class="form-control" formControlName="password">
+                        <input type="password" class="form-control" formControlName="user_pass">
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
@@ -50,7 +50,7 @@
                       <div>
                         <select class="form-control" formControlName="role">
                           <option>Select</option>
-                          <option value="{{val}}" *ngFor="let val of role">{{val}}</option>
+                          <option [value]="val.list_value" *ngFor="let val of roleData">{{val.list_desc}}</option>
                         </select>
                       </div>
                     </div>

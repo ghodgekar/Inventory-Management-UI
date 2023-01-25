@@ -44,11 +44,7 @@
                   <label class="center-block">Type: </label>
                   <div>
                     <select class="form-control" formControlName="type">
-                        <option value="PROP">Proprietorship</option>
-                        <option value="PTNR">Partnership</option>
-                        <option value="PVTLTD">Private Limited</option>
-                        <option value="LTD">Limited</option>
-                        <option value="PVT">Private</option>
+                      <option [value]="val.list_value" *ngFor="let val of typeData">{{val.list_desc}}</option>
                     </select>
                   </div>
                 </div>

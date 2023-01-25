@@ -9,6 +9,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { ItemLevelSchemeService } from 'src/app/services/master/item_level_scheme.service';
+import { ItemService } from 'src/app/services/master/item.service';
 
 
 @Component({
@@ -26,8 +27,9 @@ export class ItemLevelSchemeComponent {
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+  itemData: any;
 
-  constructor(private fb: FormBuilder, private itemLevelHttp:ItemLevelSchemeService) {
+  constructor(private fb: FormBuilder, private itemLevelHttp:ItemLevelSchemeService, private itemHttp:ItemService) {
     this.createForm();
   }
   
@@ -36,7 +38,7 @@ export class ItemLevelSchemeComponent {
       loc_code: ['', Validators.required],
       promo_code: ['', Validators.required ],
       item_code: ['', Validators.required ],
-      batch_no: ['0', Validators.required ],
+      batch_no: ['', Validators.required ],
       from_date: ['', Validators.required ],
       to_date: ['', Validators.required ],
       from_time: [''],
@@ -57,6 +59,13 @@ export class ItemLevelSchemeComponent {
 
   ngOnInit(): void {
     this.getCompanyList();
+    this.getItemList();
+  }
+
+  getItemList(){
+    this.itemHttp.list().subscribe((res:any) => {
+      this.itemData = res.data;
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {

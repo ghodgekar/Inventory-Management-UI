@@ -21,3 +21,17 @@
 h4 {
     text-decoration: underline;
 }
+
+.dynamic-table{
+    height: 235px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+}
+
+.dynamic-table .form-control{
+    margin: 0px !important;
+}
+
+.dynamic-table td{
+    padding: 0px !important;
+}

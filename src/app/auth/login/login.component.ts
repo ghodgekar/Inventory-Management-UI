@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup,  FormBuilder,  Validators, AbstractControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { LoginService } from 'src/app/services/master/login.service';
+import { ParameterService } from 'src/app/services/master/parameter.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -13,21 +16,31 @@ export class LoginComponent implements OnInit {
   submitted: boolean = false;
   logo_img:string=environment.img_url+'company-logo.png'
   
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private parameterService: ParameterService, private loginService:LoginService, private route: Router) {
     this.createForm();
   }
   
   createForm() {
     this.loginForm = this.fb.group({
-      financial_year: ['', Validators.required ],
+      financial_year: [''],
       user_code: ['', Validators.required ],
-      password: ['', Validators.required ],
-      company: ['', Validators.required ],
-      location: ['', Validators.required ]
+      user_pass: ['', Validators.required ],
+      company: [''],
+      location: ['' ]
     });
   }
 
   ngOnInit(): void {
+    this.parameterService.codeList('DEF_COMP').subscribe((res:any) => {
+      this.loginForm.patchValue({
+        company: res.data[0].param_value
+      })
+    })
+    this.parameterService.codeList('DEF_LOC').subscribe((res:any) => {
+      this.loginForm.patchValue({
+        location: res.data[0].param_value
+      })
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -41,7 +54,9 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    console.log(JSON.stringify(this.loginForm.value, null, 2));
+    this.loginService.login(this.loginForm.value).subscribe(res => {
+      this.route.navigateByUrl('/dashboard')
+    })
   }
 
   onReset(): void {

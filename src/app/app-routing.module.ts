@@ -24,9 +24,11 @@ import { TestComponent } from './pages/master/test/test.component';
 import { UserPermissionComponent } from './pages/master/user-permission/user-permission.component';
 import { UserComponent } from './pages/master/user/user.component';
 import { VendorComponent } from './pages/master/vendor/vendor.component';
+import { OpningStockComponent } from './pages/transactions/opning-stock/opning-stock.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
+  { path: 'test', component: TestComponent },
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'parameter', component: ParameterComponent },
@@ -37,7 +39,6 @@ const routes: Routes = [
   { path: 'user-permission', component: UserPermissionComponent },
   { path: 'category-sub-category', component: CategorySubcategoryComponent },
   { path: 'tax', component: TaxComponent },
-  { path: 'test', component: TestComponent },
   { path: 'country-state-city', component: CityStateCountryComponent },
   { path: 'brand-manufracturer', component: BrandManufracturerComponent },
   { path: 'branch', component: BranchComponent },
@@ -48,6 +49,7 @@ const routes: Routes = [
   { path: 'payment-incl-excl', component: PaymentIncludeExcludeComponent },
   { path: 'item-tax', component: ItemTaxComponent },
   { path: 'item', component: ItemComponent },
+  { path: 'opening-stock', component: OpningStockComponent },
 ];
 
 @NgModule({

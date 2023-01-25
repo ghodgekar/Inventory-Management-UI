@@ -9,6 +9,13 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CompanyService } from 'src/app/services/master/company.service';
+import { PaymentService } from 'src/app/services/master/payment.service';
+import { PaymentModeService } from 'src/app/services/master/payment_mode.service';
+import { PaymentInclExclService } from 'src/app/services/master/payment_incl_excl.service';
+import { CategoryService } from 'src/app/services/master/category.service';
+import { CategorySubService } from 'src/app/services/master/category_sub.service';
+import { BrandService } from 'src/app/services/master/brand.service';
+import { ManufracturerService } from 'src/app/services/master/manufracturer.service';
 
 
 @Component({
@@ -27,20 +34,21 @@ export class PaymentIncludeExcludeComponent {
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+  paymentModeData: any;
+  transactionData: any;
+  transactionType: any;
 
-  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService) {
+  constructor(private fb: FormBuilder, private paymentInclExclHttp:PaymentInclExclService, private paymentHttp:PaymentModeService, private categoryHttp:CategoryService,
+    private subcategoryHttp:CategorySubService, private brandHttp:BrandService, private manufracturerHttp: ManufracturerService) {
     this.createForm();
   }
   
   createForm() {
     this.companyForm = this.fb.group({
-      module_code: ['', Validators.required],
-      module_name: ['', Validators.required ],
-      module_slug: ['', Validators.required ],
-      parent_madule_code: ['0', Validators.required ],
-      module_image: ['', Validators.required ],
-      is_home: ['', Validators.required ],
-      status: ['', Validators.required ],
+      pmt_code: ['', Validators.required],
+      trans_type: ['', Validators.required ],
+      trans_code: ['', Validators.required ],
+      incl_excl: ['', Validators.required ],
       created_by: [''],
       _id: []
     });
@@ -48,6 +56,37 @@ export class PaymentIncludeExcludeComponent {
 
   ngOnInit(): void {
     this.getCompanyList();
+    this.getPaymentData();
+  }
+
+  getPaymentData(){
+    this.paymentHttp.list().subscribe((res:any) => {
+      this.paymentModeData = res.data
+    })
+  }
+
+  getTransaction(event:any){
+    this.transactionType = event.target.value;
+    if(event.target.value == 1){
+      this.categoryHttp.list().subscribe((res:any) => {
+        this.transactionData = res.data
+      })
+    }
+    if(event.target.value == 2){
+      this.subcategoryHttp.list().subscribe((res:any) => {
+        this.transactionData = res.data
+      })
+    }
+    if(event.target.value == 3){
+      this.manufracturerHttp.list().subscribe((res:any) => {
+        this.transactionData = res.data
+      })
+    }
+    if(event.target.value == 4){
+      this.brandHttp.list().subscribe((res:any) => {
+        this.transactionData = res.data
+      })
+    }
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -56,7 +95,7 @@ export class PaymentIncludeExcludeComponent {
 
   getCompanyList(){
     this.submitBtn == 'SAVE';
-    this.CompanyHttp.list().subscribe((res:any) => {
+    this.paymentInclExclHttp.list().subscribe((res:any) => {
       this.data = res.data;
       setTimeout(()=>{   
         $('.table').DataTable( {
@@ -77,7 +116,7 @@ export class PaymentIncludeExcludeComponent {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
-        this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {
+        this.paymentInclExclHttp.save( this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
         }, (err:any) => {
           if (err.status == 400) {
@@ -95,7 +134,7 @@ export class PaymentIncludeExcludeComponent {
           }
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CompanyHttp.update(this.companyForm.value).subscribe((res:any) => {
+        this.paymentInclExclHttp.update(this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
         })
       }
@@ -110,22 +149,19 @@ export class PaymentIncludeExcludeComponent {
 
   editCompanyList(id: any){
     this.submitBtn = 'UPDATE'
-    this.CompanyHttp.list(id).subscribe((res:any) => {
+    this.paymentInclExclHttp.list(id).subscribe((res:any) => {
       this.companyForm.patchValue({
-        module_code: res.data[0].module_code,
-        module_name: res.data[0].module_name,
-        module_slug: res.data[0].module_slug,
-        parent_madule_code: res.data[0].parent_madule_code,
-        module_image: res.data[0].module_image,
-        is_home: res.data[0].is_home,
-        status: res.data[0].status,
+        pmt_code: res.data[0].pmt_code,
+        trans_type: res.data[0].trans_type,
+        trans_code: res.data[0].trans_code,
+        incl_excl: res.data[0].incl_excl,
         _id: res.data[0]._id
       });
     })
   }
 
   deleteCompanyList(id:any){
-    this.CompanyHttp.delete( {'_id':id} ).subscribe((res:any) => {
+    this.paymentInclExclHttp.delete( {'_id':id} ).subscribe((res:any) => {
       this.getCompanyList();
     })
   }

@@ -26,4 +26,8 @@ export class ParameterService {
   delete(data:any){
     return this.http.post( environment.api_url +'parameter/delete', data);
   }
+
+  codeList(code?:string){
+    return this.http.get( environment.api_url +'parametersByCode/'+code);
+  }
 }

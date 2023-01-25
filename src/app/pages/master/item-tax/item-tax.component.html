@@ -32,8 +32,7 @@
                       <label class="center-block">State: </label>
                       <div>
                         <select formControlName="state_code" id="" class="form-control">
-                            <option value="0">All State</option>
-                            <option>Maharashtra</option>
+                            <option [value]="val.state_name" *ngFor="let val of stateData">{{val.state_name}}</option>
                         </select>
                       </div>
                     </div>
@@ -41,7 +40,7 @@
                       <label class="center-block">Item: </label>
                       <div>
                         <select formControlName="item_code" id="" class="form-control">
-                            <option>ABC</option>
+                          <option [value]="val.item_name" *ngFor="let val of itemData">{{val.item_name}}</option>
                         </select>
                       </div>
                     </div>
@@ -49,7 +48,7 @@
                       <label class="center-block">Tax: </label>
                       <div>
                         <select formControlName="tax_code" id="" class="form-control">
-                            <option>12</option>
+                          <option [value]="val.tax_name" *ngFor="let val of taxData">{{val.tax_name}}</option>
                         </select>
                       </div>
                     </div>

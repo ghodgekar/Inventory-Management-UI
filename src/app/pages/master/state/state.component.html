@@ -20,7 +20,9 @@
                             <div class="col-sm-2 form-group">
                               <label class="center-block">Country Code: </label>
                               <div>
-                                <input class="form-control" formControlName="country_code">
+                                <select class="form-control" formControlName="country_code" id="">
+                                  <option [value]="val.country_code" *ngFor="let val of countryData">{{val.country_name}}</option>
+                                </select>
                               </div>
                             </div>
                             <div class="col-sm-2 form-group">

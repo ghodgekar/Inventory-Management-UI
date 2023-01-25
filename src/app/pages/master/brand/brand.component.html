@@ -21,7 +21,7 @@
                               <label class="center-block">Manufacturer: </label>
                               <div>
                                 <select formControlName="manufact_code" id="" class="form-control">
-                                    <option>Test</option>
+                                    <option [value]="val.manufact_code" *ngFor="let val of manufraturerData">{{val.manufact_name}}</option>
                                 </select>
                               </div>
                             </div>

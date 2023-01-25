@@ -85,7 +85,7 @@
                         <i class="fa fa-plus-circle" style="float: right; font-size: 17px; color: red;"></i>
                         <div>
                           <select formControlName="sub_category_code" id="" class="form-control">
-                              <option>Test</option>
+                              <option [value]="val.sub_category_code" *ngFor="let val of subcategoryData">{{val.sub_category_name}}</option>
                           </select>
                         </div>
                       </div>
@@ -94,7 +94,7 @@
                         <i class="fa fa-plus-circle" style="float: right; font-size: 17px; color: red;"></i>
                         <div>
                           <select formControlName="category_code" id="" class="form-control">
-                              <option>Test</option>
+                            <option [value]="val.category_code" *ngFor="let val of categoryData">{{val.category_name}}</option>
                           </select>
                         </div>
                       </div>
@@ -103,7 +103,7 @@
                         <i class="fa fa-plus-circle" style="float: right; font-size: 17px; color: red;"></i>
                         <div>
                           <select formControlName="brand_code" id="" class="form-control">
-                              <option>Test</option>
+                            <option [value]="val.brand_code" *ngFor="let val of brandData">{{val.brand_name}}</option>
                           </select>
                         </div>
                       </div>
@@ -111,7 +111,9 @@
                         <label class="center-block" style="float: left;">Manufracturer: </label>
                         <i class="fa fa-plus-circle" style="float: right; font-size: 17px; color: red;"></i>
                         <div>
-                          <input class="form-control" formControlName="manufact_code">
+                          <select formControlName="manufact_code" id="" class="form-control">
+                            <option [value]="val.manufact_code" *ngFor="let val of manufracturerData">{{val.manufact_name}}</option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -120,7 +122,9 @@
                         <label class="center-block">Item Type: </label>
                         <div>
                           <select formControlName="item_type" id="" class="form-control">
-                              <option>Test</option>
+                              <option>Pack</option>
+                              <option>Loose</option>
+                              <option>Varient</option>
                           </select>
                         </div>
                       </div>
@@ -142,7 +146,7 @@
                         <label class="center-block">Tax(%): </label>
                         <div>
                           <select formControlName="tax_code" id="" class="form-control">
-                              <option>Test</option>
+                            <option [value]="val.tax_code" *ngFor="let val of taxData">{{val.tax_name}}</option>
                           </select>
                         </div>
                       </div>
@@ -152,7 +156,8 @@
                         <label class="center-block">Label Reqd: </label>
                         <div>
                           <select formControlName="label_reqd" id="" class="form-control">
-                              <option>Test</option>
+                            <option>Yes</option>
+                            <option>No</option>
                           </select>
                         </div>
                       </div>
@@ -172,7 +177,8 @@
                           <label class="center-block">On MRP: </label>
                           <div>
                             <select formControlName="on_mrp" id="" class="form-control">
-                                <option>Test</option>
+                                <option>Yes</option>
+                                <option>No</option>
                             </select>
                           </div>
                         </div>
@@ -192,7 +198,8 @@
                           <label class="center-block">Rate Update: </label>
                           <div>
                             <select formControlName="rate_upd" id="" class="form-control">
-                                <option>Test</option>
+                              <option>Yes</option>
+                              <option>No</option>
                             </select>
                           </div>
                         </div>
@@ -208,7 +215,8 @@
                           <label class="center-block">Expiry Reqd: </label>
                           <div>
                             <select formControlName="exp_req" id="" class="form-control">
-                                <option>Test</option>
+                              <option>Yes</option>
+                              <option>No</option>
                             </select>
                           </div>
                         </div>
@@ -220,7 +228,8 @@
                             </div>
                             <div class="col-sm-8">
                               <select formControlName="shelf_life_dm" id="" class="form-control">
-                                  <option>Month</option>
+                                  <option>Days</option>
+                                  <option>Months</option>
                               </select>
                             </div>
                           </div>
@@ -256,52 +265,38 @@
                   </div>
                 </div>
                 <div class="col-sm-4">
-                  <div class="head-3">
-                    <table class="table">
-                      <thead>
-                        <th>No</th>
+                  <div class="head-3 dynamic-table">
+                    <table class="table table-bordered" formArrayName="barcodes">  
+                      <tr>  
+                        <th>Sr.No:</th>  
                         <th>Barcode</th>
-                        <th>UserCode</th>
-                        <th>Trans Date</th>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1. </td>
-                          <td>Test</td>
-                          <td>Admin</td>
-                          <td>Date</td>
-                        </tr>
-                        <tr>
-                          <td>1. </td>
-                          <td>Test</td>
-                          <td>Admin</td>
-                          <td>Date</td>
-                        </tr>
-                        <tr>
-                          <td>1. </td>
-                          <td>Test</td>
-                          <td>Admin</td>
-                          <td>Date</td>
-                        </tr>
-                        <tr>
-                          <td>1. </td>
-                          <td>Test</td>
-                          <td>Admin</td>
-                          <td>Date</td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <td><input class="form-control" type="text"></td>
-                        <td></td>
-                        <td></td>
-                        <td>Total Barcode</td>
-                      </tfoot>
-                    </table>
+                        <th>User Code</th>
+                        <th>Created At</th>
+                        <th><button type="button" (click)="addBarcodes()" class="btn-primary">Add</button></th>  
+                      </tr>  
+                      <tr *ngFor="let barcode of barcodes().controls; let i=index" [formGroupName]="i">  
+                        <td>{{i + 1}}</td>
+                        <td>   
+                            <input type="text" formControlName="barcode" class="form-control">  
+                        </td>  
+                        <td> 
+                            <input type="text" formControlName="created_by" class="form-control">  
+                        </td>  
+                        <td> 
+                            <input type="text" formControlName="created_at" class="form-control">  
+                        </td>  
+                        <td>  
+                            <button (click)="removeBarcodes(i)" class="btn-danger">Remove</button>  
+                        </td>  
+                      </tr>  
+                    </table>                  
+                  </div>
+                  <div class="head-3">
                     <div class="row">
                       <div class="col-sm-6 form-group">
                         <label class="center-block">Created On </label>
                         <div>
-                          <input class="form-control" formControlName="created_at">
+                          <input class="form-control" type="date" formControlName="created_at">
                         </div>
                       </div>
                       <div class="col-sm-6 form-group">
@@ -321,7 +316,7 @@
                       <div class="col-sm-6 form-group">
                         <label class="center-block">Updated By: </label>
                         <div>
-                          <input class="form-control" formControlName="updated_by">
+                          <input class="form-control" type="date" formControlName="updated_by">
                         </div>
                       </div>
                     </div>
@@ -335,7 +330,7 @@
                       <div class="col-sm-6 form-group">
                         <label class="center-block">Deactive Date: </label>
                         <div>
-                          <input class="form-control" formControlName="deactive_date">
+                          <input class="form-control" type="date" formControlName="deactive_date">
                         </div>
                       </div>
                     </div>
