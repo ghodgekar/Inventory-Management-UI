@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -10,14 +10,14 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { Subject } from 'rxjs';
 import { OpningStockService } from 'src/app/services/transactions/opning-stock.service';
-import { CommonListService } from 'src/app/services/master/common-list.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-opning-stock',
-  templateUrl: './opning-stock.component.html',
-  styleUrls: ['./opning-stock.component.css']
+  selector: 'app-point-of-sale',
+  templateUrl: './point-of-sale.component.html',
+  styleUrls: ['./point-of-sale.component.css']
 })
-export class OpningStockComponent {
+export class PointOfSaleComponent {
 
   branchForm!: FormGroup;
   submitted: boolean = false;
@@ -30,16 +30,15 @@ export class OpningStockComponent {
 
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
-  departmentData: any;
 
-  constructor(private fb: FormBuilder, private OpeningStockHttp:OpningStockService, private commonListHttp: CommonListService) {
+  constructor(private fb: FormBuilder, private OpeningStockHttp:OpningStockService,private datePipe: DatePipe) {
     this.createForm();
   }
   
   createForm() {
     this.branchForm = this.fb.group({
       loc_code: ['KMTH', Validators.required],
-      barcode: ['', Validators.required ],
+      bill_date: [this.datePipe.transform(new Date(), 'yyyy-MM-dd'), Validators.required ],
       item_code: ['', Validators.required ],
       qty: ['', Validators.required ],
       mrp: ['', Validators.required ],
@@ -55,7 +54,8 @@ export class OpningStockComponent {
       markdown: [''],
       created_by: ['Admin'],
       created_at: [''],
-      _id: []
+      _id: [],
+      barcodes: this.fb.array([]), 
     });
   }
 
@@ -69,13 +69,6 @@ export class OpningStockComponent {
       destroy: true
     };
     this.getCompanyList();
-    this.getDepartmentList();
-  }
-
-  getDepartmentList(){
-    this.commonListHttp.codeList('DEPT_TYPE').subscribe((res:any) => {
-      this.departmentData = res.data
-    })
   }
 
   getItemList(event:any){
@@ -89,6 +82,8 @@ export class OpningStockComponent {
       })
     })
   }
+
+
 
   get f(): { [key: string]: AbstractControl } {
     return this.branchForm.controls;

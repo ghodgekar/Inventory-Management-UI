@@ -1,0 +1,98 @@
+.head-1{
+    background-color: #eaecee;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #d3d3d3;
+}
+
+.head-2{
+    background-color: #eaecee;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #d3d3d3;
+}
+
+.head-3{
+    background-color: #eaecee;
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+}
+
+h4 {
+    text-decoration: underline;
+}
+
+
+.form-control{
+    margin-bottom: 0px;
+}
+
+.barcode-table td, .barcode-table th {
+    border: 1px solid rgb(179, 179, 179);
+    padding: 5px;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.barcode-table .form-control{
+    margin-top: 0px;
+}
+
+.barcode-table td {
+    padding: 0px !important;
+}
+
+.table-scroll {
+    position: relative;
+    width:100%;
+    z-index: 1;
+    margin: auto;
+    overflow: auto;
+    height: 300px;
+  }
+  .table-scroll table {
+    width: 100%;
+    min-width: 1280px;
+    margin: auto;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .table-wrap {
+    position: relative;
+  }
+  .table-scroll th,
+  .table-scroll td {
+    vertical-align: top;
+  }
+  /* .table-scroll thead th {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+  } */
+  /* safari and ios need the tfoot itself to be position:sticky also */
+  .table-scroll tfoot,
+  .table-scroll tfoot th,
+  .table-scroll tfoot td {
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+    z-index:4;
+    background: #fff;
+  }
+  
+  a:focus {
+    background: red;
+  } /* testing links*/
+  
+  th:first-child {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #ccc;
+  }
+  thead th:first-child,
+  tfoot th:first-child {
+    z-index: 5;
+  }
+  

@@ -24,7 +24,9 @@ import { TestComponent } from './pages/master/test/test.component';
 import { UserPermissionComponent } from './pages/master/user-permission/user-permission.component';
 import { UserComponent } from './pages/master/user/user.component';
 import { VendorComponent } from './pages/master/vendor/vendor.component';
+import { PointOfSaleComponent } from './pages/sales/point-of-sale/point-of-sale.component';
 import { OpningStockComponent } from './pages/transactions/opning-stock/opning-stock.component';
+import { PurchaseEntryComponent } from './pages/transactions/purchase-entry/purchase-entry.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -50,6 +52,8 @@ const routes: Routes = [
   { path: 'item-tax', component: ItemTaxComponent },
   { path: 'item', component: ItemComponent },
   { path: 'opening-stock', component: OpningStockComponent },
+  { path: 'purchase-entry', component: PurchaseEntryComponent },
+  { path: 'point-of-sale', component: PointOfSaleComponent },
 ];
 
 @NgModule({

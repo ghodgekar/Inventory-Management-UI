@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -10,14 +10,13 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { Subject } from 'rxjs';
 import { OpningStockService } from 'src/app/services/transactions/opning-stock.service';
-import { CommonListService } from 'src/app/services/master/common-list.service';
 
 @Component({
-  selector: 'app-opning-stock',
-  templateUrl: './opning-stock.component.html',
-  styleUrls: ['./opning-stock.component.css']
+  selector: 'app-purchase-entry',
+  templateUrl: './purchase-entry.component.html',
+  styleUrls: ['./purchase-entry.component.css']
 })
-export class OpningStockComponent {
+export class PurchaseEntryComponent {
 
   branchForm!: FormGroup;
   submitted: boolean = false;
@@ -30,9 +29,8 @@ export class OpningStockComponent {
 
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
-  departmentData: any;
 
-  constructor(private fb: FormBuilder, private OpeningStockHttp:OpningStockService, private commonListHttp: CommonListService) {
+  constructor(private fb: FormBuilder, private OpeningStockHttp:OpningStockService) {
     this.createForm();
   }
   
@@ -55,7 +53,8 @@ export class OpningStockComponent {
       markdown: [''],
       created_by: ['Admin'],
       created_at: [''],
-      _id: []
+      _id: [],
+      barcodes: this.fb.array([]),  
     });
   }
 
@@ -69,14 +68,30 @@ export class OpningStockComponent {
       destroy: true
     };
     this.getCompanyList();
-    this.getDepartmentList();
+    for (let index = 0; index < 5; index++) {
+      this.addBarcode()
+      
+    }
   }
 
-  getDepartmentList(){
-    this.commonListHttp.codeList('DEPT_TYPE').subscribe((res:any) => {
-      this.departmentData = res.data
-    })
-  }
+  barcodes() : FormArray {  
+    return this.branchForm.get("barcodes") as FormArray  
+  }  
+     
+  newBarcode(): FormGroup {  
+    return this.fb.group({  
+      qty: '',  
+      price: '',  
+    })  
+  }  
+     
+  addBarcode() {  
+    this.barcodes().push(this.newBarcode());  
+  }  
+     
+  removeBarcode(i:number) {  
+    this.barcodes().removeAt(i);  
+  }  
 
   getItemList(event:any){
     if(event.target.value)

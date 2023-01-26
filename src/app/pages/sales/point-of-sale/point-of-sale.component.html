@@ -1,0 +1,368 @@
+<div class="top-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu">Test : By Peacock Infotech </li>
+                <li class="topmenu company-name">Administrator (AMG)</li>
+                <li class="topmenu active">Point Of Sale</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
+                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
+                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="branchForm">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="head-1">
+                          <div class="row top-1">
+                              <div class="col-sm-2 form-group">
+                                <label class="center-block">Location: </label>
+                                <div>
+                                  <input class="form-control" formControlName="loc_code" oninput="this.value = this.value.toUpperCase()" readonly>
+                                </div>
+                              </div>
+                              <div class="col-sm-2 form-group">
+                                <label class="center-block">Bill Date: </label>
+                                <div>
+                                  <input class="form-control" formControlName="bill_date" type="date" readonly>
+                                </div>
+                              </div>
+                              <div class="col-sm-2 form-group">
+                                <label class="center-block">Bill No : </label>
+                                <div>
+                                  <input class="form-control" formControlName="item_code" readonly>
+                                </div>
+                              </div>
+                              <div class="col-sm-2 form-group">
+                                <label class="center-block">Cashier: </label>
+                                <div>
+                                  <input class="form-control" formControlName="item_name" readonly>
+                                </div>
+                              </div>
+                              <div class="col-sm-2 form-group">
+                                <label class="center-block">Machine: </label>
+                                <div>
+                                  <input class="form-control" formControlName="markup" readonly>
+                                </div>
+                              </div>
+                              <div class="col-sm-2"></div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-10">
+                              <div class="head-1">
+                                <div class="row">
+                                  <div class="col-sm-2 form-group">
+                                    <label class="center-block">Mobile: </label>
+                                    <div>
+                                      <input class="form-control" formControlName="mobile">
+                                    </div>
+                                  </div>
+                                    <div class="col-sm-2 form-group">
+                                      <label class="center-block">Cust-Id: </label>
+                                      <div>
+                                        <input class="form-control" formControlName="barcode">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-3 form-group">
+                                      <label class="center-block" style="float: left;">Customer Name: </label>
+                                      <i class="fa fa-plus-circle" style="float: right; font-size: 17px; color: red;"></i>
+                                      <div>
+                                        <input class="form-control" formControlName="item_code">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-1 form-group">
+                                      <label class="center-block">Points: </label>
+                                      <div>
+                                        <input class="form-control" formControlName="item_name">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-2 form-group">
+                                      <label class="center-block">HomeDelivery: </label>
+                                      <div>
+                                        <select class="form-control" formControlName="markup">
+                                            <option>Yes</option>
+                                            <option>No</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-sm-5 form-group">
+                                      <label class="center-block">Address: </label>
+                                      <div>
+                                        <input class="form-control" formControlName="item_code">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-1 form-group" style="padding-right: 5px;">
+                                      <label class="center-block">Disc: </label>
+                                      <div>
+                                        <input class="form-control" formControlName="item_name" placeholder="Amnt">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-1 form-group" style="padding-left: 0px;">
+                                      <div><br>
+                                        <input class="form-control" formControlName="item_name" placeholder="%">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-1 form-group" style="padding-right: 5px;">
+                                      <label class="center-block">Other Charg: </label>
+                                      <div>
+                                        <input class="form-control" formControlName="item_name" placeholder="Amnt">
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-1 form-group" style="padding-left: 0px;">
+                                      <div><br>
+                                        <input class="form-control" formControlName="item_name" placeholder="%">
+                                      </div>
+                                    </div>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="col-sm-2">
+                              <div class="head-1">
+                                  <div class="row">
+                                      <div class="col-sm-12 form-group">
+                                        <label class="center-block"> Last Bill No: </label>
+                                        <div>
+                                          <input class="form-control" formControlName="item_name">
+                                        </div>
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-sm-12 form-group">
+                                        <label class="center-block"> Last Bill Amt/Change: </label>
+                                        <div>
+                                          <input class="form-control" formControlName="item_name">
+                                        </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="head-1" style="height: 325px; overflow-y: scroll; overflow-x: hidden;">
+                                    <div class="row">
+                                        <div class="col-sm-1 form-group">
+                                            <br>
+                                            <label class="center-block">Scan Barcode: </label>
+                                        </div>
+                                        <div class="col-sm-2 form-group">
+                                            <div>
+                                            <input class="form-control" formControlName="item_name">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-1 form-group">
+                                            <br>
+                                            <label class="center-block">SEARCH SKU: </label>
+                                        </div>
+                                        <div class="col-sm-2 form-group">
+                                            <div>
+                                            <input class="form-control" formControlName="item_name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class="table table-bordered  barcode-table" formArrayName="barcodes">  
+                                        <thead>
+                                            <tr>  
+                                                <th width="100">Item Code</th>
+                                                <th>Item Name	</th>  
+                                                <th>Batch-No	</th>  
+                                                <th>MRP</th>  
+                                                <th>Disc</th>  
+                                                <th>Qty</th>  
+                                                <th>Rate	</th>  
+                                                <th>Amount</th>  
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>  
+                                        <tbody>
+                                            <tr>  
+                                                <td style="text-align: center;">1</td>
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><button>Remove</button></td>
+                                            </tr> 
+                                        </tbody>
+                                    </table>  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="head-1">
+                                    <div class="row">
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;"> Non-Lnv Sku</button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;">  Sku Copy</button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;"> Change Qty</button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;"> Block Change</button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;"> Query Mode</button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;"> Display/Show</button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;"> Sku List-LOV</button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;">  Hold Bill</button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;">Pop Hold Bill </button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;"> Re-Print Bill</button>
+                                        </div>
+                                        <div class="col-sm-1" style="padding-left: 10px; padding-right: 10px;">
+                                            <button style="background-color: rgb(34, 160, 34); color: #fff; border: none; padding: 5px; width: 100%;"> Cancel Bill </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="head-1">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <br>
+                                            <label class="center-block">Sku Count: </label>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" formControlName="markup" placeholder="1">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <br>
+                                            <label class="center-block">Total Qty	: </label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input class="form-control" formControlName="markup" placeholder="1.00">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="head-1">
+                                    <div class="" style="text-align: center; height: 153px;">
+                                        <div>
+                                            <br>
+                                            <label class="center-block" style="font-size: 30px;">Payble Value: </label>
+                                            <div>
+                                                <br>
+                                                <input class="form-control" value="95.00" readonly style="margin-bottom:0px; text-align: center; font-size: 40px; height: 70px; color: red;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-12">
+                              <div class="head-1">
+                                  <div class="row">
+                                      <div class="col-sm-2">
+                                          <br>
+                                          <label class="center-block">Total MRP: </label>
+                                      </div>
+                                      <div class="col-sm-10">
+                                          <input class="form-control" formControlName="markup">
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-sm-2">
+                                          <br>
+                                          <label class="center-block">Save 	: </label>
+                                      </div>
+                                      <div class="col-sm-10">
+                                          <input class="form-control" formControlName="markup">
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-sm-2">
+                                          <br>
+                                          <label class="center-block">Amount 	: </label>
+                                      </div>
+                                      <div class="col-sm-10">
+                                          <input class="form-control" formControlName="markup">
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-sm-2">
+                                          <br>
+                                          <label class="center-block">Pmt. Chrg: </label>
+                                      </div>
+                                      <div class="col-sm-10">
+                                          <input class="form-control" formControlName="markup">
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-sm-2">
+                                          <br>
+                                          <label class="center-block">Item Disc  	: </label>
+                                      </div>
+                                      <div class="col-sm-10">
+                                          <input class="form-control" formControlName="markup">
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-sm-2">
+                                          <br>
+                                          <label class="center-block">Bill Disc 	: </label>
+                                      </div>
+                                      <div class="col-sm-10">
+                                          <input class="form-control" formControlName="markup">
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-sm-2">
+                                          <br>
+                                          <label class="center-block">Round Off </label>
+                                      </div>
+                                      <div class="col-sm-10">
+                                          <input class="form-control" formControlName="markup">
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-3">
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

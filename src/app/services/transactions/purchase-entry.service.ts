@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class OpningStockService {
+export class PurchaseEntryService {
 
   constructor(private http:HttpClient) { }
 
@@ -31,5 +31,4 @@ export class OpningStockService {
   itemList(barcode?:any){
     return this.http.get( environment.api_url +'getitemdetials/'+barcode);
   }
-  
 }

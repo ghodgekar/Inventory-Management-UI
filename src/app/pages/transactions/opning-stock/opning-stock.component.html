@@ -1,1 +1,199 @@
-<p>opning-stock works!</p>
+<div class="top-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu">Test : By Peacock Infotech </li>
+                <li class="topmenu company-name">Administrator (AMG)</li>
+                <li class="topmenu active">Opening Stock</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
+                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
+                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="branchForm">
+              <div class="head-1">
+                <div class="row">
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Location: </label>
+                      <div>
+                        <input class="form-control" formControlName="loc_code" oninput="this.value = this.value.toUpperCase()" readonly>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Barcode/Hotkey: </label>
+                      <div>
+                        <input class="form-control" formControlName="barcode" (blur)="getItemList($event)">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Code : </label>
+                      <div>
+                        <input class="form-control" formControlName="item_code" readonly>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Name: </label>
+                      <div>
+                        <input class="form-control" formControlName="item_name" readonly>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Markup (%): </label>
+                      <div>
+                        <input class="form-control" formControlName="markup" readonly>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Markdown (%): </label>
+                      <div>
+                          <input class="form-control" formControlName="markdown" readonly>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Quantity: </label>
+                      <div>
+                        <input class="form-control" formControlName="qty">
+                      </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">MRP: </label>
+                      <div>
+                        <input class="form-control" formControlName="mrp">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Sale Rate: </label>
+                      <div>
+                        <input class="form-control" formControlName="sale_rate">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Cost Rate: </label>
+                      <div>
+                        <input class="form-control" formControlName="cost_rate">
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Department: </label>
+                      <div>
+                        <select class="form-control" formControlName="dept_code">
+                          <option *ngFor="let val of departmentData">{{val.list_desc}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <label class="center-block">Expiry Date: </label>
+                      <div>
+                        <input class="form-control" type="date" formControlName="expiry_date">
+                      </div>
+                    </div>
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-2"></div>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered"  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                    <thead>
+                        <tr>
+                          <th width="25">Action</th>
+                          <th>Location</th>
+                          <th>Barcode</th>
+                          <th>Item Code</th>
+                          <th>Item Name</th>
+                          <th>Quantity</th>
+                          <th>MRP</th>
+                          <th>Sale Rate</th>
+                          <th>Cost Rate</th>
+                          <th>Department</th>
+                          <th>Batch No</th>
+                          <!-- <th>Company</th> -->
+                          <th>Created By</th>
+                          <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let val of data">
+                            <td class="text-center">
+                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
+                                <span class="tooltiptext">EDIT</span>
+                              </span>  | 
+                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
+                                <span class="tooltiptext">DELETE</span>
+                              </span>
+                            </td>
+                            <td>{{val.loc_code}}</td>
+                            <td>{{val.barcode}}</td>
+                            <td>{{val.item_code}}</td>
+                            <td>{{val.qty}}</td>
+                            <td>{{val.mrp}}</td>
+                            <td>{{val.sale_rate}}</td>
+                            <td>{{val.cost_rate}}</td>
+                            <td>{{val.dept_code}}</td>
+                            <td>{{val.expiry_date}}</td>
+                            <td>{{val.batch_no}}</td>
+                            <!-- <td>1</td> -->
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.created_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="display-view" style="display: none;">
+  <table class="table" id="table" #pdfTable>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Page</th>
+        <th>Parent Module</th>
+        <th>Image</th>
+        <th>Is Home</th>
+        <th>Status</th>
+        <th>Created By</th>
+        <th>Created Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let val of data">
+        <td>{{val.module_code}}</td>
+        <td>{{val.module_name}}</td>
+        <td>{{val.module_slug}}</td>
+        <td>{{val.parent_madule_code}}</td>
+        <td>{{val.module_image}}</td>
+        <td>{{val.is_home}}</td>
+        <td>{{val.status}}</td>
+        <td>{{val.created_by}}</td>
+        <td>{{val.created_at}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-footer></app-footer>

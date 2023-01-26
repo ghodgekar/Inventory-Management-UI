@@ -1,0 +1,536 @@
+<div class="top-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu">Test : By Peacock Infotech </li>
+                <li class="topmenu company-name">Administrator (AMG)</li>
+                <li class="topmenu active">Purchase Entry</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save"
+                        class="save-icon"><span class="tooltiptext">SAVE</span></li>
+                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF"
+                        class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png"
+                        alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET"
+                        class="reset-icon"><span class="tooltiptext">RESET</span></li>
+                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon"
+                        routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="main">
+    <div class="card">
+        <div class="card-body">
+            <form [formGroup]="branchForm">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="head-1">
+                            <div class="row">
+                                <div class="col-sm-3 form-group">
+                                    <label class="center-block">Location: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="loc_code"
+                                            oninput="this.value = this.value.toUpperCase()">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 form-group">
+                                    <label class="center-block">GNR-No: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="barcode"
+                                            (blur)="getItemList($event)">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 form-group">
+                                    <label class="center-block">V-Date : </label>
+                                    <div>
+                                        <input class="form-control" formControlName="item_code">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 form-group">
+                                    <label class="center-block">LAST GRN-No: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="item_name">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="head-1">
+                            <div class="row">
+                                <div class="col-sm-3 form-group">
+                                    <label class="center-block">Created By: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="created_by">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 form-group">
+                                    <label class="center-block">Created At: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="barcode"
+                                            (blur)="getItemList($event)">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 form-group">
+                                    <button class="btn" style="font-size: 13px; margin-top: 20px; background-color: #5494ed;">Un-Auth</button>
+                                </div>
+                                <div class="col-sm-3 form-group">
+                                    <label class="center-block">Auth By : </label>
+                                    <div>
+                                        <input class="form-control" formControlName="item_code">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 form-group">
+                                    <label class="center-block">Auth Date: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="item_name">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="head-1">
+                            <div class="row">
+                                <div class="col-sm-4 form-group">
+                                    <label class="center-block">CR LIKE VNO: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="created_by">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 form-group">
+                                    <label class="center-block">TRF BR: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="barcode"
+                                            (blur)="getItemList($event)">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 form-group">
+                                    <button class="btn" style="font-size: 13px; margin-top: 20px; background-color: #5494ed;">TRF-OUT</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="head-1">
+                    <div class="row">
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">PO No: </label>
+                            <div>
+                                <input class="form-control" formControlName="markup">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">PO DT: </label>
+                            <div>
+                                <input class="form-control" formControlName="markdown">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">GI No: </label>
+                            <div>
+                                <input class="form-control" formControlName="qty">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">INVOICE TYPE: </label>
+                            <div>
+                                <input class="form-control" formControlName="mrp">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">Bill No: </label>
+                            <div>
+                                <input class="form-control" formControlName="sale_rate">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">Bill Date: </label>
+                            <div>
+                                <input type="date" class="form-control" formControlName="cost_rate">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">SUPPLIER: </label>
+                            <div>
+                                <input class="form-control" formControlName="dept_code">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">GSTIN: </label>
+                            <div>
+                                <input class="form-control" formControlName="expiry_date">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">BROKER: </label>
+                            <div>
+                                <input class="form-control" formControlName="expiry_date">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">NARRATION: </label>
+                            <div>
+                                <input class="form-control" formControlName="expiry_date">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="head-1">
+                    <div class="row">
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">TAXABLE AMT: </label>
+                            <div>
+                                <input class="form-control" formControlName="markup">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">ITEM DISC: </label>
+                            <div>
+                                <input class="form-control" formControlName="markdown">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">EXTRA DISC: </label>
+                            <div>
+                                <input class="form-control" formControlName="qty">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">APMC: </label>
+                            <div>
+                                <input class="form-control" formControlName="mrp">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">R-OFF: </label>
+                            <div>
+                                <input class="form-control" formControlName="sale_rate">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">SUPP BILL AMT: </label>
+                            <div>
+                                <input class="form-control" formControlName="cost_rate">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">TAX AMT: </label>
+                            <div>
+                                <input class="form-control" formControlName="dept_code">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">CASH DISC: </label>
+                            <div>
+                                <input class="form-control" formControlName="expiry_date">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">EXTRA CHRG: </label>
+                            <div>
+                                <input class="form-control" formControlName="expiry_date">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">OTHR CHRG: </label>
+                            <div>
+                                <input class="form-control" formControlName="expiry_date">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">PUR.RETN: </label>
+                            <div>
+                                <input class="form-control" formControlName="expiry_date">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                            <label class="center-block">NET PURCHASE: </label>
+                            <div>
+                                <input class="form-control" formControlName="expiry_date">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="head-1">
+                            <div class="row">
+
+                                <div class="col-sm-4">
+                                    <p>Last Receipt Through Purchase:</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="head-1">
+                            <div class="row">
+                                <div class="col-sm-12 barcode-table table-scroll">
+                                    <table class="table table-bordered" formArrayName="barcodes">  
+                                        <thead>
+                                            <tr>  
+                                                <th>No</th>
+                                                <th width="120px">Barcode</th>  
+                                                <th width="250px">Item Name</th>  
+                                                <th width="20px">PK CASE</th>  
+                                                <th width="35">QTY /<br> PK</th>  
+                                                <th>BILL QTY</th>  
+                                                <th>FREE QTY</th>  
+                                                <th>Total QTY</th>  
+                                                <th width="70">M.R.P</th>  
+                                                <th width="70">BILL RATE</th>  
+                                                <th>TAXABLE AMT</th>  
+                                                <th width="45">DISC.<br>PERC</th>  
+                                                <th>ITEM DISC.</th>  
+                                                <th>CASH DISC.</th>  
+                                                <th width="20px">TAX CD</th>  
+                                                <th width="60">TAX AMT</th>  
+                                                <th width="60">LANDING COST</th>  
+                                                <th width="60">SALE RATE</th>  
+                                                <th width="75">PURCHASE AMT</th>  
+                                                <th width="70">EXPIRY DATE</th>  
+                                                <th width="70">MFG. DATE</th>
+                                                <th width="50">Narration</th>
+                                                <th width="30"><button type="button" (click)="addBarcode()" style="background-color: #5494ed;">Add</button></th>  
+                                            </tr>
+                                        </thead>  
+                                        <tbody>
+                                            <tr *ngFor="let barcode of barcodes().controls; let i=index" [formGroupName]="i">  
+                                                <td style="text-align: center;">{{i+1}}</td>
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td><input type="text" formControlName="qty" class="form-control" placeholder="dd-mm-yy"> </td>  
+                                                <td><input type="text" formControlName="price" class="form-control" placeholder="dd-mm-yy">  </td>  
+                                                <td><input type="text" formControlName="price" class="form-control">  </td>  
+                                                <td style="padding: 5px !important;"><button (click)="removeBarcode(i)"style="background-color: #df1111;color: #fff;">X</button></td>  
+                                            </tr> 
+                                        </tbody>
+                                        <tfoot> 
+                                            <tr>
+                                                <td>Count</td>
+                                                <td><input type="text" class="form-control" value="1" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td colspan="2" style="text-align: right;">Summary </td>
+                                                <td><input type="text" class="form-control" value="0" readonly></td>
+                                                <td><input type="text" class="form-control" value="0" readonly></td>
+                                                <td><input type="text" class="form-control" value="0" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td><input type="text" class="form-control" value="0" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td><input type="text" class="form-control" value="0" readonly></td>
+                                                <td><input type="text" class="form-control" value="0" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td><input type="text" class="form-control" value="0" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td><input type="text" class="form-control" value="0" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                                <td><input type="text" class="form-control" readonly></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="head-1">
+                            <div class="row">
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">CURR BALQTY: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">MARKUP: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">MARKDOWN: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">MARGIN: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div style="border-left: 1px solid #000;"></div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">HSN: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">IGST: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">CGST: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">SGST: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">UTGST: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">CESS: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 form-group">
+                                    <label class="center-block">Cess/Piece: </label>
+                                    <div>
+                                        <input class="form-control" formControlName="markup">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                    <thead>
+                        <tr>
+                            <th width="25">Action</th>
+                            <th>Location</th>
+                            <th>Barcode</th>
+                            <th>Item Code</th>
+                            <th>Item Name</th>
+                            <th>Barcode</th>
+                            <th>MRP</th>
+                            <th>Sale Rate</th>
+                            <th>Cost Rate</th>
+                            <th>Department</th>
+                            <th>Batch No</th>
+                            <th>Doc Type</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                            <th>Created By</th>
+                            <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let val of data">
+                            <td class="text-center">
+                                <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png"
+                                        (click)="editCompanyList(val._id)">
+                                    <span class="tooltiptext">EDIT</span>
+                                </span> |
+                                <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png"
+                                        (click)="deleteCompanyList(val._id)">
+                                    <span class="tooltiptext">DELETE</span>
+                                </span>
+                            </td>
+                            <td>{{val.loc_code}}</td>
+                            <td>{{val.barcode}}</td>
+                            <td>{{val.item_code}}</td>
+                            <td>{{val.qty}}</td>
+                            <td>{{val.mrp}}</td>
+                            <td>{{val.sale_rate}}</td>
+                            <td>{{val.cost_rate}}</td>
+                            <td>{{val.dept_code}}</td>
+                            <td>{{val.expiry_date}}</td>
+                            <td>{{val.batch_no}}</td>
+                            <td>{{val.doc_type}}</td>
+                            <td>{{val.comp_code}}</td>
+                            <td>{{val.status}}</td>
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.created_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+<div class="display-view" style="display: none;">
+    <table class="table" id="table" #pdfTable>
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Page</th>
+                <th>Parent Module</th>
+                <th>Image</th>
+                <th>Is Home</th>
+                <th>Status</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let val of data">
+                <td>{{val.module_code}}</td>
+                <td>{{val.module_name}}</td>
+                <td>{{val.module_slug}}</td>
+                <td>{{val.parent_madule_code}}</td>
+                <td>{{val.module_image}}</td>
+                <td>{{val.is_home}}</td>
+                <td>{{val.status}}</td>
+                <td>{{val.created_by}}</td>
+                <td>{{val.created_at}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<app-footer></app-footer>

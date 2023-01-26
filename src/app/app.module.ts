@@ -42,6 +42,9 @@ import { CustomerComponent } from './pages/master/customer/customer.component';
 import { PaymentModeComponent } from './pages/master/payment-mode/payment-mode.component';
 import { PaymentIncludeExcludeComponent } from './pages/master/payment-include-exclude/payment-include-exclude.component';
 import { OpningStockComponent } from './pages/transactions/opning-stock/opning-stock.component';
+import { PurchaseEntryComponent } from './pages/transactions/purchase-entry/purchase-entry.component';
+import { PointOfSaleComponent } from './pages/sales/point-of-sale/point-of-sale.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -79,7 +82,9 @@ import { OpningStockComponent } from './pages/transactions/opning-stock/opning-s
     CustomerComponent,
     PaymentModeComponent,
     PaymentIncludeExcludeComponent,
-    OpningStockComponent
+    OpningStockComponent,
+    PurchaseEntryComponent,
+    PointOfSaleComponent
   ],
   imports: [
     BrowserModule,
@@ -87,9 +92,10 @@ import { OpningStockComponent } from './pages/transactions/opning-stock/opning-s
     DataTablesModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
