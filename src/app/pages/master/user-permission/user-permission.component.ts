@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
@@ -11,6 +11,8 @@ import htmlToPdfmake from 'html-to-pdfmake';
 import { UserService } from 'src/app/services/master/user.service';
 import { UserPermissionService } from 'src/app/services/master/user-permission.service';
 import { ModuleService } from 'src/app/services/master/module.service';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-user-permission',
@@ -23,7 +25,6 @@ export class UserPermissionComponent implements OnInit {
   submitted: boolean = false;
   userdata:any=[];
   data:any=[];
-  dtOptions: DataTables.Settings = {};
 
   submitBtn:String ='SAVE';
 
@@ -33,7 +34,11 @@ export class UserPermissionComponent implements OnInit {
   pdfTable!: ElementRef;
   moduledata: any;
 
-  constructor(private fb: FormBuilder, private userPermissionHttp:UserPermissionService, private userHttp:UserService, private moduleHttp:ModuleService) {
+  @ViewChild(DataTableDirective) datatableElement!: DataTableDirective;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject();
+
+  constructor(private fb: FormBuilder, private userPermissionHttp:UserPermissionService, private userHttp:UserService, private moduleHttp:ModuleService,private readonly chRef: ChangeDetectorRef) {
     this.createForm();
   }
   
@@ -51,9 +56,29 @@ export class UserPermissionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      processing: true,
+      lengthMenu: [10,20,30],
+      order:[[1,'desc']],
+      destroy: true
+    };
+    this.dtTrigger.subscribe();
     this.getUserList();
     this.getModuleList();
     this.getUserPermissionList();
+  }
+
+  ngOnDestroy() {
+    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.destroy();
+    })
+    this.dtTrigger.unsubscribe();
+  }
+
+  ngAfterViewInit() {
+      this.dtTrigger.next(true);
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -92,6 +117,17 @@ export class UserPermissionComponent implements OnInit {
         }, 1);
       }
     })
+  }
+
+  public rerender() {
+    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.destroy();
+        this.userPermissionHttp.list().subscribe((res:any) => {
+          this.data = res.data;
+          this.chRef.detectChanges();
+          this.dtTrigger.next(null);
+        })
+    });
   }
 
   onSubmit(): void {

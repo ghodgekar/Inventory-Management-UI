@@ -24,6 +24,7 @@ import { TestComponent } from './pages/master/test/test.component';
 import { UserPermissionComponent } from './pages/master/user-permission/user-permission.component';
 import { UserComponent } from './pages/master/user/user.component';
 import { VendorComponent } from './pages/master/vendor/vendor.component';
+import { DaySaleReportComponent } from './pages/reports/day-sale-report/day-sale-report.component';
 import { PointOfSaleComponent } from './pages/sales/point-of-sale/point-of-sale.component';
 import { SalesReturnComponent } from './pages/sales/sales-return/sales-return.component';
 import { OpningStockComponent } from './pages/transactions/opning-stock/opning-stock.component';
@@ -58,6 +59,7 @@ const routes: Routes = [
   { path: 'point-of-sale', component: PointOfSaleComponent },
   { path: 'sales-return', component: SalesReturnComponent },
   { path: 'rate-adjustment', component: RateAdjustmentComponent },
+  { path: 'day-sale-report', component: DaySaleReportComponent },
 ];
 
 @NgModule({

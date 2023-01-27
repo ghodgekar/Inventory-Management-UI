@@ -47,6 +47,7 @@ import { PointOfSaleComponent } from './pages/sales/point-of-sale/point-of-sale.
 import { DatePipe } from '@angular/common';
 import { SalesReturnComponent } from './pages/sales/sales-return/sales-return.component';
 import { RateAdjustmentComponent } from './pages/transactions/rate-adjustment/rate-adjustment.component';
+import { DaySaleReportComponent } from './pages/reports/day-sale-report/day-sale-report.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,8 @@ import { RateAdjustmentComponent } from './pages/transactions/rate-adjustment/ra
     PurchaseEntryComponent,
     PointOfSaleComponent,
     SalesReturnComponent,
-    RateAdjustmentComponent
+    RateAdjustmentComponent,
+    DaySaleReportComponent
   ],
   imports: [
     BrowserModule,

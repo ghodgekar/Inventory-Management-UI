@@ -92,7 +92,7 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" datatable >
+              <table class="table table-striped table-bordered table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
                     <thead>
                         <tr>
                           <th width="25">Action</th>
@@ -129,9 +129,9 @@
                             <td>{{val.is_modify}}</td>
                             <td>{{val.is_auth}}</td>
                             <td>{{val.created_by}}</td>
-                            <td>{{val.created_at}}</td>
-                            <td>{{val.updated_by}}</td>
-                            <td>{{val.updated_at}}</td>
+                            <td>{{val.created_at | date}}</td>
+                            <td>{{val.created_by}}</td>
+                            <td>{{val.updated_at | date}}</td>
                         </tr>
                     </tbody>
                 </table>
