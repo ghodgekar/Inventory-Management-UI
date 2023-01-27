@@ -1,0 +1,67 @@
+.head-1{
+    background-color: #eaecee;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #d3d3d3;
+}
+
+.head-2{
+    background-color: #eaecee;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #d3d3d3;
+}
+
+.head-3{
+    background-color: #eaecee;
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+}
+
+h4 {
+    text-decoration: underline;
+}
+
+.form-control{
+    margin-bottom: 0px;
+}
+
+.table.table-condensed.table-striped {
+    margin-bottom: 0px;
+}
+.BI_tablehead {
+    background-color: #5e5e60;
+    color: #fff;
+}
+.table-condensed>thead.BI_tablehead>tr>th {
+    text-transform: uppercase;
+    font-size: 13px;
+}
+.table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #f6f6f6;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    border-top: none;
+    border-bottom: 2px solid #fff;
+}
+.fixed_header{
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.fixed_header tbody{
+  display:block;
+  width: 100%;
+  overflow: auto;
+  max-height: 400px;
+}
+
+.fixed_header thead tr {
+   display: block;
+}
+
+.fixed_header th, .fixed_header td {
+  padding: 5px;
+  text-align: left;
+  width: 200px;
+}

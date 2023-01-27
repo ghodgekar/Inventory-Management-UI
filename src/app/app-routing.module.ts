@@ -25,8 +25,10 @@ import { UserPermissionComponent } from './pages/master/user-permission/user-per
 import { UserComponent } from './pages/master/user/user.component';
 import { VendorComponent } from './pages/master/vendor/vendor.component';
 import { PointOfSaleComponent } from './pages/sales/point-of-sale/point-of-sale.component';
+import { SalesReturnComponent } from './pages/sales/sales-return/sales-return.component';
 import { OpningStockComponent } from './pages/transactions/opning-stock/opning-stock.component';
 import { PurchaseEntryComponent } from './pages/transactions/purchase-entry/purchase-entry.component';
+import { RateAdjustmentComponent } from './pages/transactions/rate-adjustment/rate-adjustment.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -54,6 +56,8 @@ const routes: Routes = [
   { path: 'opening-stock', component: OpningStockComponent },
   { path: 'purchase-entry', component: PurchaseEntryComponent },
   { path: 'point-of-sale', component: PointOfSaleComponent },
+  { path: 'sales-return', component: SalesReturnComponent },
+  { path: 'rate-adjustment', component: RateAdjustmentComponent },
 ];
 
 @NgModule({

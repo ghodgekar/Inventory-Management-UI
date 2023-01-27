@@ -45,6 +45,8 @@ import { OpningStockComponent } from './pages/transactions/opning-stock/opning-s
 import { PurchaseEntryComponent } from './pages/transactions/purchase-entry/purchase-entry.component';
 import { PointOfSaleComponent } from './pages/sales/point-of-sale/point-of-sale.component';
 import { DatePipe } from '@angular/common';
+import { SalesReturnComponent } from './pages/sales/sales-return/sales-return.component';
+import { RateAdjustmentComponent } from './pages/transactions/rate-adjustment/rate-adjustment.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +86,9 @@ import { DatePipe } from '@angular/common';
     PaymentIncludeExcludeComponent,
     OpningStockComponent,
     PurchaseEntryComponent,
-    PointOfSaleComponent
+    PointOfSaleComponent,
+    SalesReturnComponent,
+    RateAdjustmentComponent
   ],
   imports: [
     BrowserModule,
