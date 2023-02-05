@@ -48,6 +48,8 @@ import { DatePipe } from '@angular/common';
 import { SalesReturnComponent } from './pages/sales/sales-return/sales-return.component';
 import { RateAdjustmentComponent } from './pages/transactions/rate-adjustment/rate-adjustment.component';
 import { DaySaleReportComponent } from './pages/reports/day-sale-report/day-sale-report.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -99,6 +101,8 @@ import { DaySaleReportComponent } from './pages/reports/day-sale-report/day-sale
     ReactiveFormsModule,
     HttpClientModule,
     FontAwesomeModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
     
   ],
   providers: [DatePipe],

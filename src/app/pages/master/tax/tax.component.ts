@@ -76,14 +76,16 @@ export class TaxComponent implements OnInit{
   }
 
   onSubmit(): void {
-    this.taxForm.value['created_by'] = 'admin';
+    this.taxForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.taxForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.taxForm.value['created_by'] = localStorage.getItem('username');
         this.taxHttp.save( this.taxForm.value).subscribe((res:any) => {
           this.getTaxList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -102,9 +104,9 @@ export class TaxComponent implements OnInit{
       }else if(this.submitBtn == 'UPDATE'){
         this.taxHttp.update(this.taxForm.value).subscribe((res:any) => {
           this.getTaxList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

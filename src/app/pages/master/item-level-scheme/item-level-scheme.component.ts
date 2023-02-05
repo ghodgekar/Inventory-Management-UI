@@ -89,14 +89,16 @@ export class ItemLevelSchemeComponent {
   }
 
   onSubmit(): void {
-    this.itemLevelForm.value['created_by'] = 'admin';
+    this.itemLevelForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.itemLevelForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.itemLevelForm.value['created_by'] = localStorage.getItem('username');
         this.itemLevelHttp.save( this.itemLevelForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.from_time == 400) {
             const validationError = err.error.errors;
@@ -115,9 +117,9 @@ export class ItemLevelSchemeComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.itemLevelHttp.update(this.itemLevelForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

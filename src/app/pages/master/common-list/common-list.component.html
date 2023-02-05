@@ -57,7 +57,7 @@
                         <select class="form-control" formControlName="loc_code">
                           <option>Select</option>
                           <option value="0">All Location</option>
-                          <option>Kamothe</option>
+                          <option [value]="val.loc_code" *ngFor="let val of branchData">{{val.loc_name}}</option>
                         </select>
                       </div>
                     </div>

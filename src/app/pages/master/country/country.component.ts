@@ -74,14 +74,16 @@ export class CountryComponent {
   }
 
   onSubmit(): void {
-    this.countryForm.value['created_by'] = 'admin';
+    this.countryForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.countryForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.countryForm.value['created_by'] = localStorage.getItem('username');
         this.CountryHttp.save( this.countryForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -100,9 +102,9 @@ export class CountryComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.CountryHttp.update(this.countryForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

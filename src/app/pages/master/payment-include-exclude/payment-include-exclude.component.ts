@@ -110,14 +110,16 @@ export class PaymentIncludeExcludeComponent {
   }
 
   onSubmit(): void {
-    this.companyForm.value['created_by'] = 'admin';
+    this.companyForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.companyForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.companyForm.value['created_by'] = localStorage.getItem('username');
         this.paymentInclExclHttp.save( this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -136,9 +138,9 @@ export class PaymentIncludeExcludeComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.paymentInclExclHttp.update(this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

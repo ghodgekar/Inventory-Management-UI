@@ -23,7 +23,7 @@
             <div class="form-group">
               <label class="center-block">User Code: </label>
               <div>
-                <input class="form-control" formControlName="user_code" [ngClass]="{ 'is-invalid': submitted && f['user_code'].errors }">
+                <input class="form-control" formControlName="user_name" [ngClass]="{ 'is-invalid': submitted && f['user_name'].errors }" oninput="this.value = this.value.toUpperCase()">
               </div>
               <span>Administrator</span>
               <br><br>
@@ -31,7 +31,7 @@
             <div class="form-group">
               <label class="center-block">Password: </label>
               <div>
-                <input type="password" class="form-control" formControlName="user_pass" [ngClass]="{ 'is-invalid': submitted && f['password'].errors }">
+                <input type="password" class="form-control" formControlName="user_pass" [ngClass]="{ 'is-invalid': submitted && f['user_pass'].errors }">
               </div>
             </div>
             <div class="form-group">

@@ -9,6 +9,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CommonListService } from 'src/app/services/master/common-list.service';
+import { BranchService } from 'src/app/services/master/branch.service';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 
 @Component({
   selector: 'app-common-list',
@@ -25,8 +27,9 @@ export class CommonListComponent implements OnInit {
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+  branchData: any;
 
-  constructor(private fb: FormBuilder, private commonHttp:CommonListService) {
+  constructor(private fb: FormBuilder, private commonHttp:CommonListService, private branchHttp:BranchService, private toastr:ToastrMsgService) {
     this.createForm();
   }
   
@@ -35,7 +38,7 @@ export class CommonListComponent implements OnInit {
       list_code: ['', Validators.required],
       list_value: ['', Validators.required ],
       list_desc: ['', Validators.required ],
-      order_by: ['', Validators.required ],
+      order_by: [''],
       loc_code: ['', Validators.required ],
       created_by: [''],
       _id: []
@@ -44,6 +47,7 @@ export class CommonListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCommonList();
+    this.getLocationList();
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -67,16 +71,19 @@ export class CommonListComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.commonlistForn.value['created_by'] = 'Admin';
+    this.commonlistForn.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.commonlistForn.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.commonlistForn.value['created_by'] = localStorage.getItem('username');
         this.commonHttp.save( this.commonlistForn.value).subscribe((res:any) => {
           this.getCommonList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
+            this.toastr.showError(err.error.message)
             const validationError = err.error.errors;
             Object.keys(validationError).forEach((index) => {
               const formControl = this.commonlistForn.get(
@@ -88,20 +95,27 @@ export class CommonListComponent implements OnInit {
                 });
               }
             });
+
           }
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.commonHttp.update(this.commonlistForn.value).subscribe((res:any) => {
           this.getCommonList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 
   onReset(): void {
     this.submitted = false;
     this.commonlistForn.reset();
+  }
+
+  getLocationList(){
+    this.branchHttp.list().subscribe((res:any) => {
+      this.branchData = res.data;
+    })
   }
 
   editCommonList(id: any){

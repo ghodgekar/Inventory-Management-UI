@@ -82,14 +82,16 @@ export class BrandComponent {
   }
 
   onSubmit(): void {
-    this.brandForm.value['created_by'] = 'admin';
+    this.brandForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.brandForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.brandForm.value['created_by'] = localStorage.getItem('username');
         this.brandHttp.save( this.brandForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -108,9 +110,9 @@ export class BrandComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.brandHttp.update(this.brandForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

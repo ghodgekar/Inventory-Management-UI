@@ -80,14 +80,16 @@ export class CityComponent {
   }
 
   onSubmit(): void {
-    this.cityForm.value['created_by'] = 'admin';
+    this.cityForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.cityForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.cityForm.value['created_by'] = localStorage.getItem('username');
         this.CityHttp.save( this.cityForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -106,9 +108,9 @@ export class CityComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.CityHttp.update(this.cityForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

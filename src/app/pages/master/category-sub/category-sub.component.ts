@@ -89,14 +89,16 @@ export class CategorySubComponent  implements OnInit {
   }
 
   onSubmit(): void {
-    this.categorySubForm.value['created_by'] = 'admin';
+    this.categorySubForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.categorySubForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.categorySubForm.value['created_by'] = localStorage.getItem('username');
         this.categorySubHttp.save( this.categorySubForm.value).subscribe((res:any) => {
           this.getCategorySubList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -115,9 +117,9 @@ export class CategorySubComponent  implements OnInit {
       }else if(this.submitBtn == 'UPDATE'){
         this.categorySubHttp.update(this.categorySubForm.value).subscribe((res:any) => {
           this.getCategorySubList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

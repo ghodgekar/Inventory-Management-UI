@@ -79,14 +79,16 @@ export class ModuleComponent implements OnInit{
   }
 
   onSubmit(): void {
-    this.moduleForm.value['created_by'] = 'Admin';
+    this.moduleForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.moduleForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.moduleForm.value['created_by'] = localStorage.getItem('username');
         this.moduleHttp.save( this.moduleForm.value).subscribe((res:any) => {
           this.getModuleList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -105,9 +107,9 @@ export class ModuleComponent implements OnInit{
       }else if(this.submitBtn == 'UPDATE'){
         this.moduleHttp.update(this.moduleForm.value).subscribe((res:any) => {
           this.getModuleList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

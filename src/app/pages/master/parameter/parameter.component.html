@@ -31,7 +31,7 @@
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Code: </label>
                       <div>
-                        <input class="form-control" formControlName="param_code" oninput="this.value = this.value.toUpperCase()">
+                        <input class="form-control" formControlName="param_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" >
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">

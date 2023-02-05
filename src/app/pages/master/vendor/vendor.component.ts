@@ -9,6 +9,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { VendorService } from 'src/app/services/master/vendor.service';
+import { CommonListService } from 'src/app/services/master/common-list.service';
 
 
 @Component({
@@ -27,8 +28,10 @@ export class VendorComponent {
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+  typeData: any;
+  custTypeData: any;
 
-  constructor(private fb: FormBuilder, private vendorHttp:VendorService) {
+  constructor(private fb: FormBuilder, private vendorHttp:VendorService, private CommonListHttp:CommonListService) {
     this.createForm();
   }
   
@@ -58,6 +61,20 @@ export class VendorComponent {
 
   ngOnInit(): void {
     this.getCompanyList();
+    this.getType();
+    this.getCustType();
+  }
+
+  getType(){
+    this.CommonListHttp.codeList('SUPP_TYPE').subscribe((res:any) => {
+      this.typeData = res.data
+    })
+  }
+
+  getCustType(){
+    this.CommonListHttp.codeList('CUST_TYPE').subscribe((res:any) => {
+      this.custTypeData = res.data
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -81,14 +98,16 @@ export class VendorComponent {
   }
 
   onSubmit(): void {
-    this.vendorForm.value['created_by'] = 'admin';
+    this.vendorForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.vendorForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.vendorForm.value['created_by'] = localStorage.getItem('username');
         this.vendorHttp.save( this.vendorForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -107,9 +126,9 @@ export class VendorComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.vendorHttp.update(this.vendorForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

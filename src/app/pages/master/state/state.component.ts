@@ -82,14 +82,16 @@ export class StateComponent {
   }
 
   onSubmit(): void {
-    this.stateForm.value['created_by'] = 'Admin';
+    this.stateForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.stateForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.stateForm.value['created_by'] = localStorage.getItem('username');
         this.StateHttp.save( this.stateForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -108,9 +110,9 @@ export class StateComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.StateHttp.update(this.stateForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

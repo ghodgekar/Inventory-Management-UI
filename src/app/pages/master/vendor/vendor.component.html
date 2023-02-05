@@ -44,9 +44,7 @@
                       <label class="center-block">Type: </label>
                       <div>
                         <select formControlName="type" id="" class="form-control">
-                            <option>Direct Supp</option>
-                            <option>Manufracturer</option>
-                            <option>Distributor</option>
+                            <option [value]="val.list_value" *ngFor = 'let val of typeData'>{{val.list_desc}}</option>
                         </select>
                       </div>
                     </div>

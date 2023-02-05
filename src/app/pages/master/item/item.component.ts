@@ -164,14 +164,16 @@ export class ItemComponent {
   }
 
   onSubmit(): void {
-    this.ItemForm.value['created_by'] = 'admin';
+    this.ItemForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.ItemForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.ItemForm.value['created_by'] = localStorage.getItem('username');
         this.ItemHttp.save( this.ItemForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -190,9 +192,9 @@ export class ItemComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.ItemHttp.update(this.ItemForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

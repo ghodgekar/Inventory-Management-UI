@@ -101,15 +101,16 @@ export class CompanyComponent implements OnInit{
   }
 
   onSubmit(): void {
-    console.log(this.companyForm.value)
-    this.companyForm.value['created_by'] = 'Admin';
+    this.companyForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.companyForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.companyForm.value['created_by'] = localStorage.getItem('username');
         this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -128,9 +129,9 @@ export class CompanyComponent implements OnInit{
       }else if(this.submitBtn == 'UPDATE'){
         this.CompanyHttp.update(this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

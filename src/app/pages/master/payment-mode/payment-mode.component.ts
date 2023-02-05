@@ -71,14 +71,16 @@ export class PaymentModeComponent {
   }
 
   onSubmit(): void {
-    this.companyForm.value['created_by'] = 'admin';
+    this.companyForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.companyForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.companyForm.value['created_by'] = localStorage.getItem('username');
         this.paymentModeHttp.save( this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -97,9 +99,9 @@ export class PaymentModeComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.paymentModeHttp.update(this.companyForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

@@ -41,7 +41,7 @@ export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
       param_code: ['', Validators.required],
       param_value: ['', Validators.required ],
       param_desc: ['', Validators.required ],
-      data_type: ['', Validators.required ],
+      data_type: [''],
       created_by: [''],
       _id: []
     });
@@ -71,6 +71,16 @@ export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
       this.dtTrigger.next(true);
   }
 
+  keyPressNumbersDecimal(e:any) {
+    var regex = new RegExp("^[a-zA-Z]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
+  }
+
   get f(): { [key: string]: AbstractControl } {
     return this.parameterForm.controls;
   }
@@ -96,12 +106,13 @@ export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
   }
 
   onSubmit(): void {
-    this.parameterForm.value['created_by'] = 'Admin';
+    this.parameterForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.parameterForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.parameterForm.value['created_by'] = localStorage.getItem('username');
         this.http.post( environment.api_url + 'parameters/save', this.parameterForm.value).subscribe((res:any) => {  
           // this.getParameter();
         }, (err:any) => {

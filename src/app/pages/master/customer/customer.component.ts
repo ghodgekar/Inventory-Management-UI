@@ -10,6 +10,8 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CustomerService } from 'src/app/services/master/customer.service';
 
+import { DatePipe } from '@angular/common';
+import { CommonListService } from 'src/app/services/master/common-list.service';
 
 @Component({
   selector: 'app-customer',
@@ -27,8 +29,12 @@ export class CustomerComponent {
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+  loc_code!: any;
+  joinDate: any;
+  custTypeData: any;
+  customerData: any;
 
-  constructor(private fb: FormBuilder, private CustomerHttp:CustomerService) {
+  constructor(private fb: FormBuilder, private CustomerHttp:CustomerService, private datePipe:DatePipe, private CommonListHttp:CommonListService) {
     this.createForm();
   }
   
@@ -49,7 +55,7 @@ export class CustomerComponent {
       pan_no: ['', Validators.required ],
       gstin: ['', Validators.required ],
       birth_date: ['', Validators.required ],
-      join_date: ['', Validators.required ],
+      join_date: [this.datePipe.transform(new Date(), 'dd-MM-yyyy'), Validators.required ],
       cust_type: ['', Validators.required ],
       barcode: ['', Validators.required ],
       points: ['', Validators.required ],
@@ -62,7 +68,22 @@ export class CustomerComponent {
   }
 
   ngOnInit(): void {
+    this.loc_code = localStorage.getItem('location')
     this.getCompanyList();
+    this.getCustType();
+    this.getCustomerList();
+  }
+
+  getCustType(){
+    this.CommonListHttp.codeList('CUST_TYPE').subscribe((res:any) => {
+      this.custTypeData = res.data
+    })
+  }
+
+  getCustomerList(){
+    this.CustomerHttp.list().subscribe((res:any) => {
+      this.customerData = res.data;
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -86,14 +107,16 @@ export class CustomerComponent {
   }
 
   onSubmit(): void {
-    this.CustomerForm.value['created_by'] = 'Admin';
+    this.CustomerForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.CustomerForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.CustomerForm.value['created_by'] = localStorage.getItem('username');
         this.CustomerHttp.save( this.CustomerForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -112,9 +135,9 @@ export class CustomerComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.CustomerHttp.update(this.CustomerForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

@@ -85,14 +85,16 @@ export class CategoryComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.categoryForm.value['created_by'] = 'admin';
+    this.categoryForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.categoryForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.categoryForm.value['created_by'] = localStorage.getItem('username');
         this.categoryHttp.save( this.categoryForm.value).subscribe((res:any) => {
           this.getCategoryList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -111,9 +113,9 @@ export class CategoryComponent implements OnInit {
       }else if(this.submitBtn == 'UPDATE'){
         this.categoryHttp.update(this.categoryForm.value).subscribe((res:any) => {
           this.getCategoryList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

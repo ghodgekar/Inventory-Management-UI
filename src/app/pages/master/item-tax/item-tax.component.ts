@@ -100,14 +100,16 @@ export class ItemTaxComponent {
   }
 
   onSubmit(): void {
-    this.ItemTaxForm.value['created_by'] = 'admin';
+    this.ItemTaxForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.ItemTaxForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.ItemTaxForm.value['created_by'] = localStorage.getItem('username');
         this.ItemTaxHttp.save( this.ItemTaxForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -126,9 +128,9 @@ export class ItemTaxComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.ItemTaxHttp.update(this.ItemTaxForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

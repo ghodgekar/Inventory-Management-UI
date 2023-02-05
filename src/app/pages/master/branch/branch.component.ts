@@ -83,14 +83,16 @@ export class BranchComponent {
   }
 
   onSubmit(): void {
-    this.branchForm.value['created_by'] = 'Admin';
+    this.branchForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.branchForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.branchForm.value['created_by'] = localStorage.getItem('username');
         this.BranchHttp.save( this.branchForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -109,9 +111,9 @@ export class BranchComponent {
       }else if(this.submitBtn == 'UPDATE'){
         this.BranchHttp.update(this.branchForm.value).subscribe((res:any) => {
           this.getCompanyList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 

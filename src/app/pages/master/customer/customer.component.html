@@ -31,7 +31,7 @@
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Location: </label>
                       <div>
-                        <input class="form-control" formControlName="" oninput="this.value = this.value.toUpperCase()">
+                        <input class="form-control" value="{{loc_code}}" readonly disabled>
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">
@@ -52,6 +52,7 @@
                         <select formControlName="gender" id="" class="form-control">
                             <option>Female</option>
                             <option>Male</option>
+                            <option>Transgender</option>
                         </select>
                       </div>
                     </div>
@@ -70,7 +71,7 @@
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Join Date: </label>
                       <div>
-                        <input type="date" class="form-control" formControlName="join_date">
+                        <input type="text" class="form-control" formControlName="join_date" readonly >
                       </div>
                     </div>
                 </div>
@@ -160,13 +161,17 @@
                         <div class="col-sm-3 form-group">
                           <label class="center-block">Customer Type: </label>
                           <div>
-                            <input class="form-control" formControlName="cust_type">
+                            <select class="form-control" formControlName="cust_type">
+                              <option [value]="val.list_value" *ngFor="let val of custTypeData">{{val.list_desc}}</option>
+                            </select>
                           </div>
                         </div>
                         <div class="col-sm-3 form-group">
                           <label class="center-block">Ref. Customer: </label>
                           <div>
-                            <input class="form-control" formControlName="ref_cust_code">
+                            <select class="form-control" formControlName="ref_cust_code">
+                              <option [value]="val.cust_code" *ngFor="let val of customerData">{{val.cust_name}}</option>
+                            </select>
                           </div>
                         </div>
                         <div class="col-sm-3 form-group">

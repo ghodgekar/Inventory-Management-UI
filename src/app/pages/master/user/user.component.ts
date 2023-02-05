@@ -82,14 +82,16 @@ export class UserComponent  implements OnInit {
   }
 
   onSubmit(): void {
-    this.userForm.value['created_by'] = 'admin';
+    this.userForm.value['updated_by'] = localStorage.getItem('username');
     this.submitted = true;
     if (this.userForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
+        this.userForm.value['created_by'] = localStorage.getItem('username');
         this.userHttp.save( this.userForm.value).subscribe((res:any) => {
           this.getUserList();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -108,9 +110,9 @@ export class UserComponent  implements OnInit {
       }else if(this.submitBtn == 'UPDATE'){
         this.userHttp.update(this.userForm.value).subscribe((res:any) => {
           this.getUserList();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 
