@@ -26,58 +26,94 @@
     <div class="card">
         <div class="card-body">
             <form [formGroup]="moduleForm">
-                <div class="row">
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Code: </label>
-                      <div>
-                        <input class="form-control" formControlName="module_code" oninput="this.value = this.value.toUpperCase()">
+              <div class="row">
+                <div class="col-sm-8">
+                  <div class="head-1">
+                    <div class="row">
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Code: </label>
+                        <div>
+                          <input class="form-control" formControlName="module_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Name: </label>
+                        <div>
+                          <input class="form-control" formControlName="module_name" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1)">
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Page: </label>
+                        <div>
+                          <input class="form-control" formControlName="module_slug" (keypress)="keyPressStringDecimal($event)">
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Parent Module: </label>
+                        <div>
+                          <select class="form-control" formControlName="parent_madule_code">
+                            <option value="{{val._id}}" *ngFor="let val of parent_menu">{{val.module_name}}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Image: </label>
+                        <div>
+                          <input type="file" class="form-control" formControlName="module_image">
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Is Home: </label>
+                        <div>
+                          <select class="form-control" formControlName="is_home">
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Status </label>
+                        <div>
+                          <select class="form-control" formControlName="status">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Name: </label>
-                      <div>
-                        <input class="form-control" formControlName="module_name">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Page: </label>
-                      <div>
-                        <input class="form-control" formControlName="module_slug">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Parent Module: </label>
-                      <div>
-                        <select class="form-control" formControlName="parent_madule_code">
-                          <option value="{{val._id}}" *ngFor="let val of parent_menu">{{val.module_name}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Image: </label>
-                      <div>
-                        <input class="form-control" formControlName="module_image">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Is Home: </label>
-                      <div>
-                        <select class="form-control" formControlName="is_home">
-                          <option value="YES">YES</option>
-                          <option value="NO">NO</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Status </label>
-                      <div>
-                        <select class="form-control" formControlName="status">
-                          <option value="Active">Active</option>
-                          <option value="Inactive">Inactive</option>
-                        </select>
-                      </div>
-                    </div>
+                  </div>
                 </div>
+                <div class="col-sm-4" *ngIf="isEdit">
+                  <div class="head-1">
+                    <div class="row">
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Created By: </label>
+                        <div>
+                          <input class="form-control" formControlName="created_by" readonly>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Created At: </label>
+                        <div>
+                          <input class="form-control" formControlName="created_at" readonly>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Updated By: </label>
+                        <div>
+                          <input class="form-control" formControlName="updated_by" readonly>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Updated At: </label>
+                        <div>
+                          <input class="form-control" formControlName="updated_at" readonly>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
         </div>
     </div>
@@ -97,6 +133,8 @@
                           <th>Status</th>
                           <th>Created By</th>
                           <th>Created Date</th>
+                          <th>Updated By</th>
+                          <th>Updated Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,10 +142,10 @@
                             <td class="text-center">
                               <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editModuleList(val._id)"> 
                                 <span class="tooltiptext">EDIT</span>
-                              </span>  | 
-                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteModuleList(val._id)"> 
+                              </span> 
+                              <!-- <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteModuleList(val._id)"> 
                                 <span class="tooltiptext">DELETE</span>
-                              </span>
+                              </span> -->
                             </td>
                             <td>{{val.module_code}}</td>
                             <td>{{val.module_name}}</td>
@@ -118,6 +156,8 @@
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
                             <td>{{val.created_at | date}}</td>
+                            <td>{{val.updated_by}}</td>
+                            <td>{{val.updated_at | date}}</td>
                         </tr>
                     </tbody>
                 </table>

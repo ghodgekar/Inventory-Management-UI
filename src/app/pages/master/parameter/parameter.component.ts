@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { HttpClient  } from '@angular/common/http';
@@ -12,18 +12,33 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
+import { DatePipe } from '@angular/common';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 
 @Component({
   selector: 'app-parameter',
   templateUrl: './parameter.component.html',
   styleUrls: ['./parameter.component.css']
 })
-export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
+export class ParameterComponent implements  OnInit {
+
+  constructor(private fb: FormBuilder, private http:HttpClient,private readonly chRef: ChangeDetectorRef,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService) {
+    this.createForm();
+  }
+
+  @HostListener('input', ['$event'])
+  onInput(event:any):void{
+    if(event.target.value.length === 1){
+      const inputValue = event.target.value;
+      this.ref.nativeElement.value = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+    }
+  }
   @ViewChild(DataTableDirective) datatableElement!: DataTableDirective;
   parameterForm!: FormGroup;
   submitted: boolean = false;
   data:any=[];
   submitBtn:String ='SAVE';
+  isEdit:boolean=false;
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
@@ -31,11 +46,9 @@ export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
   
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
-
-  constructor(private fb: FormBuilder, private http:HttpClient,private readonly chRef: ChangeDetectorRef) {
-    this.createForm();
+  ngOnInit(): void {
+    this.getParameter();
   }
-  
   createForm() {
     this.parameterForm = this.fb.group({
       param_code: ['', Validators.required],
@@ -43,36 +56,16 @@ export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
       param_desc: ['', Validators.required ],
       data_type: [''],
       created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
+      status: [''],
       _id: []
     });
   }
 
-  ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-      lengthMenu: [10,20,30],
-      order:[[1,'desc']],
-      destroy: true
-    };
-    this.dtTrigger.subscribe();
-    this.getParameter();
-  }
-
-  ngOnDestroy() {
-    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.destroy();
-    })
-    this.dtTrigger.unsubscribe();
-  }
-
-  ngAfterViewInit() {
-      this.dtTrigger.next(true);
-  }
-
   keyPressNumbersDecimal(e:any) {
-    var regex = new RegExp("^[a-zA-Z]+$");
+    var regex = new RegExp("^[a-zA-Z_-]+$");
     var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
     if (regex.test(str)) {
         return true;
@@ -89,32 +82,31 @@ export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
     this.submitBtn == 'SAVE';
     this.http.get( environment.api_url +'parameters').subscribe((res:any) => {
       this.data = res.data;
-      this.chRef.detectChanges();
-      this.dtTrigger.next(null);
+      setTimeout(()=>{   
+        $('.table').DataTable( {
+          pagingType: 'full_numbers',
+          pageLength: 15,
+          processing: true,
+          lengthMenu : [15, 30, 45],
+          destroy: true
+      } );
+      }, 10);
     })
-  }
-
-  public rerender() {
-    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.destroy();
-        this.http.get( environment.api_url +'parameters').subscribe((res:any) => {
-          this.data = res.data;
-          this.chRef.detectChanges();
-          this.dtTrigger.next(null);
-        })
-    });
   }
 
   onSubmit(): void {
     this.parameterForm.value['updated_by'] = localStorage.getItem('username');
+    this.parameterForm.value['updated_at'] = new Date();
     this.submitted = true;
     if (this.parameterForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.parameterForm.value['created_by'] = localStorage.getItem('username');
+        this.parameterForm.value['created_at'] = new Date();
         this.http.post( environment.api_url + 'parameters/save', this.parameterForm.value).subscribe((res:any) => {  
           // this.getParameter();
+          this.onReset();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -129,13 +121,14 @@ export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
               }
             });
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
+        this.isEdit = false;
         this.http.post( environment.api_url + 'parameters/update', this.parameterForm.value).subscribe((res:any) => {
-          this.getParameter();
+          this.onReset();
         })
       }
-      this.onReset();
     }
   }
 
@@ -152,9 +145,15 @@ export class ParameterComponent implements  OnInit, AfterViewInit, OnDestroy {
         param_value: res.data[0].param_value,
         param_desc: res.data[0].param_desc,
         data_type: res.data[0].data_type,
+        status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: this.datepipe.transform(res.data[0].created_at, 'MMM dd, yyyy'),
+        updated_by: res.data[0].updated_by,
+        updated_at: this.datepipe.transform(res.data[0].updated_at, 'MMM dd, yyyy'),
         _id: res.data[0]._id
       });
     })
+    this.isEdit = true;
   }
 
   deleteParameter(id:any){

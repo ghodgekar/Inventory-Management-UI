@@ -26,36 +26,80 @@
     <div class="card">
         <div class="card-body">
             <form [formGroup]="parameterForm">
-              <div class="head-1">
-                <div class="row">
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Code: </label>
-                      <div>
-                        <input class="form-control" formControlName="param_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" >
+              <div class="row">
+                <div class="col-sm-8">
+                  <div class="head-1">
+                    <div class="row">
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Code: </label>
+                        <div>
+                          <input class="form-control" formControlName="param_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Value: </label>
+                        <div>
+                          <input class="form-control" formControlName="param_value">
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Description: </label>
+                        <div>
+                          <input class="form-control" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1)" formControlName="param_desc">
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Data Type: </label>
+                        <div>
+                          <select class="form-control" formControlName="data_type">
+                            <option>Select</option>
+                            <option value="C">Character</option>
+                            <option value="N">Number</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <label class="center-block">Status: </label>
+                        <div>
+                          <select class="form-control" formControlName="status">
+                            <option>Select</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Value: </label>
-                      <div>
-                        <input class="form-control" formControlName="param_value">
+                  </div>
+                </div>
+                <div class="col-sm-4" *ngIf="isEdit">
+                  <div class="head-1">
+                    <div class="row">
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Created By: </label>
+                        <div>
+                          <input class="form-control" formControlName="created_by" readonly>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Created At: </label>
+                        <div>
+                          <input class="form-control" formControlName="created_at" readonly>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Updated By: </label>
+                        <div>
+                          <input class="form-control" formControlName="updated_by" readonly>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Updated At: </label>
+                        <div>
+                          <input class="form-control" formControlName="updated_at" readonly>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Description: </label>
-                      <div>
-                        <input class="form-control" formControlName="param_desc">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Data Type: </label>
-                      <div>
-                        <select class="form-control" formControlName="data_type">
-                          <option>Select</option>
-                          <option value="C">Character</option>
-                          <option value="N">Number</option>
-                        </select>
-                      </div>
-                    </div>
+                  </div>
                 </div>
               </div>
             </form>
@@ -75,6 +119,8 @@
                           <th>Status</th>
                           <th>Created By</th>
                           <th>Created Date</th>
+                          <th>Updated By</th>
+                          <th>Updated Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -82,10 +128,10 @@
                             <td class="text-center">
                               <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editParameter(val._id)"> 
                                 <span class="tooltiptext">EDIT</span>
-                              </span>  | 
-                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteParameter(val._id)"> 
+                              </span>  
+                              <!-- <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteParameter(val._id)"> 
                                 <span class="tooltiptext">DELETE</span>
-                              </span>
+                              </span> -->
                             </td>
                             <td>{{val.param_code}}</td>
                             <td>{{val.param_value}}</td>
@@ -94,6 +140,8 @@
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
                             <td>{{val.created_at | date}}</td>
+                            <td>{{val.updated_by}}</td>
+                            <td>{{val.updated_at | date}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -102,7 +150,7 @@
     </div>
 </div>
 
-<div class="display-view" style="display: none;">
+<!-- <div class="display-view" style="display: none;">
   <table class="table" id="table" #pdfTable>
     <thead>
       <tr>
@@ -125,6 +173,6 @@
       </tr>
     </tbody>
   </table>
-</div>
+</div> -->
 
 <app-footer></app-footer>

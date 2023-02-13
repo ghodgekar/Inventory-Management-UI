@@ -11,6 +11,7 @@ import htmlToPdfmake from 'html-to-pdfmake';
 import { CommonListService } from 'src/app/services/master/common-list.service';
 import { BranchService } from 'src/app/services/master/branch.service';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-common-list',
@@ -28,8 +29,9 @@ export class CommonListComponent implements OnInit {
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
   branchData: any;
+  isEdit:boolean=false;
 
-  constructor(private fb: FormBuilder, private commonHttp:CommonListService, private branchHttp:BranchService, private toastr:ToastrMsgService) {
+  constructor(private fb: FormBuilder, private commonHttp:CommonListService, private branchHttp:BranchService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
   }
   
@@ -41,6 +43,10 @@ export class CommonListComponent implements OnInit {
       order_by: [''],
       loc_code: ['', Validators.required ],
       created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
+      status: [''],
       _id: []
     });
   }
@@ -48,6 +54,16 @@ export class CommonListComponent implements OnInit {
   ngOnInit(): void {
     this.getCommonList();
     this.getLocationList();
+  }
+
+  keyPressNumbersDecimal(e:any) {
+    var regex = new RegExp("^[a-zA-Z_-]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -61,9 +77,9 @@ export class CommonListComponent implements OnInit {
       setTimeout(()=>{   
         $('.table').DataTable( {
           pagingType: 'full_numbers',
-          pageLength: 5,
+          pageLength: 15,
           processing: true,
-          lengthMenu : [5, 10, 25],
+          lengthMenu : [15, 30, 45],
           destroy: true
       } );
       }, 1);
@@ -72,12 +88,14 @@ export class CommonListComponent implements OnInit {
 
   onSubmit(): void {
     this.commonlistForn.value['updated_by'] = localStorage.getItem('username');
+    this.commonlistForn.value['updated_at'] = new Date();
     this.submitted = true;
     if (this.commonlistForn.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.commonlistForn.value['created_by'] = localStorage.getItem('username');
+        this.commonlistForn.value['created_at'] = new Date();
         this.commonHttp.save( this.commonlistForn.value).subscribe((res:any) => {
           this.getCommonList();
           this.onReset();
@@ -95,11 +113,12 @@ export class CommonListComponent implements OnInit {
                 });
               }
             });
-
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.commonHttp.update(this.commonlistForn.value).subscribe((res:any) => {
+          this.isEdit = false;
           this.getCommonList();
           this.onReset();
         })
@@ -119,6 +138,7 @@ export class CommonListComponent implements OnInit {
   }
 
   editCommonList(id: any){
+    this.isEdit = true;
     this.submitBtn = 'UPDATE'
     this.commonHttp.list(id).subscribe((res:any) => {
       this.commonlistForn.patchValue({
@@ -127,6 +147,11 @@ export class CommonListComponent implements OnInit {
         list_desc: res.data[0].list_desc,
         order_by: res.data[0].order_by,
         loc_code: res.data[0].loc_code,
+        status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: this.datepipe.transform(res.data[0].created_at, 'MMM dd, yyyy'),
+        updated_by: res.data[0].updated_by,
+        updated_at: this.datepipe.transform(res.data[0].updated_at, 'MMM dd, yyyy'),
         _id: res.data[0]._id
       });
     })

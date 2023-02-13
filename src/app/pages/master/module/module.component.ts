@@ -9,6 +9,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { ModuleService } from 'src/app/services/master/module.service';
+import { DatePipe } from '@angular/common';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 
 
 @Component({
@@ -27,8 +29,9 @@ export class ModuleComponent implements OnInit{
 
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
+  isEdit:boolean=false;
 
-  constructor(private fb: FormBuilder, private moduleHttp:ModuleService) {
+  constructor(private fb: FormBuilder, private moduleHttp:ModuleService,public datepipe: DatePipe, private toastr: ToastrMsgService) {
     this.createForm();
   }
   
@@ -38,10 +41,13 @@ export class ModuleComponent implements OnInit{
       module_name: ['', Validators.required ],
       module_slug: ['', Validators.required ],
       parent_madule_code: ['0', Validators.required ],
-      module_image: ['', Validators.required ],
+      module_image: [''],
       is_home: ['', Validators.required ],
       status: ['', Validators.required ],
       created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
       _id: []
     });
   }
@@ -49,6 +55,26 @@ export class ModuleComponent implements OnInit{
   ngOnInit(): void {
     this.getModuleList();
     this.getModuleParent();
+  }
+
+  keyPressNumbersDecimal(e:any) {
+    var regex = new RegExp("^[0-9]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
+  }
+
+  keyPressStringDecimal(e:any) {
+    var regex = new RegExp("^[a-zA-Z_-]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -62,9 +88,9 @@ export class ModuleComponent implements OnInit{
       setTimeout(()=>{   
         $('.table').DataTable( {
           pagingType: 'full_numbers',
-          pageLength: 5,
+          pageLength: 15,
           processing: true,
-          lengthMenu : [5, 10, 25],
+          lengthMenu : [15, 30, 45],
           destroy: true
       } );
       }, 10);
@@ -80,12 +106,14 @@ export class ModuleComponent implements OnInit{
 
   onSubmit(): void {
     this.moduleForm.value['updated_by'] = localStorage.getItem('username');
+    this.moduleForm.value['updated_at'] = new Date();
     this.submitted = true;
     if (this.moduleForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.moduleForm.value['created_by'] = localStorage.getItem('username');
+        this.moduleForm.value['created_at'] = new Date();
         this.moduleHttp.save( this.moduleForm.value).subscribe((res:any) => {
           this.getModuleList();
           this.onReset();
@@ -103,9 +131,11 @@ export class ModuleComponent implements OnInit{
               }
             });
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.moduleHttp.update(this.moduleForm.value).subscribe((res:any) => {
+          this.isEdit = false;
           this.getModuleList();
           this.onReset();
         })
@@ -119,6 +149,7 @@ export class ModuleComponent implements OnInit{
   }
 
   editModuleList(id: any){
+    this.isEdit = true;
     this.submitBtn = 'UPDATE'
     this.moduleHttp.list(id).subscribe((res:any) => {
       this.moduleForm.patchValue({
@@ -126,9 +157,13 @@ export class ModuleComponent implements OnInit{
         module_name: res.data[0].module_name,
         module_slug: res.data[0].module_slug,
         parent_madule_code: res.data[0].parent_madule_code,
-        module_image: res.data[0].module_image,
+        // module_image: res.data[0].module_image,
         is_home: res.data[0].is_home,
         status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: this.datepipe.transform(res.data[0].created_at, 'MMM dd, yyyy'),
+        updated_by: res.data[0].updated_by,
+        updated_at: this.datepipe.transform(res.data[0].updated_at, 'MMM dd, yyyy'),
         _id: res.data[0]._id
       });
     })
