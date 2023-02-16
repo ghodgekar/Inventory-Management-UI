@@ -50,6 +50,7 @@ import { RateAdjustmentComponent } from './pages/transactions/rate-adjustment/ra
 import { DaySaleReportComponent } from './pages/reports/day-sale-report/day-sale-report.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { InitialCapInputDirective } from './directives/initial-cap-input.directive';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { ToastrModule } from 'ngx-toastr';
     PointOfSaleComponent,
     SalesReturnComponent,
     RateAdjustmentComponent,
-    DaySaleReportComponent
+    DaySaleReportComponent,
+    InitialCapInputDirective
   ],
   imports: [
     BrowserModule,

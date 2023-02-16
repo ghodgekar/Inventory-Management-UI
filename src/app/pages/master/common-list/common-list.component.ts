@@ -46,7 +46,7 @@ export class CommonListComponent implements OnInit {
       created_at: [''],
       updated_by: [''],
       updated_at: [''],
-      status: [''],
+      status: ['Active'],
       _id: []
     });
   }
@@ -128,6 +128,7 @@ export class CommonListComponent implements OnInit {
 
   onReset(): void {
     this.submitted = false;
+    this.isEdit = false;
     this.commonlistForn.reset();
   }
 
@@ -149,9 +150,9 @@ export class CommonListComponent implements OnInit {
         loc_code: res.data[0].loc_code,
         status: res.data[0].status,
         created_by: res.data[0].created_by,
-        created_at: this.datepipe.transform(res.data[0].created_at, 'MMM dd, yyyy'),
+        created_at: this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS'),
         updated_by: res.data[0].updated_by,
-        updated_at: this.datepipe.transform(res.data[0].updated_at, 'MMM dd, yyyy'),
+        updated_at: this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS'),
         _id: res.data[0]._id
       });
     })

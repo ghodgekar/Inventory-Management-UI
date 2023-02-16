@@ -31,47 +31,32 @@
                   <div class="head-1">
                     <div class="row">
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Code: </label>
+                        <label class="center-block">Code: <span class="mandatory-input">*</span></label>
                         <div>
                           <input class="form-control" formControlName="module_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
                         </div>
                       </div>
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Name: </label>
+                        <label class="center-block">Name: <span class="mandatory-input">*</span></label>
                         <div>
-                          <input class="form-control" formControlName="module_name" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1)">
+                          <input class="form-control" formControlName="module_name" appInitialCapInput>
                         </div>
                       </div>
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Page: </label>
+                        <label class="center-block">Page: <span class="mandatory-input">*</span></label>
                         <div>
                           <input class="form-control" formControlName="module_slug" (keypress)="keyPressStringDecimal($event)">
                         </div>
                       </div>
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Parent Module: </label>
+                        <label class="center-block">Parent Module: <span class="mandatory-input">*</span></label>
                         <div>
                           <select class="form-control" formControlName="parent_madule_code">
                             <option value="{{val._id}}" *ngFor="let val of parent_menu">{{val.module_name}}</option>
                           </select>
                         </div>
                       </div>
-                      <div class="col-sm-2 form-group">
-                        <label class="center-block">Image: </label>
-                        <div>
-                          <input type="file" class="form-control" formControlName="module_image">
-                        </div>
-                      </div>
-                      <div class="col-sm-2 form-group">
-                        <label class="center-block">Is Home: </label>
-                        <div>
-                          <select class="form-control" formControlName="is_home">
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div class="col-sm-2 form-group">
+                      <div class="col-sm-2 form-group" *ngIf="isEdit">
                         <label class="center-block">Status </label>
                         <div>
                           <select class="form-control" formControlName="status">
@@ -155,9 +140,9 @@
                             <td>{{val.is_home}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
-                            <td>{{val.created_at | date}}</td>
+                            <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
                             <td>{{val.updated_by}}</td>
-                            <td>{{val.updated_at | date}}</td>
+                            <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
                         </tr>
                     </tbody>
                 </table>

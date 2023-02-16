@@ -31,25 +31,25 @@
                   <div class="head-1">
                     <div class="row">
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Code: </label>
+                        <label class="center-block">Code: <span class="mandatory-input">*</span></label>
                         <div>
                           <input class="form-control" formControlName="param_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
                         </div>
                       </div>
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Value: </label>
+                        <label class="center-block">Value: <span class="mandatory-input">*</span></label>
                         <div>
                           <input class="form-control" formControlName="param_value">
                         </div>
                       </div>
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Description: </label>
+                        <label class="center-block">Description: <span class="mandatory-input">*</span></label>
                         <div>
-                          <input class="form-control" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1)" formControlName="param_desc">
+                          <input class="form-control" appInitialCapInput formControlName="param_desc">
                         </div>
                       </div>
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Data Type: </label>
+                        <label class="center-block">Data Type: <span class="mandatory-input">*</span></label>
                         <div>
                           <select class="form-control" formControlName="data_type">
                             <option>Select</option>
@@ -58,7 +58,7 @@
                           </select>
                         </div>
                       </div>
-                      <div class="col-sm-2 form-group">
+                      <div class="col-sm-2 form-group" *ngIf="isEdit">
                         <label class="center-block">Status: </label>
                         <div>
                           <select class="form-control" formControlName="status">
@@ -128,10 +128,7 @@
                             <td class="text-center">
                               <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editParameter(val._id)"> 
                                 <span class="tooltiptext">EDIT</span>
-                              </span>  
-                              <!-- <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteParameter(val._id)"> 
-                                <span class="tooltiptext">DELETE</span>
-                              </span> -->
+                              </span>
                             </td>
                             <td>{{val.param_code}}</td>
                             <td>{{val.param_value}}</td>
@@ -139,9 +136,9 @@
                             <td>{{val.data_type}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
-                            <td>{{val.created_at | date}}</td>
+                            <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
                             <td>{{val.updated_by}}</td>
-                            <td>{{val.updated_at | date}}</td>
+                            <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
                         </tr>
                     </tbody>
                 </table>

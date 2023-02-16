@@ -369,3 +369,7 @@ input:read-only {
     border: 1px solid rgb(160, 160, 160);
     background-color: #d6dae0;
 }
+
+.mandatory-input{
+    color: red;
+}

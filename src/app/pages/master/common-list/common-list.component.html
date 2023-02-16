@@ -31,21 +31,21 @@
                   <div class="head-1">
                     <div class="row">
                         <div class="col-sm-2 form-group">
-                          <label class="center-block">Code: </label>
+                          <label class="center-block">Code: <span class="mandatory-input">*</span></label>
                           <div>
                             <input class="form-control" formControlName="list_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
                           </div>
                         </div>
                         <div class="col-sm-2 form-group">
-                          <label class="center-block">Value: </label>
+                          <label class="center-block">Value: <span class="mandatory-input">*</span></label>
                           <div>
                             <input class="form-control" formControlName="list_value">
                           </div>
                         </div>
                         <div class="col-sm-2 form-group">
-                          <label class="center-block">Description: </label>
+                          <label class="center-block">Description: <span class="mandatory-input">*</span></label>
                           <div>
-                            <input class="form-control" formControlName="list_desc" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1)">
+                            <input class="form-control" formControlName="list_desc" appInitialCapInput>
                           </div>
                         </div>
                         <div class="col-sm-2 form-group">
@@ -55,16 +55,15 @@
                           </div>
                         </div>
                         <div class="col-sm-2 form-group">
-                          <label class="center-block">Location: </label>
+                          <label class="center-block">Location: <span class="mandatory-input">*</span></label>
                           <div>
                             <select class="form-control" formControlName="loc_code">
-                              <option>Select</option>
                               <option value="0">All Location</option>
                               <option [value]="val.loc_code" *ngFor="let val of branchData">{{val.loc_name}}</option>
                             </select>
                           </div>
                         </div>
-                        <div class="col-sm-2 form-group">
+                        <div class="col-sm-2 form-group" *ngIf="isEdit">
                           <label class="center-block">Status: </label>
                           <div>
                             <select class="form-control" formControlName="status">
@@ -147,9 +146,9 @@
                             <td>{{val.loc_code}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
-                            <td>{{val.created_at | date}}</td>
+                            <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
                             <td>{{val.updated_by}}</td>
-                            <td>{{val.updated_at | date}}</td>
+                            <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
                         </tr>
                     </tbody>
                 </table>

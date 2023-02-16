@@ -41,9 +41,7 @@ export class ModuleComponent implements OnInit{
       module_name: ['', Validators.required ],
       module_slug: ['', Validators.required ],
       parent_madule_code: ['0', Validators.required ],
-      module_image: [''],
-      is_home: ['', Validators.required ],
-      status: ['', Validators.required ],
+      status: ['Active', Validators.required ],
       created_by: [''],
       created_at: [''],
       updated_by: [''],
@@ -145,6 +143,7 @@ export class ModuleComponent implements OnInit{
 
   onReset(): void {
     this.submitted = false;
+    this.isEdit = false;
     this.moduleForm.reset();
   }
 
@@ -157,13 +156,11 @@ export class ModuleComponent implements OnInit{
         module_name: res.data[0].module_name,
         module_slug: res.data[0].module_slug,
         parent_madule_code: res.data[0].parent_madule_code,
-        // module_image: res.data[0].module_image,
-        is_home: res.data[0].is_home,
         status: res.data[0].status,
         created_by: res.data[0].created_by,
-        created_at: this.datepipe.transform(res.data[0].created_at, 'MMM dd, yyyy'),
+        created_at: this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS'),
         updated_by: res.data[0].updated_by,
-        updated_at: this.datepipe.transform(res.data[0].updated_at, 'MMM dd, yyyy'),
+        updated_at: this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS'),
         _id: res.data[0]._id
       });
     })

@@ -14,6 +14,7 @@ import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { DatePipe } from '@angular/common';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
+import { InitialCapInputDirective } from 'src/app/directives/initial-cap-input.directive';
 
 @Component({
   selector: 'app-parameter',
@@ -59,7 +60,7 @@ export class ParameterComponent implements  OnInit {
       created_at: [''],
       updated_by: [''],
       updated_at: [''],
-      status: [''],
+      status: ['Active'],
       _id: []
     });
   }
@@ -134,6 +135,7 @@ export class ParameterComponent implements  OnInit {
 
   onReset(): void {
     this.submitted = false;
+    this.isEdit = false;
     this.parameterForm.reset();
   }
 
@@ -147,9 +149,9 @@ export class ParameterComponent implements  OnInit {
         data_type: res.data[0].data_type,
         status: res.data[0].status,
         created_by: res.data[0].created_by,
-        created_at: this.datepipe.transform(res.data[0].created_at, 'MMM dd, yyyy'),
+        created_at: this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS'),
         updated_by: res.data[0].updated_by,
-        updated_at: this.datepipe.transform(res.data[0].updated_at, 'MMM dd, yyyy'),
+        updated_at: this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS'),
         _id: res.data[0]._id
       });
     })
