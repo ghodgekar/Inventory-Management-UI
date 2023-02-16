@@ -11,6 +11,9 @@ import htmlToPdfmake from 'html-to-pdfmake';
 import { CompanyService } from 'src/app/services/master/company.service';
 import { Subject } from 'rxjs';
 import { CommonListService } from 'src/app/services/master/common-list.service';
+import { DatePipe } from '@angular/common';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
+import { CityService } from 'src/app/services/master/city.service';
 
 @Component({
   selector: 'app-company',
@@ -18,6 +21,10 @@ import { CommonListService } from 'src/app/services/master/common-list.service';
   styleUrls: ['./company.component.css']
 })
 export class CompanyComponent implements OnInit{
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
 
   companyForm!: FormGroup;
   submitted: boolean = false;
@@ -31,8 +38,10 @@ export class CompanyComponent implements OnInit{
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   typeData: any;
+  isEdit:boolean=false;
+  cityData: any;
 
-  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService, private CommonListHttp:CommonListService) {
+  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService, private CommonListHttp:CommonListService,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService, private cityHttp:CityService) {
     this.createForm();
   }
   
@@ -42,29 +51,32 @@ export class CompanyComponent implements OnInit{
       comp_name: ['', Validators.required ],
       type: ['', Validators.required ],
       addr1: ['', Validators.required ],
-      addr2: ['', Validators.required ],
-      addr3: ['', Validators.required ],
+      addr2: [''],
+      addr3: ['' ],
       city: ['', Validators.required ],
       state: ['', Validators.required ],
       country: ['', Validators.required ],
-      std_code: ['', Validators.required ],
-      phone: ['', Validators.required ],
-      mobile: ['', Validators.required ],
-      gstin: ['', Validators.required ],
-      fassa_no: ['', Validators.required ],
-      cin_no: ['', Validators.required ],
-      pan_no: ['', Validators.required ],
-      tan_no: ['', Validators.required ],
-      lsttinpin_no: ['', Validators.required ],
-      cst_no: ['', Validators.required ],
-      coregn_no: ['', Validators.required ],
-      coregndate: ['', Validators.required ],
-      druglic_no: ['', Validators.required ],
-      importexport: ['', Validators.required ],
+      pincode: ['', Validators.required ],
+      std_code: [''],
+      phone: [''],
+      mobile: [''],
+      gstin: [''],
+      fassa_no: [''],
+      cin_no: [''],
+      pan_no: [''],
+      tan_no: [''],
+      lsttinpin_no: [''],
+      cst_no: [''],
+      coregn_no: [''],
+      coregndate: [''],
+      druglic_no: [''],
+      importexport: [''],
       company_image: [''],
-      status: ['Active', Validators.required ],
-      created_by: ['Admin'],
+      created_by: [''],
       created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
+      status: ['Active'],
       _id: []
     });
   }
@@ -80,12 +92,48 @@ export class CompanyComponent implements OnInit{
     };
     this.getCompanyList();
     this.getTypeList();
+    this.getCityList();
   }
 
   getTypeList(){
     this.CommonListHttp.codeList('COMP_TYPE').subscribe((res:any) => {
       this.typeData = res.data
     })
+  }
+
+  getCityList(){
+    this.cityHttp.list().subscribe((res:any) => {
+      this.cityData = res.data
+    })
+  }
+
+  onChanheCity(e:any){
+    this.cityHttp.getStateCountry(e.target.value).subscribe((res:any) => {
+      this.companyForm.patchValue({
+        state: res.data.state,
+        country: res.data.country
+      });
+    })
+  }
+
+  keyPressText(e:any) {
+    var regex = new RegExp("^[a-zA-Z0-9_-]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
+  }
+
+  keyPressNumber(e:any) {
+    var regex = new RegExp("^[0-9]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -102,15 +150,17 @@ export class CompanyComponent implements OnInit{
 
   onSubmit(): void {
     this.companyForm.value['updated_by'] = localStorage.getItem('username');
+    this.companyForm.value['updated_at'] = new Date();
     this.submitted = true;
     if (this.companyForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.companyForm.value['created_by'] = localStorage.getItem('username');
+        this.companyForm.value['created_at'] = new Date();
         this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {
-          this.getCompanyList();
           this.onReset();
+          this.toastr.showSuccess(res.message)
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -125,11 +175,14 @@ export class CompanyComponent implements OnInit{
               }
             });
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.CompanyHttp.update(this.companyForm.value).subscribe((res:any) => {
-          this.getCompanyList();
+          this.isEdit = false;
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
@@ -154,6 +207,7 @@ export class CompanyComponent implements OnInit{
         state: res.data[0].state,
         country: res.data[0].country,
         std_code: res.data[0].std_code,
+        pincode: res.data[0].pincode,
         phone: res.data[0].phone,
         mobile: res.data[0].mobile,
         gstin: res.data[0].gstin,
@@ -168,11 +222,18 @@ export class CompanyComponent implements OnInit{
         druglic_no: res.data[0].druglic_no,
         importexport: res.data[0].importexport,
         created_by: res.data[0].created_by,
-        created_date: res.data[0].created_date,
+        created_at: res.data[0].created_at,
+        updated_by: res.data[0].updated_by,
+        updated_at: res.data[0].updated_at,
         status: res.data[0].status,
         _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
+    this.isEdit = true;
   }
 
   deleteCompanyList(id:any){

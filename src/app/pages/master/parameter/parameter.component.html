@@ -35,21 +35,24 @@
                         <div>
                           <input class="form-control" formControlName="param_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
                         </div>
+                        <span class="validation-error mandatory-input" *ngIf="(submitted || f['param_code'].touched) && f['param_code'].errors?.['required']">Code is required</span>
                       </div>
                       <div class="col-sm-2 form-group">
                         <label class="center-block">Value: <span class="mandatory-input">*</span></label>
                         <div>
                           <input class="form-control" formControlName="param_value">
                         </div>
+                        <span class="validation-error mandatory-input" *ngIf="(submitted || f['param_value'].touched) && f['param_value'].errors?.['required']">Value is required</span>
                       </div>
                       <div class="col-sm-2 form-group">
                         <label class="center-block">Description: <span class="mandatory-input">*</span></label>
                         <div>
                           <input class="form-control" appInitialCapInput formControlName="param_desc">
                         </div>
+                        <span class="validation-error mandatory-input" *ngIf="(submitted || f['param_desc'].touched) && f['param_desc'].errors?.['required']">Description is required</span>
                       </div>
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Data Type: <span class="mandatory-input">*</span></label>
+                        <label class="center-block">Data Type:</label>
                         <div>
                           <select class="form-control" formControlName="data_type">
                             <option>Select</option>
@@ -77,25 +80,25 @@
                       <div class="col-sm-3 form-group">
                         <label class="center-block">Created By: </label>
                         <div>
-                          <input class="form-control" formControlName="created_by" readonly>
+                          <p class="form-control readonly" readonly>{{created_by}}</p>
                         </div>
                       </div>
                       <div class="col-sm-3 form-group">
                         <label class="center-block">Created At: </label>
                         <div>
-                          <input class="form-control" formControlName="created_at" readonly>
+                          <p class="form-control readonly" readonly>{{created_at}}</p>
                         </div>
                       </div>
                       <div class="col-sm-3 form-group">
                         <label class="center-block">Updated By: </label>
                         <div>
-                          <input class="form-control" formControlName="updated_by" readonly>
+                          <p class="form-control readonly" readonly>{{updated_by}}</p>
                         </div>
                       </div>
                       <div class="col-sm-3 form-group">
                         <label class="center-block">Updated At: </label>
                         <div>
-                          <input class="form-control" formControlName="updated_at" readonly>
+                          <p class="form-control readonly" readonly>{{updated_at}}</p>
                         </div>
                       </div>
                     </div>

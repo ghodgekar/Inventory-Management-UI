@@ -19,6 +19,10 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./common-list.component.css']
 })
 export class CommonListComponent implements OnInit {
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
 
   commonlistForn!: FormGroup;
   submitted: boolean = false;
@@ -66,7 +70,7 @@ export class CommonListComponent implements OnInit {
     return false;
   }
 
-  get f(): { [key: string]: AbstractControl } {
+  get f(){
     return this.commonlistForn.controls;
   }
 
@@ -97,8 +101,8 @@ export class CommonListComponent implements OnInit {
         this.commonlistForn.value['created_by'] = localStorage.getItem('username');
         this.commonlistForn.value['created_at'] = new Date();
         this.commonHttp.save( this.commonlistForn.value).subscribe((res:any) => {
-          this.getCommonList();
           this.onReset();
+          this.toastr.showSuccess(res.message)
         }, (err:any) => {
           if (err.status == 400) {
             this.toastr.showError(err.error.message)
@@ -119,8 +123,9 @@ export class CommonListComponent implements OnInit {
       }else if(this.submitBtn == 'UPDATE'){
         this.commonHttp.update(this.commonlistForn.value).subscribe((res:any) => {
           this.isEdit = false;
-          this.getCommonList();
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
@@ -128,7 +133,6 @@ export class CommonListComponent implements OnInit {
 
   onReset(): void {
     this.submitted = false;
-    this.isEdit = false;
     this.commonlistForn.reset();
   }
 
@@ -150,11 +154,15 @@ export class CommonListComponent implements OnInit {
         loc_code: res.data[0].loc_code,
         status: res.data[0].status,
         created_by: res.data[0].created_by,
-        created_at: this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS'),
+        created_at: res.data[0].created_at,
         updated_by: res.data[0].updated_by,
-        updated_at: this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS'),
+        updated_at: res.data[0].updated_at,
         _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
   }
 

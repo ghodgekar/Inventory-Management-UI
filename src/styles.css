@@ -128,7 +128,7 @@ input.form-control.ng-touched.ng-dirty.ng-valid {
     padding: 5px;
     transition: 250ms;
     font-size: 16px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     margin-top: 5px;
 }
 
@@ -365,7 +365,7 @@ option {
     padding-bottom: 10px;
 }
 
-input:read-only {
+input:read-only, .readonly {
     border: 1px solid rgb(160, 160, 160);
     background-color: #d6dae0;
 }

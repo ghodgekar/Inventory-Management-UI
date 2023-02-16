@@ -35,24 +35,27 @@
                         <div>
                           <input class="form-control" formControlName="module_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
                         </div>
+                        <span class="validation-error mandatory-input" *ngIf="(submitted || f['module_code'].touched) && f['module_code'].errors?.['required']">Code is required</span>
                       </div>
                       <div class="col-sm-2 form-group">
                         <label class="center-block">Name: <span class="mandatory-input">*</span></label>
                         <div>
                           <input class="form-control" formControlName="module_name" appInitialCapInput>
                         </div>
+                        <span class="validation-error mandatory-input" *ngIf="(submitted || f['module_name'].touched) && f['module_name'].errors?.['required']">Name is required</span>
                       </div>
                       <div class="col-sm-2 form-group">
                         <label class="center-block">Page: <span class="mandatory-input">*</span></label>
                         <div>
                           <input class="form-control" formControlName="module_slug" (keypress)="keyPressStringDecimal($event)">
                         </div>
+                        <span class="validation-error mandatory-input" *ngIf="(submitted || f['module_slug'].touched) && f['module_slug'].errors?.['required']">Slug is required</span>
                       </div>
                       <div class="col-sm-2 form-group">
-                        <label class="center-block">Parent Module: <span class="mandatory-input">*</span></label>
+                        <label class="center-block">Parent Module:</label>
                         <div>
                           <select class="form-control" formControlName="parent_madule_code">
-                            <option value="{{val._id}}" *ngFor="let val of parent_menu">{{val.module_name}}</option>
+                            <option value="{{val.module_code}}" *ngFor="let val of parent_menu">{{val.module_name}}</option>
                           </select>
                         </div>
                       </div>
@@ -74,25 +77,25 @@
                       <div class="col-sm-3 form-group">
                         <label class="center-block">Created By: </label>
                         <div>
-                          <input class="form-control" formControlName="created_by" readonly>
+                          <p class="form-control readonly" readonly>{{created_by}}</p>
                         </div>
                       </div>
                       <div class="col-sm-3 form-group">
                         <label class="center-block">Created At: </label>
                         <div>
-                          <input class="form-control" formControlName="created_at" readonly>
+                          <p class="form-control readonly" readonly>{{created_at}}</p>
                         </div>
                       </div>
                       <div class="col-sm-3 form-group">
                         <label class="center-block">Updated By: </label>
                         <div>
-                          <input class="form-control" formControlName="updated_by" readonly>
+                          <p class="form-control readonly" readonly>{{updated_by}}</p>
                         </div>
                       </div>
                       <div class="col-sm-3 form-group">
                         <label class="center-block">Updated At: </label>
                         <div>
-                          <input class="form-control" formControlName="updated_at" readonly>
+                          <p class="form-control readonly" readonly>{{updated_at}}</p>
                         </div>
                       </div>
                     </div>
@@ -113,8 +116,6 @@
                           <th>Name</th>
                           <th>Page</th>
                           <th>Parent Module</th>
-                          <th>Image</th>
-                          <th>Is Home</th>
                           <th>Status</th>
                           <th>Created By</th>
                           <th>Created Date</th>
@@ -136,8 +137,6 @@
                             <td>{{val.module_name}}</td>
                             <td>{{val.module_slug}}</td>
                             <td>{{val.parent_madule_code}}</td>
-                            <td>{{val.module_image}}</td>
-                            <td>{{val.is_home}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
                             <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>

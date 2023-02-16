@@ -19,6 +19,10 @@ import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service
   styleUrls: ['./module.component.css']
 })
 export class ModuleComponent implements OnInit{
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
 
   moduleForm!: FormGroup;
   submitted: boolean = false;
@@ -40,8 +44,8 @@ export class ModuleComponent implements OnInit{
       module_code: ['', Validators.required],
       module_name: ['', Validators.required ],
       module_slug: ['', Validators.required ],
-      parent_madule_code: ['0', Validators.required ],
-      status: ['Active', Validators.required ],
+      parent_madule_code: ['0'],
+      status: ['Active'],
       created_by: [''],
       created_at: [''],
       updated_by: [''],
@@ -75,7 +79,7 @@ export class ModuleComponent implements OnInit{
     return false;
   }
 
-  get f(): { [key: string]: AbstractControl } {
+  get f() {
     return this.moduleForm.controls;
   }
 
@@ -113,8 +117,8 @@ export class ModuleComponent implements OnInit{
         this.moduleForm.value['created_by'] = localStorage.getItem('username');
         this.moduleForm.value['created_at'] = new Date();
         this.moduleHttp.save( this.moduleForm.value).subscribe((res:any) => {
-          this.getModuleList();
           this.onReset();
+          this.toastr.showSuccess(res.message)
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -134,8 +138,9 @@ export class ModuleComponent implements OnInit{
       }else if(this.submitBtn == 'UPDATE'){
         this.moduleHttp.update(this.moduleForm.value).subscribe((res:any) => {
           this.isEdit = false;
-          this.getModuleList();
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
@@ -143,7 +148,6 @@ export class ModuleComponent implements OnInit{
 
   onReset(): void {
     this.submitted = false;
-    this.isEdit = false;
     this.moduleForm.reset();
   }
 
@@ -158,11 +162,15 @@ export class ModuleComponent implements OnInit{
         parent_madule_code: res.data[0].parent_madule_code,
         status: res.data[0].status,
         created_by: res.data[0].created_by,
-        created_at: this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS'),
+        created_at: res.data[0].created_at,
         updated_by: res.data[0].updated_by,
-        updated_at: this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS'),
+        updated_at: res.data[0].updated_at,
         _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
   }
 

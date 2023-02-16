@@ -26,47 +26,72 @@
     <div class="card">
         <div class="card-body">
           <form [formGroup]="companyForm">
-            <div class="head-1">
-              <div class="row">
-                <div class="col-sm-2 form-group">
-                  <label class="center-block">Company Code: </label>
-                  <div>
-                    <input class="form-control" formControlName="comp_code" oninput="this.value = this.value.toUpperCase()">
+            <div class="row">
+              <div class="col-sm-8">
+                <div class="head-1">
+                  <div class="row">
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Company Code: <span class="mandatory-input">*</span></label>
+                      <div>
+                        <input class="form-control" formControlName="comp_code" (keypress)="keyPressText($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
+                      </div>
+                      <span class="validation-error mandatory-input" *ngIf="(submitted || f['comp_code'].touched) && f['comp_code'].errors?.['required']">Code is required</span>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Company Name: <span class="mandatory-input">*</span></label>
+                      <div>
+                        <input class="form-control" formControlName="comp_name">
+                      </div>
+                      <span class="validation-error mandatory-input" *ngIf="(submitted || f['comp_name'].touched) && f['comp_name'].errors?.['required']">Name is required</span>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Type: <span class="mandatory-input">*</span></label>
+                      <div>
+                        <select class="form-control" formControlName="type">
+                          <option [value]="val.list_value" *ngFor="let val of typeData">{{val.list_desc}}</option>
+                        </select>
+                      </div>
+                      <span class="validation-error mandatory-input" *ngIf="(submitted || f['type'].touched) && f['type'].errors?.['required']">Type is required</span>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Status: </label>
+                      <div>
+                        <select class="form-control" formControlName="status">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="col-sm-2 form-group">
-                  <label class="center-block">Company Name: </label>
-                  <div>
-                    <input class="form-control" formControlName="comp_name">
-                  </div>
-                </div>
-                <div class="col-sm-2 form-group">
-                  <label class="center-block">Type: </label>
-                  <div>
-                    <select class="form-control" formControlName="type">
-                      <option [value]="val.list_value" *ngFor="let val of typeData">{{val.list_desc}}</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-sm-2 form-group">
-                  <label class="center-block">Status: </label>
-                  <div>
-                    <select class="form-control" formControlName="status">
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-sm-2 form-group">
-                  <label class="center-block">Created By: </label>
-                  <div>
-                    <input class="form-control" formControlName="created_by" readonly>
-                  </div>
-                </div>
-                <div class="col-sm-2 form-group">
-                  <label class="center-block">Created At: </label>
-                  <div>
-                    <input type="date" class="form-control" formControlName="created_at" readonly>
+              </div>
+              <div class="col-sm-4" *ngIf="isEdit">
+                <div class="head-1">
+                  <div class="row">
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Created By: </label>
+                      <div>
+                        <p class="form-control readonly" readonly>{{created_by}}</p>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Created At: </label>
+                      <div>
+                        <p class="form-control readonly" readonly>{{created_at}}</p>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Updated By: </label>
+                      <div>
+                        <p class="form-control readonly" readonly>{{updated_by}}</p>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Updated At: </label>
+                      <div>
+                        <p class="form-control readonly" readonly>{{updated_at}}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -75,10 +100,11 @@
               <h4>Address Details</h4>
               <div class="row">
                 <div class="col-sm-4 form-group">
-                  <label class="center-block">Address 1: </label>
+                  <label class="center-block">Address 1: <span class="mandatory-input">*</span></label>
                   <div>
                     <input class="form-control" formControlName="addr1">
                   </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['addr1'].touched) && f['addr1'].errors?.['required']">Address1 is required</span>
                 </div>
                 <div class="col-sm-4 form-group">
                   <label class="center-block">Address 2: </label>
@@ -95,39 +121,55 @@
               </div>
               <div class="row">
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">City: </label>
+                  <label class="center-block">City: <span class="mandatory-input">*</span></label>
                   <div>
-                    <input class="form-control" formControlName="city">
+                    <select class="form-control" formControlName="city" (change)="onChanheCity($event)">
+                      <option [value]="val.city_name" *ngFor="let val of cityData">{{val.city_name}}</option>
+                    </select>
                   </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['city'].touched) && f['city'].errors?.['required']">City is required</span>
                 </div>
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">State: </label>
+                  <label class="center-block">State: <span class="mandatory-input">*</span></label>
                   <div>
-                    <input class="form-control" formControlName="state">
+                    <input class="form-control" formControlName="state" readonly>
                   </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['state'].touched) && f['state'].errors?.['required']">State is required</span>
                 </div>
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">Country: </label>
+                  <label class="center-block">Country: <span class="mandatory-input">*</span></label>
                   <div>
-                    <input class="form-control" formControlName="country">
+                    <input class="form-control" formControlName="country" readonly>
                   </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['country'].touched) && f['country'].errors?.['required']">Country is required</span>
                 </div>
-                <div class="col-sm-2 form-group">
-                  <label class="center-block">STD Code: </label>
-                  <div>
-                    <input class="form-control" formControlName="std_code">
+                <div class="col-sm-2">
+                  <div class="row">
+                    <div class="col-sm-6 form-group">
+                      <label class="center-block">Pin Code: <span class="mandatory-input">*</span></label>
+                      <div>
+                        <input class="form-control" formControlName="pincode" (keypress)="keyPressNumber($event)">
+                      </div>
+                      <span class="validation-error mandatory-input" *ngIf="(submitted || f['pincode'].touched) && f['pincode'].errors?.['required']">Pincode is required</span>
+                    </div>
+                    <div class="col-sm-6 form-group">
+                      <label class="center-block">STD Code: </label>
+                      <div>
+                        <input class="form-control" formControlName="std_code" (keypress)="keyPressNumber($event)">
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="col-sm-2 form-group">
                   <label class="center-block">Telephone NO: </label>
                   <div>
-                    <input class="form-control" formControlName="phone">
+                    <input class="form-control" formControlName="phone" (keypress)="keyPressNumber($event)">
                   </div>
                 </div>
                 <div class="col-sm-2 form-group">
                   <label class="center-block">Mobile No: </label>
                   <div>
-                    <input class="form-control" formControlName="mobile">
+                    <input class="form-control" formControlName="mobile" (keypress)="keyPressNumber($event)">
                   </div>
                 </div>
               </div>
@@ -230,6 +272,7 @@
                           <th>City</th>
                           <th>State</th>
                           <th>Country</th>
+                          <th>Pin Code</th>
                           <th>Std Code</th>
                           <th>Telephone</th>
                           <th>Mobile</th>
@@ -238,6 +281,8 @@
                           <th>Status</th>
                           <th>Created By</th>
                           <th>Created Date</th>
+                          <th>Updated By</th>
+                          <th>Updated Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -245,10 +290,10 @@
                             <td class="text-center">
                               <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
                                 <span class="tooltiptext">EDIT</span>
-                              </span>  | 
-                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
+                              </span> 
+                              <!-- <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
                                 <span class="tooltiptext">DELETE</span>
-                              </span>
+                              </span> -->
                             </td>
                             <td>{{val.comp_code}}</td>
                             <td>{{val.comp_name}}</td>
@@ -259,6 +304,7 @@
                             <td>{{val.city}}</td>
                             <td>{{val.state}}</td>
                             <td>{{val.country}}</td>
+                            <td>{{val.pincode}}</td>
                             <td>{{val.std_code}}</td>
                             <td>{{val.phone}}</td>
                             <td>{{val.mobile}}</td>
@@ -266,7 +312,9 @@
                             <td>{{val.fassa_no}}</td>
                             <td>{{val.status}}</td>
                             <td>{{val.created_by}}</td>
-                            <td>{{val.created_at | date}}</td>
+                            <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
+                            <td>{{val.updated_by}}</td>
+                            <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
                         </tr>
                     </tbody>
                 </table>

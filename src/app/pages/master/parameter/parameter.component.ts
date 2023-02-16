@@ -22,6 +22,10 @@ import { InitialCapInputDirective } from 'src/app/directives/initial-cap-input.d
   styleUrls: ['./parameter.component.css']
 })
 export class ParameterComponent implements  OnInit {
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
 
   constructor(private fb: FormBuilder, private http:HttpClient,private readonly chRef: ChangeDetectorRef,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService) {
     this.createForm();
@@ -75,7 +79,7 @@ export class ParameterComponent implements  OnInit {
     return false;
   }
 
-  get f(): { [key: string]: AbstractControl } {
+  get f(){
     return this.parameterForm.controls;
   }
 
@@ -106,8 +110,8 @@ export class ParameterComponent implements  OnInit {
         this.parameterForm.value['created_by'] = localStorage.getItem('username');
         this.parameterForm.value['created_at'] = new Date();
         this.http.post( environment.api_url + 'parameters/save', this.parameterForm.value).subscribe((res:any) => {  
-          // this.getParameter();
           this.onReset();
+          this.toastr.showSuccess(res.message)
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -125,9 +129,11 @@ export class ParameterComponent implements  OnInit {
           this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.isEdit = false;
         this.http.post( environment.api_url + 'parameters/update', this.parameterForm.value).subscribe((res:any) => {
+          this.isEdit = false;
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
@@ -135,7 +141,6 @@ export class ParameterComponent implements  OnInit {
 
   onReset(): void {
     this.submitted = false;
-    this.isEdit = false;
     this.parameterForm.reset();
   }
 
@@ -149,11 +154,15 @@ export class ParameterComponent implements  OnInit {
         data_type: res.data[0].data_type,
         status: res.data[0].status,
         created_by: res.data[0].created_by,
-        created_at: this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS'),
+        created_at: res.data[0].created_at,
         updated_by: res.data[0].updated_by,
-        updated_at: this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS'),
+        updated_at: res.data[0].updated_at,
         _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
     this.isEdit = true;
   }

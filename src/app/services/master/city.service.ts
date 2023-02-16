@@ -15,6 +15,10 @@ export class CityService {
     }
     return this.http.get( environment.api_url +'city/'+id);
   }
+
+  getStateCountry(city_name?:any){
+    return this.http.get( environment.api_url +'getStateCountry/'+city_name);
+  }
   
   save(data:any){
     return this.http.post( environment.api_url +'city/save', data);
