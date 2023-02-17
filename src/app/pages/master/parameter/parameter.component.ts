@@ -16,6 +16,13 @@ import { DatePipe } from '@angular/common';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 import { InitialCapInputDirective } from 'src/app/directives/initial-cap-input.directive';
 
+class DataTablesResponse {
+  data!: any[];
+  draw!: number;
+  recordsFiltered!: number;
+  recordsTotal!: number;
+}
+
 @Component({
   selector: 'app-parameter',
   templateUrl: './parameter.component.html',
@@ -52,7 +59,8 @@ export class ParameterComponent implements  OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject();
   ngOnInit(): void {
-    this.getParameter();
+    // this.getParameter();
+    this.getParameterDatatable();
   }
   createForm() {
     this.parameterForm = this.fb.group({
@@ -99,6 +107,34 @@ export class ParameterComponent implements  OnInit {
     })
   }
 
+  getParameterDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    const that = this;
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 5,
+      serverSide: true,
+      processing: true,
+      ajax: (dataTablesParameters: any, callback) => {
+        Object.assign(dataTablesParameters, formData)
+        that.http
+          .post<DataTablesResponse>(
+            environment.api_url +'parameters/datatableList',
+            dataTablesParameters, {}
+          ).subscribe(resp => {
+            that.data = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
+      }
+    };
+  }
+
   onSubmit(): void {
     this.parameterForm.value['updated_by'] = localStorage.getItem('username');
     this.parameterForm.value['updated_at'] = new Date();
@@ -111,7 +147,8 @@ export class ParameterComponent implements  OnInit {
         this.parameterForm.value['created_at'] = new Date();
         this.http.post( environment.api_url + 'parameters/save', this.parameterForm.value).subscribe((res:any) => {  
           this.onReset();
-          this.toastr.showSuccess(res.message)
+          this.toastr.showSuccess(res.message);
+          $('#evaluator_table').DataTable().ajax.reload();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -134,6 +171,7 @@ export class ParameterComponent implements  OnInit {
           this.submitBtn = 'SAVE';
           this.onReset();
           this.toastr.showSuccess(res.message)
+          $('#evaluator_table').DataTable().ajax.reload();
         })
       }
     }

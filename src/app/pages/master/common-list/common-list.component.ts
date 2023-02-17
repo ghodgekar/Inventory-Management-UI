@@ -13,6 +13,13 @@ import { BranchService } from 'src/app/services/master/branch.service';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 import { DatePipe } from '@angular/common';
 
+class DataTablesResponse {
+  data!: any[];
+  draw!: number;
+  recordsFiltered!: number;
+  recordsTotal!: number;
+}
+
 @Component({
   selector: 'app-common-list',
   templateUrl: './common-list.component.html',
@@ -56,7 +63,8 @@ export class CommonListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getCommonList();
+    // this.getCommonList();
+    this.getCommonListDatatable();
     this.getLocationList();
   }
 
@@ -90,6 +98,40 @@ export class CommonListComponent implements OnInit {
     })
   }
 
+  getCommonListDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    const that = this;
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: true,
+      scrollCollapse: true,
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50, 100],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        that.commonHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+            that.data = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
+      }
+    };
+  }
+
   onSubmit(): void {
     this.commonlistForn.value['updated_by'] = localStorage.getItem('username');
     this.commonlistForn.value['updated_at'] = new Date();
@@ -101,8 +143,9 @@ export class CommonListComponent implements OnInit {
         this.commonlistForn.value['created_by'] = localStorage.getItem('username');
         this.commonlistForn.value['created_at'] = new Date();
         this.commonHttp.save( this.commonlistForn.value).subscribe((res:any) => {
+          $('#evaluator_table').DataTable().ajax.reload();
           this.onReset();
-          this.toastr.showSuccess(res.message)
+          this.toastr.showSuccess(res.message);
         }, (err:any) => {
           if (err.status == 400) {
             this.toastr.showError(err.error.message)
@@ -122,6 +165,7 @@ export class CommonListComponent implements OnInit {
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.commonHttp.update(this.commonlistForn.value).subscribe((res:any) => {
+          $('#evaluator_table').DataTable().ajax.reload();
           this.isEdit = false;
           this.submitBtn = 'SAVE';
           this.onReset();

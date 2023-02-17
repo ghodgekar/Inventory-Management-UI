@@ -16,6 +16,10 @@ export class CommonListService {
     return this.http.get( environment.api_url +'common_list/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'common_list/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'common_list/save', data);
   }
