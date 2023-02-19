@@ -16,6 +16,10 @@ export class ModuleService {
     return this.http.get( environment.api_url +'module/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'module/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'module/save', data);
   }

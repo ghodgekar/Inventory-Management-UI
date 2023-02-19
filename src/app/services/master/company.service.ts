@@ -16,6 +16,10 @@ export class CompanyService {
     return this.http.get( environment.api_url +'company/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'company/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'company/save', data);
   }

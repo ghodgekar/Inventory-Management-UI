@@ -108,7 +108,47 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" datatable >
+              <table datatable [dtOptions]="dtOptions" class="row-border hover"
+              id="evaluator_table">
+                <thead>
+                    <tr>
+                      <th width="25">Action</th>
+                      <th>Code</th>
+                      <th>Name</th>
+                      <th>Page</th>
+                      <th>Parent Module</th>
+                      <th>Status</th>
+                      <th>Created By</th>
+                      <th>Created Date</th>
+                      <th>Updated By</th>
+                      <th>Updated Date</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="data?.length != 0">
+                    <tr *ngFor="let val of data">
+                      <td class="text-center">
+                        <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editModuleList(val._id)"> 
+                          <span class="tooltiptext">EDIT</span>
+                        </span>
+                      </td>
+                      <td>{{val.module_code}}</td>
+                      <td>{{val.module_name}}</td>
+                      <td>{{val.module_slug}}</td>
+                      <td>{{val.parent_madule_code}}</td>
+                      <td>{{val.status}}</td>
+                      <td>{{val.created_by}}</td>
+                      <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
+                      <td>{{val.updated_by}}</td>
+                      <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="data?.length == 0">
+                    <tr>
+                        <td colspan="3" class="no-data-available">No data!</td>
+                    </tr>
+                </tbody>
+              </table>
+                <!-- <table class="table table-bordered" datatable >
                     <thead>
                         <tr>
                           <th width="25">Action</th>
@@ -129,9 +169,9 @@
                               <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editModuleList(val._id)"> 
                                 <span class="tooltiptext">EDIT</span>
                               </span> 
-                              <!-- <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteModuleList(val._id)"> 
+                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteModuleList(val._id)"> 
                                 <span class="tooltiptext">DELETE</span>
-                              </span> -->
+                              </span>
                             </td>
                             <td>{{val.module_code}}</td>
                             <td>{{val.module_name}}</td>
@@ -144,7 +184,7 @@
                             <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
             </div>
         </div>
     </div>

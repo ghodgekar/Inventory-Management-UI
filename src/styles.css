@@ -373,3 +373,7 @@ input:read-only, .readonly {
 .mandatory-input{
     color: red;
 }
+
+table{
+    width: 100% !important;
+}

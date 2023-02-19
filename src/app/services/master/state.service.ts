@@ -16,6 +16,10 @@ export class StateService {
     return this.http.get( environment.api_url +'state/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'state/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'state/save', data);
   }

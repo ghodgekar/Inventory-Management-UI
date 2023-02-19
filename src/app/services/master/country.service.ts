@@ -16,6 +16,10 @@ export class CountryService {
     return this.http.get( environment.api_url +'country/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'country/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'country/save', data);
   }

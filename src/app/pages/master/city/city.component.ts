@@ -11,6 +11,8 @@ import htmlToPdfmake from 'html-to-pdfmake';
 import { CityService } from 'src/app/services/master/city.service';
 import { Subject } from 'rxjs';
 import { StateService } from 'src/app/services/master/state.service';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
+import { DatePipe } from '@angular/common';
 
 
 
@@ -20,6 +22,11 @@ import { StateService } from 'src/app/services/master/state.service';
   styleUrls: ['./city.component.css']
 })
 export class CityComponent {
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
+  isEdit:boolean=false;
 
   cityForm!: FormGroup;
   submitted: boolean = false;
@@ -34,7 +41,7 @@ export class CityComponent {
   dtTrigger: Subject<any> = new Subject();
   stateData: any;
 
-  constructor(private fb: FormBuilder, private CityHttp:CityService, private stateHttp:StateService) {
+  constructor(private fb: FormBuilder, private CityHttp:CityService, private stateHttp:StateService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
   }
   
@@ -48,15 +55,8 @@ export class CityComponent {
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-      lengthMenu: [10,20,30],
-      order:[[1,'desc']],
-      destroy: true
-    };
-    this.getCompanyList();
+    // this.getCityList();
+    this.getCityDatatable()
     this.getStateList();
     this.dtTrigger.next(null);
   }
@@ -71,25 +71,63 @@ export class CityComponent {
     return this.cityForm.controls;
   }
 
-  getCompanyList(){
+  getCityList(){
     this.CityHttp.list().subscribe((res:any) => {
       this.data = res.data;
       this.dtTrigger.next(null);
       this.dtTrigger.subscribe();
     })
   }
+  
+
+  getCityDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    const that = this;
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: true,
+      scrollCollapse: true,
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        that.CityHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+            that.data = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
+      }
+    };
+  }
 
   onSubmit(): void {
     this.cityForm.value['updated_by'] = localStorage.getItem('username');
+    this.cityForm.value['updated_at'] = new Date();
     this.submitted = true;
     if (this.cityForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.cityForm.value['created_by'] = localStorage.getItem('username');
+        this.cityForm.value['created_at'] = new Date();
         this.CityHttp.save( this.cityForm.value).subscribe((res:any) => {
-          this.getCompanyList();
+          $('#evaluator_table').DataTable().ajax.reload();
           this.onReset();
+          this.toastr.showSuccess(res.message);
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -104,11 +142,15 @@ export class CityComponent {
               }
             });
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.CityHttp.update(this.cityForm.value).subscribe((res:any) => {
-          this.getCompanyList();
+          $('#evaluator_table').DataTable().ajax.reload();
+          this.isEdit = false;
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
@@ -120,19 +162,28 @@ export class CityComponent {
   }
 
   editCompanyList(id: any){
+    this.isEdit = true;
     this.submitBtn = 'UPDATE'
     this.CityHttp.list(id).subscribe((res:any) => {
       this.cityForm.patchValue({
         city_name: res.data[0].city_name,
         state_code: res.data[0].state_code,
+        status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: res.data[0].created_at,
+        updated_by: res.data[0].updated_by,
+        updated_at: res.data[0].updated_at,
         _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
   }
 
   deleteCompanyList(id:any){
     this.CityHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getCompanyList();
     })
   }
 

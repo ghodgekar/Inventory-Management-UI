@@ -55,7 +55,8 @@ export class ModuleComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.getModuleList();
+    // this.getModuleList();
+    this.getModuleDatatable();
     this.getModuleParent();
   }
 
@@ -99,6 +100,40 @@ export class ModuleComponent implements OnInit{
     })
   }
 
+  getModuleDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    const that = this;
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: true,
+      scrollCollapse: true,
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50, 100],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        that.moduleHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+            that.data = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
+      }
+    };
+  }
+
   getModuleParent(){
     this.submitBtn == 'SAVE';
     this.moduleHttp.parent_menu().subscribe((res:any) => {
@@ -117,8 +152,9 @@ export class ModuleComponent implements OnInit{
         this.moduleForm.value['created_by'] = localStorage.getItem('username');
         this.moduleForm.value['created_at'] = new Date();
         this.moduleHttp.save( this.moduleForm.value).subscribe((res:any) => {
+          $('#evaluator_table').DataTable().ajax.reload();
           this.onReset();
-          this.toastr.showSuccess(res.message)
+          this.toastr.showSuccess(res.message);
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -137,6 +173,7 @@ export class ModuleComponent implements OnInit{
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.moduleHttp.update(this.moduleForm.value).subscribe((res:any) => {
+          $('#evaluator_table').DataTable().ajax.reload();
           this.isEdit = false;
           this.submitBtn = 'SAVE';
           this.onReset();
