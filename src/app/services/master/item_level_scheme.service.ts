@@ -16,6 +16,10 @@ export class ItemLevelSchemeService {
     return this.http.get( environment.api_url +'item_level_scheme/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'item_level_scheme/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'item_level_scheme/save', data);
   }

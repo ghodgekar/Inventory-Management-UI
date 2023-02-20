@@ -1,7 +1,6 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
-import { HttpClient  } from '@angular/common/http';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -10,18 +9,9 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
-import { Subject } from 'rxjs';
-import { DataTableDirective } from 'angular-datatables';
 import { DatePipe } from '@angular/common';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
-import { InitialCapInputDirective } from 'src/app/directives/initial-cap-input.directive';
-
-class DataTablesResponse {
-  data!: any[];
-  draw!: number;
-  recordsFiltered!: number;
-  recordsTotal!: number;
-}
+import { ParameterService } from 'src/app/services/master/parameter.service';
 
 @Component({
   selector: 'app-parameter',
@@ -29,39 +19,28 @@ class DataTablesResponse {
   styleUrls: ['./parameter.component.css']
 })
 export class ParameterComponent implements  OnInit {
+
   created_by: any;
   created_at: any;
   updated_by: any;
   updated_at: any;
+  parameterForm!: FormGroup;
+  submitted: boolean = false;
+  submitBtn:String ='SAVE';
+  isEdit:boolean=false;
+  @ViewChild('pdfTable')
+  pdfTable!: ElementRef;
+  dtOptions: DataTables.Settings = {};
+  data:any=[];
 
-  constructor(private fb: FormBuilder, private http:HttpClient,private readonly chRef: ChangeDetectorRef,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService) {
+  constructor(private fb: FormBuilder, private parameterHttp:ParameterService,private readonly chRef: ChangeDetectorRef,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService) {
     this.createForm();
   }
 
-  @HostListener('input', ['$event'])
-  onInput(event:any):void{
-    if(event.target.value.length === 1){
-      const inputValue = event.target.value;
-      this.ref.nativeElement.value = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
-    }
-  }
-  @ViewChild(DataTableDirective) datatableElement!: DataTableDirective;
-  parameterForm!: FormGroup;
-  submitted: boolean = false;
-  data:any=[];
-  submitBtn:String ='SAVE';
-  isEdit:boolean=false;
-
-  @ViewChild('pdfTable')
-  pdfTable!: ElementRef;
-
-  
-  dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject();
   ngOnInit(): void {
-    // this.getParameter();
     this.getParameterDatatable();
   }
+
   createForm() {
     this.parameterForm = this.fb.group({
       param_code: ['', Validators.required],
@@ -77,60 +56,39 @@ export class ParameterComponent implements  OnInit {
     });
   }
 
-  keyPressNumbersDecimal(e:any) {
-    var regex = new RegExp("^[a-zA-Z_-]+$");
-    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-    if (regex.test(str)) {
-        return true;
-    }
-    e.preventDefault();
-    return false;
-  }
-
   get f(){
     return this.parameterForm.controls;
-  }
-
-  getParameter(){
-    this.submitBtn == 'SAVE';
-    this.http.get( environment.api_url +'parameters').subscribe((res:any) => {
-      this.data = res.data;
-      setTimeout(()=>{   
-        $('.table').DataTable( {
-          pagingType: 'full_numbers',
-          pageLength: 15,
-          processing: true,
-          lengthMenu : [15, 30, 45],
-          destroy: true
-      } );
-      }, 10);
-    })
   }
 
   getParameterDatatable(){
     var formData = {
       searchStatus: 'Active',
     };
-    const that = this;
     this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 5,
+      processing: false,
+      responsive: true,
       serverSide: true,
-      processing: true,
+      destroy: true,
+      autoWidth: true,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: false,
+      scrollCollapse: true,
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60, 100],
       ajax: (dataTablesParameters: any, callback) => {
         Object.assign(dataTablesParameters, formData)
-        that.http
-          .post<DataTablesResponse>(
-            environment.api_url +'parameters/datatableList',
-            dataTablesParameters, {}
-          ).subscribe(resp => {
-            that.data = resp.data;
-            callback({
-              recordsTotal: resp.recordsTotal,
-              recordsFiltered: resp.recordsFiltered,
-              data: []
-            });
+        this.parameterHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+          this.data = resp.data;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: []
           });
+        });
       }
     };
   }
@@ -145,7 +103,7 @@ export class ParameterComponent implements  OnInit {
       if(this.submitBtn == 'SAVE'){
         this.parameterForm.value['created_by'] = localStorage.getItem('username');
         this.parameterForm.value['created_at'] = new Date();
-        this.http.post( environment.api_url + 'parameters/save', this.parameterForm.value).subscribe((res:any) => {  
+        this.parameterHttp.save( this.parameterForm.value).subscribe((res:any) => {  
           this.onReset();
           this.toastr.showSuccess(res.message);
           $('#evaluator_table').DataTable().ajax.reload();
@@ -166,7 +124,7 @@ export class ParameterComponent implements  OnInit {
           this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.http.post( environment.api_url + 'parameters/update', this.parameterForm.value).subscribe((res:any) => {
+        this.parameterHttp.update( this.parameterForm.value).subscribe((res:any) => {
           this.isEdit = false;
           this.submitBtn = 'SAVE';
           this.onReset();
@@ -184,7 +142,7 @@ export class ParameterComponent implements  OnInit {
 
   editParameter(id: any){
     this.submitBtn = 'UPDATE'
-    this.http.get( environment.api_url +'parameters/' + id).subscribe((res:any) => {
+    this.parameterHttp.list(id).subscribe((res:any) => {
       this.parameterForm.patchValue({
         param_code: res.data[0].param_code,
         param_value: res.data[0].param_value,
@@ -206,52 +164,10 @@ export class ParameterComponent implements  OnInit {
   }
 
   deleteParameter(id:any){
-    this.http.post( environment.api_url +'parameters/delete', {'_id':id}).subscribe((res:any) => {
-      this.getParameter();
+    this.parameterHttp.delete( {'_id':id}).subscribe((res:any) => {
+      $('#evaluator_table').DataTable().ajax.reload();
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.data.map((el:any, i:any) => [el.data.param_code, el.data.param_value, el.data.param_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {

@@ -16,6 +16,10 @@ export class ItemTaxService {
     return this.http.get( environment.api_url +'item_tax/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'item_tax/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'item_tax/save', data);
   }

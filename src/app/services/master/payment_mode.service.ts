@@ -15,6 +15,10 @@ export class PaymentModeService {
     return this.http.get( environment.api_url +'payment_mode/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'payment_mode/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'payment_mode/save', data);
   }

@@ -16,6 +16,10 @@ export class BrandService {
     return this.http.get( environment.api_url +'brand/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'brand/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'brand/save', data);
   }

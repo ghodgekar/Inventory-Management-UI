@@ -16,6 +16,10 @@ export class ItemService {
     return this.http.get( environment.api_url +'item/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'item/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'item/save', data);
   }

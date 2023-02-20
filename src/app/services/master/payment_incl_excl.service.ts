@@ -15,6 +15,10 @@ export class PaymentInclExclService {
     return this.http.get( environment.api_url +'payment_incl_excl/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'payment_incl_excl/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'payment_incl_excl/save', data);
   }

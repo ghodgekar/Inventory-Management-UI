@@ -33,7 +33,7 @@
                       <div class="col-sm-2 form-group">
                         <label class="center-block">Code: <span class="mandatory-input">*</span></label>
                         <div>
-                          <input class="form-control" formControlName="param_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
+                          <input class="form-control" formControlName="param_code" appAllCapInput appStringInput [readonly]='isEdit'>
                         </div>
                         <span class="validation-error mandatory-input" *ngIf="(submitted || f['param_code'].touched) && f['param_code'].errors?.['required']">Code is required</span>
                       </div>
@@ -55,7 +55,7 @@
                         <label class="center-block">Data Type:</label>
                         <div>
                           <select class="form-control" formControlName="data_type">
-                            <option>Select</option>
+                            <option value="" disabled>Select</option>
                             <option value="C">Character</option>
                             <option value="N">Number</option>
                           </select>
@@ -65,7 +65,7 @@
                         <label class="center-block">Status: </label>
                         <div>
                           <select class="form-control" formControlName="status">
-                            <option>Select</option>
+                            <option disabled>Select</option>
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
                           </select>
@@ -150,68 +150,8 @@
                     </tr>
                 </tbody>
               </table>
-                <!-- <table class="table table-striped table-bordered table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                    <thead>
-                        <tr>
-                          <th width="25">Action</th>
-                          <th>Code</th>
-                          <th>Value</th>
-                          <th>Description</th>
-                          <th>Data Type</th>
-                          <th>Status</th>
-                          <th>Created By</th>
-                          <th>Created Date</th>
-                          <th>Updated By</th>
-                          <th>Updated Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let val of data">
-                            <td class="text-center">
-                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editParameter(val._id)"> 
-                                <span class="tooltiptext">EDIT</span>
-                              </span>
-                            </td>
-                            <td>{{val.param_code}}</td>
-                            <td>{{val.param_value}}</td>
-                            <td>{{val.param_desc}}</td>
-                            <td>{{val.data_type}}</td>
-                            <td>{{val.status}}</td>
-                            <td>{{val.created_by}}</td>
-                            <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
-                            <td>{{val.updated_by}}</td>
-                            <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
-                        </tr>
-                    </tbody>
-                </table> -->
             </div>
         </div>
     </div>
 </div>
-
-<!-- <div class="display-view" style="display: none;">
-  <table class="table" id="table" #pdfTable>
-    <thead>
-      <tr>
-        <th>Code</th>
-        <th>Value</th>
-        <th>Description</th>
-        <th>Data Type</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let val of data">
-        <td>{{val.param_code}}</td>
-        <td>{{val.param_value}}</td>
-        <td>{{val.param_desc}}</td>
-        <td>{{val.data_type}}</td>
-        <td>{{val.created_by}}</td>
-        <td>{{val.created_at}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div> -->
-
 <app-footer></app-footer>

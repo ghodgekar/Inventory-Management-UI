@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -23,18 +23,16 @@ export class ModuleComponent implements OnInit{
   created_at: any;
   updated_by: any;
   updated_at: any;
-
   moduleForm!: FormGroup;
   submitted: boolean = false;
-  data:any=[];
-  parent_menu: any=[];
-  dtOptions:any={};
   submitBtn:String ='SAVE';
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-  isEdit:boolean=false;
-
+  dtOptions: DataTables.Settings = {};
+  data:any=[];
+  parent_menu: any=[];
+  
   constructor(private fb: FormBuilder, private moduleHttp:ModuleService,public datepipe: DatePipe, private toastr: ToastrMsgService) {
     this.createForm();
   }
@@ -55,49 +53,12 @@ export class ModuleComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    // this.getModuleList();
     this.getModuleDatatable();
     this.getModuleParent();
   }
 
-  keyPressNumbersDecimal(e:any) {
-    var regex = new RegExp("^[0-9]+$");
-    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-    if (regex.test(str)) {
-        return true;
-    }
-    e.preventDefault();
-    return false;
-  }
-
-  keyPressStringDecimal(e:any) {
-    var regex = new RegExp("^[a-zA-Z_-]+$");
-    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-    if (regex.test(str)) {
-        return true;
-    }
-    e.preventDefault();
-    return false;
-  }
-
   get f() {
     return this.moduleForm.controls;
-  }
-
-  getModuleList(){
-    this.submitBtn == 'SAVE';
-    this.moduleHttp.list().subscribe((res:any) => {
-      this.data = res.data;
-      setTimeout(()=>{   
-        $('.table').DataTable( {
-          pagingType: 'full_numbers',
-          pageLength: 15,
-          processing: true,
-          lengthMenu : [15, 30, 45],
-          destroy: true
-      } );
-      }, 10);
-    })
   }
 
   getModuleDatatable(){
@@ -110,16 +71,16 @@ export class ModuleComponent implements OnInit{
       responsive: true,
       serverSide: true,
       destroy: true,
-      autoWidth: false,
+      autoWidth: true,
       info: true,
       dom: 'Rfrtlip',
       searching: false,
       lengthChange: true,
       ordering: false,
-      scrollX: true,
+      scrollX: false,
       scrollCollapse: true,
-      pageLength: 5,
-      lengthMenu: [5, 10, 25, 50, 100],
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60, 100],
       ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
         Object.assign(dataTablesParameters, formData)
         that.moduleHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
@@ -151,10 +112,10 @@ export class ModuleComponent implements OnInit{
       if(this.submitBtn == 'SAVE'){
         this.moduleForm.value['created_by'] = localStorage.getItem('username');
         this.moduleForm.value['created_at'] = new Date();
-        this.moduleHttp.save( this.moduleForm.value).subscribe((res:any) => {
-          $('#evaluator_table').DataTable().ajax.reload();
+        this.moduleHttp.save( this.moduleForm.value).subscribe((res:any) => {  
           this.onReset();
           this.toastr.showSuccess(res.message);
+          $('#evaluator_table').DataTable().ajax.reload();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -172,12 +133,12 @@ export class ModuleComponent implements OnInit{
           this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.moduleHttp.update(this.moduleForm.value).subscribe((res:any) => {
-          $('#evaluator_table').DataTable().ajax.reload();
+        this.moduleHttp.update( this.moduleForm.value).subscribe((res:any) => {
           this.isEdit = false;
           this.submitBtn = 'SAVE';
           this.onReset();
           this.toastr.showSuccess(res.message)
+          $('#evaluator_table').DataTable().ajax.reload();
         })
       }
     }
@@ -213,51 +174,9 @@ export class ModuleComponent implements OnInit{
 
   deleteModuleList(id:any){
     this.moduleHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getModuleList();
+      $('#evaluator_table').DataTable().ajax.reload();
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.data.map((el:any, i:any) => [el.data.list_code, el.data.list_value, el.data.list_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {

@@ -33,7 +33,7 @@
                         <div class="col-sm-2 form-group">
                           <label class="center-block">Code: <span class="mandatory-input">*</span></label>
                           <div>
-                            <input class="form-control" formControlName="list_code" (keypress)="keyPressNumbersDecimal($event)" oninput="this.value = this.value.toUpperCase()" [readonly]='isEdit'>
+                            <input class="form-control" formControlName="list_code" appAllCapInput appStringInput [readonly]='isEdit'>
                           </div>
                           <span class="validation-error mandatory-input" *ngIf="(submitted || f['list_code'].touched) && f['list_code'].errors?.['required']">Code is required</span>
                         </div>
@@ -47,7 +47,7 @@
                         <div class="col-sm-2 form-group">
                           <label class="center-block">Description: <span class="mandatory-input">*</span></label>
                           <div>
-                            <input class="form-control" formControlName="list_desc" appInitialCapInput>
+                            <input class="form-control" appInitialCapInput formControlName="list_desc" appInitialCapInput>
                           </div>
                           <span class="validation-error mandatory-input" *ngIf="(submitted || f['list_desc'].touched) && f['list_desc'].errors?.['required']">Description is required</span>
                         </div>
@@ -117,8 +117,7 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-              <table datatable [dtOptions]="dtOptions" class="row-border hover"
-              id="evaluator_table">
+              <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
                 <thead>
                     <tr>
                       <th width="25">Action</th>
@@ -159,75 +158,8 @@
                     </tr>
                 </tbody>
               </table>
-                <!-- <table class="table table-bordered" datatable >
-                    <thead>
-                        <tr>
-                          <th width="25">Action</th>
-                          <th>Code</th>
-                          <th>Value</th>
-                          <th>Description</th>
-                          <th>Order By</th>
-                          <th>Location Code</th>
-                          <th>Status</th>
-                          <th>Created By</th>
-                          <th>Created Date</th>
-                          <th>Updated By</th>
-                          <th>Updated Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let val of data">
-                            <td class="text-center">
-                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCommonList(val._id)"> 
-                                <span class="tooltiptext">EDIT</span>
-                              </span>
-                             <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCommonList(val._id)"> 
-                                <span class="tooltiptext">DELETE</span>
-                              </span>
-                            </td>
-                            <td>{{val.list_code}}</td>
-                            <td>{{val.list_value}}</td>
-                            <td>{{val.list_desc}}</td>
-                            <td>{{val.order_by}}</td>
-                            <td>{{val.loc_code}}</td>
-                            <td>{{val.status}}</td>
-                            <td>{{val.created_by}}</td>
-                            <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
-                            <td>{{val.updated_by}}</td>
-                            <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
-                        </tr>
-                    </tbody>
-                </table> -->
             </div>
         </div>
     </div>
 </div>
-
-<div class="display-view" style="display: none;">
-  <table class="table" id="table" #pdfTable>
-    <thead>
-      <tr>
-        <th>Code</th>
-        <th>Value</th>
-        <th>Description</th>
-        <th>Order By</th>
-        <th>Location Code</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let val of data">
-        <td>{{val.list_code}}</td>
-        <td>{{val.list_value}}</td>
-        <td>{{val.list_desc}}</td>
-        <td>{{val.order_by}}</td>
-        <td>{{val.loc_code}}</td>
-        <td>{{val.created_by}}</td>
-        <td>{{val.created_at}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 <app-footer></app-footer>

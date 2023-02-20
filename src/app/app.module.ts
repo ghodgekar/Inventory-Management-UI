@@ -51,6 +51,10 @@ import { DaySaleReportComponent } from './pages/reports/day-sale-report/day-sale
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { InitialCapInputDirective } from './directives/initial-cap-input.directive';
+import { AllCapInputDirective } from './directives/all-cap-input.directive';
+import { NumberInputDirective } from './directives/number-input.directive';
+import { StringInputDirective } from './directives/string-input.directive';
+import { SkipSpecialCharInputDirective } from './directives/skip-special-char-input.directive';
 
 @NgModule({
   declarations: [
@@ -94,7 +98,11 @@ import { InitialCapInputDirective } from './directives/initial-cap-input.directi
     SalesReturnComponent,
     RateAdjustmentComponent,
     DaySaleReportComponent,
-    InitialCapInputDirective
+    InitialCapInputDirective,
+    AllCapInputDirective,
+    NumberInputDirective,
+    StringInputDirective,
+    SkipSpecialCharInputDirective
   ],
   imports: [
     BrowserModule,

@@ -16,6 +16,10 @@ export class UserPermissionService {
     return this.http.get( environment.api_url +'user_permission/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'user_permission/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'user_permission/save', data);
   }

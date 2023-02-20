@@ -15,6 +15,10 @@ export class VendorService {
     return this.http.get( environment.api_url +'vendor/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'vendor/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'vendor/save', data);
   }

@@ -13,34 +13,26 @@ import { BranchService } from 'src/app/services/master/branch.service';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 import { DatePipe } from '@angular/common';
 
-class DataTablesResponse {
-  data!: any[];
-  draw!: number;
-  recordsFiltered!: number;
-  recordsTotal!: number;
-}
-
 @Component({
   selector: 'app-common-list',
   templateUrl: './common-list.component.html',
   styleUrls: ['./common-list.component.css']
 })
 export class CommonListComponent implements OnInit {
+  
   created_by: any;
   created_at: any;
   updated_by: any;
   updated_at: any;
-
   commonlistForn!: FormGroup;
   submitted: boolean = false;
-  data:any=[];
-  dtOptions:any={};
   submitBtn:String ='SAVE';
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-  branchData: any;
-  isEdit:boolean=false;
+  dtOptions: DataTables.Settings = {};
+  data:any=[];
+  branchData: any=[];
 
   constructor(private fb: FormBuilder, private commonHttp:CommonListService, private branchHttp:BranchService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
@@ -63,38 +55,17 @@ export class CommonListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.getCommonList();
     this.getCommonListDatatable();
     this.getLocationList();
-  }
-
-  keyPressNumbersDecimal(e:any) {
-    var regex = new RegExp("^[a-zA-Z_-]+$");
-    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-    if (regex.test(str)) {
-        return true;
-    }
-    e.preventDefault();
-    return false;
   }
 
   get f(){
     return this.commonlistForn.controls;
   }
 
-  getCommonList(){
-    this.submitBtn == 'SAVE';
-    this.commonHttp.list().subscribe((res:any) => {
-      this.data = res.data;
-      setTimeout(()=>{   
-        $('.table').DataTable( {
-          pagingType: 'full_numbers',
-          pageLength: 15,
-          processing: true,
-          lengthMenu : [15, 30, 45],
-          destroy: true
-      } );
-      }, 1);
+  getLocationList(){
+    this.branchHttp.list().subscribe((res:any) => {
+      this.branchData = res.data;
     })
   }
 
@@ -102,7 +73,6 @@ export class CommonListComponent implements OnInit {
     var formData = {
       searchStatus: 'Active',
     };
-    const that = this;
     this.dtOptions = {
       processing: false,
       responsive: true,
@@ -116,18 +86,18 @@ export class CommonListComponent implements OnInit {
       ordering: false,
       scrollX: true,
       scrollCollapse: true,
-      pageLength: 5,
-      lengthMenu: [5, 10, 25, 50, 100],
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60, 100],
       ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
         Object.assign(dataTablesParameters, formData)
-        that.commonHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
-            that.data = resp.data;
-            callback({
-              recordsTotal: resp.recordsTotal,
-              recordsFiltered: resp.recordsFiltered,
-              data: []
-            });
+        this.commonHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+          this.data = resp.data;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: []
           });
+        });
       }
     };
   }
@@ -142,13 +112,12 @@ export class CommonListComponent implements OnInit {
       if(this.submitBtn == 'SAVE'){
         this.commonlistForn.value['created_by'] = localStorage.getItem('username');
         this.commonlistForn.value['created_at'] = new Date();
-        this.commonHttp.save( this.commonlistForn.value).subscribe((res:any) => {
-          $('#evaluator_table').DataTable().ajax.reload();
+        this.commonHttp.save( this.commonlistForn.value).subscribe((res:any) => {  
           this.onReset();
           this.toastr.showSuccess(res.message);
+          $('#evaluator_table').DataTable().ajax.reload();
         }, (err:any) => {
           if (err.status == 400) {
-            this.toastr.showError(err.error.message)
             const validationError = err.error.errors;
             Object.keys(validationError).forEach((index) => {
               const formControl = this.commonlistForn.get(
@@ -164,12 +133,12 @@ export class CommonListComponent implements OnInit {
           this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.commonHttp.update(this.commonlistForn.value).subscribe((res:any) => {
-          $('#evaluator_table').DataTable().ajax.reload();
+        this.commonHttp.update( this.commonlistForn.value).subscribe((res:any) => {
           this.isEdit = false;
           this.submitBtn = 'SAVE';
           this.onReset();
           this.toastr.showSuccess(res.message)
+          $('#evaluator_table').DataTable().ajax.reload();
         })
       }
     }
@@ -178,12 +147,6 @@ export class CommonListComponent implements OnInit {
   onReset(): void {
     this.submitted = false;
     this.commonlistForn.reset();
-  }
-
-  getLocationList(){
-    this.branchHttp.list().subscribe((res:any) => {
-      this.branchData = res.data;
-    })
   }
 
   editCommonList(id: any){
@@ -212,51 +175,9 @@ export class CommonListComponent implements OnInit {
 
   deleteCommonList(id:any){
     this.commonHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getCommonList();
+      $('#evaluator_table').DataTable().ajax.reload();
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.data.map((el:any, i:any) => [el.data.list_code, el.data.list_value, el.data.list_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {
@@ -278,11 +199,5 @@ export class CommonListComponent implements OnInit {
       }
     };
     pdfMake.createPdf(documentDefinition).open();
-  }
-
-
-  moveToNext(event:any) {
-    let next = event.target.nextElementSibling;
-    console.log(next)
   }
 } 

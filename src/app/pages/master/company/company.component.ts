@@ -25,20 +25,16 @@ export class CompanyComponent implements OnInit{
   created_at: any;
   updated_by: any;
   updated_at: any;
-
   companyForm!: FormGroup;
   submitted: boolean = false;
-  data:any=[];
-  parent_menu: any=[];
   submitBtn:String ='SAVE';
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-
   dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject();
+  data:any=[];
+  parent_menu: any=[];
   typeData: any;
-  isEdit:boolean=false;
   cityData: any;
 
   constructor(private fb: FormBuilder, private CompanyHttp:CompanyService, private CommonListHttp:CommonListService,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService, private cityHttp:CityService) {
@@ -82,15 +78,7 @@ export class CompanyComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-      lengthMenu: [10,20,30],
-      order:[[1,'desc']],
-      destroy: true
-    };
-    this.getCompanyList();
+    this.getCommonListDatatable();
     this.getTypeList();
     this.getCityList();
   }
@@ -116,38 +104,44 @@ export class CompanyComponent implements OnInit{
     })
   }
 
-  keyPressText(e:any) {
-    var regex = new RegExp("^[a-zA-Z0-9_-]+$");
-    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-    if (regex.test(str)) {
-        return true;
-    }
-    e.preventDefault();
-    return false;
-  }
-
-  keyPressNumber(e:any) {
-    var regex = new RegExp("^[0-9]+$");
-    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-    if (regex.test(str)) {
-        return true;
-    }
-    e.preventDefault();
-    return false;
-  }
-
   get f(): { [key: string]: AbstractControl } {
     return this.companyForm.controls;
   }
+  
 
-  getCompanyList(){
-    this.submitBtn == 'SAVE';
-    this.CompanyHttp.list().subscribe((res:any) => {
-      this.data = res.data;
-      this.dtTrigger.next(null);
-    })
+  getCommonListDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: true,
+      scrollCollapse: false,
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60, 100],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        this.CompanyHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+          this.data = resp.data;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: []
+          });
+        });
+      }
+    };
   }
-
+  
   onSubmit(): void {
     this.companyForm.value['updated_by'] = localStorage.getItem('username');
     this.companyForm.value['updated_at'] = new Date();
@@ -158,9 +152,10 @@ export class CompanyComponent implements OnInit{
       if(this.submitBtn == 'SAVE'){
         this.companyForm.value['created_by'] = localStorage.getItem('username');
         this.companyForm.value['created_at'] = new Date();
-        this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {
+        this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {  
           this.onReset();
-          this.toastr.showSuccess(res.message)
+          this.toastr.showSuccess(res.message);
+          $('#evaluator_table').DataTable().ajax.reload();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -178,11 +173,12 @@ export class CompanyComponent implements OnInit{
           this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CompanyHttp.update(this.companyForm.value).subscribe((res:any) => {
+        this.CompanyHttp.update( this.companyForm.value).subscribe((res:any) => {
           this.isEdit = false;
           this.submitBtn = 'SAVE';
           this.onReset();
           this.toastr.showSuccess(res.message)
+          $('#evaluator_table').DataTable().ajax.reload();
         })
       }
     }
@@ -238,51 +234,9 @@ export class CompanyComponent implements OnInit{
 
   deleteCompanyList(id:any){
     this.CompanyHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getCompanyList();
+      $('#evaluator_table').DataTable().ajax.reload();
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.data.map((el:any, i:any) => [el.data.list_code, el.data.list_value, el.data.list_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {
@@ -293,7 +247,7 @@ export class CompanyComponent implements OnInit{
     XLSX.writeFile(wb, 'Download.xls');
   }
 
-  public downloadAsPDF() {
+  downloadAsPDF() {
     const doc = new jsPDF();
     const pdfTable = this.pdfTable.nativeElement;
     var html = htmlToPdfmake(pdfTable.innerHTML);

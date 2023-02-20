@@ -7,10 +7,18 @@ body{
 }
 h1, h2, h3, h4, h5, h6{
     font-family: 'Roboto Condensed', sans-serif;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 p, span, label,.btn, a{
     font-family: 'Forum', cursive;
+    font-size: 13px;
 }
+
+h4{
+    font-size: 14px;
+}
+
 .col-sm-1,
 .col-sm-10,
 .col-sm-11,
@@ -120,14 +128,14 @@ input.form-control.ng-touched.ng-dirty.ng-valid {
 
 .form-control {
     box-sizing: border-box;
-    height: 40px;
+    height: 32px;
     width: 100%;
     border-radius: 1px;
     color: #202124;
     border: 1px solid #e7e9ec;
     padding: 5px;
     transition: 250ms;
-    font-size: 16px;
+    font-size: 12px;
     margin-bottom: 5px;
     margin-top: 5px;
 }
@@ -294,6 +302,7 @@ table.dataTable {
 }
 .table td, .table th {
     padding: 5px;
+    font-size: 13px;
 }
 th {
     text-align: inherit;

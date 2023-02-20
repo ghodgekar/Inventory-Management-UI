@@ -16,6 +16,10 @@ export class UserService {
     return this.http.get( environment.api_url +'user/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'user/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'user/save', data);
   }

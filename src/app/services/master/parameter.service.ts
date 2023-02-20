@@ -10,21 +10,25 @@ export class ParameterService {
 
   list(id?:any){
     if(id == undefined){
-      return this.http.get( environment.api_url +'parameter');
+      return this.http.get( environment.api_url +'parameters');
     }
-    return this.http.get( environment.api_url +'parameter/'+id);
+    return this.http.get( environment.api_url +'parameters/'+id);
+  }
+  
+  datatable(data:any){
+    return this.http.post( environment.api_url +'parameters/datatableList', data);
   }
   
   save(data:any){
-    return this.http.post( environment.api_url +'parameter/save', data);
+    return this.http.post( environment.api_url +'parameters/save', data);
   }
 
   update(data:any){
-    return this.http.post( environment.api_url +'parameter/update', data);
+    return this.http.post( environment.api_url +'parameters/update', data);
   }
 
   delete(data:any){
-    return this.http.post( environment.api_url +'parameter/delete', data);
+    return this.http.post( environment.api_url +'parameters/delete', data);
   }
 
   codeList(code?:string){

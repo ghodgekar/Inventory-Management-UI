@@ -16,6 +16,10 @@ export class CategoryService {
     return this.http.get( environment.api_url +'category/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'category/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'category/save', data);
   }

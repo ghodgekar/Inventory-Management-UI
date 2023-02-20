@@ -16,6 +16,10 @@ export class ManufracturerService {
     return this.http.get( environment.api_url +'manufracturer/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'manufracturer/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'manufracturer/save', data);
   }

@@ -15,6 +15,10 @@ export class CustomerService {
     return this.http.get( environment.api_url +'customer/'+id);
   }
   
+  datatable(data:any){
+    return this.http.post( environment.api_url +'customer/datatableList', data);
+  }
+  
   save(data:any){
     return this.http.post( environment.api_url +'customer/save', data);
   }
