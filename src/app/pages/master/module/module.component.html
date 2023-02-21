@@ -54,10 +54,24 @@
                       <div class="col-sm-2 form-group">
                         <label class="center-block">Parent Module:</label>
                         <div>
-                          <select class="form-control" formControlName="parent_madule_code">
+                          <!-- <select class="form-control" formControlName="parent_madule_code">
                             <option value="0" selected></option>
-                            <option value="{{val.module_code}}" *ngFor="let val of parent_menu">{{val.module_name}}</option>
-                          </select>
+                            <option value="{{val.module_code}}" *ngFor="let val of parent_menu"></option>
+                          </select> -->
+                          <mat-form-field>
+                            <mat-select formControlName="parent_madule_code" #singleSelect>
+                              <mat-option>
+                                <ngx-mat-select-search placeholderLabel="Select" [formControl]="menuFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                                  <span ngxMatSelectNoEntriesFound>
+                                    No data found
+                                  </span>
+                                </ngx-mat-select-search>
+                              </mat-option>
+                              <mat-option *ngFor="let val of parent_menu | async" [value]="val.module_code">
+                                {{val.module_name}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
                         </div>
                       </div>
                       <div class="col-sm-2 form-group" *ngIf="isEdit">

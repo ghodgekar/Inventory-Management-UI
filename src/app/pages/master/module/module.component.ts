@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -11,7 +11,9 @@ import htmlToPdfmake from 'html-to-pdfmake';
 import { ModuleService } from 'src/app/services/master/module.service';
 import { DatePipe } from '@angular/common';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
-
+import { ReplaySubject, Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-module',
@@ -31,8 +33,13 @@ export class ModuleComponent implements OnInit{
   pdfTable!: ElementRef;
   dtOptions: DataTables.Settings = {};
   data:any=[];
-  parent_menu: any=[];
+  parent_menu_data: any=[];
   
+  menuFilterCtrl: FormControl<string> = new FormControl<any>('');
+  @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
+  parent_menu: ReplaySubject<any> = new ReplaySubject<any>(1);
+  _onDestroy = new Subject<void>();
+
   constructor(private fb: FormBuilder, private moduleHttp:ModuleService,public datepipe: DatePipe, private toastr: ToastrMsgService) {
     this.createForm();
   }
@@ -55,6 +62,28 @@ export class ModuleComponent implements OnInit{
   ngOnInit(): void {
     this.getModuleDatatable();
     this.getModuleParent();
+  }
+
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
+  protected filterMenus() {
+    if (!this.parent_menu_data) {
+      return;
+    }
+    let search = this.menuFilterCtrl.value;
+    if (!search) {
+      this.parent_menu.next(this.parent_menu_data.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.parent_menu.next(
+      this.parent_menu_data.filter((data:any) => data.module_name.toLowerCase().indexOf(search) > -1
+      )
+    );
   }
 
   get f() {
@@ -98,7 +127,13 @@ export class ModuleComponent implements OnInit{
   getModuleParent(){
     this.submitBtn == 'SAVE';
     this.moduleHttp.parent_menu().subscribe((res:any) => {
-      this.parent_menu = res.data;
+      this.parent_menu_data = res.data;
+      this.parent_menu.next(this.parent_menu_data.slice());
+      this.menuFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterMenus();
+        });
     })
   }
 
@@ -147,6 +182,7 @@ export class ModuleComponent implements OnInit{
   onReset(): void {
     this.submitted = false;
     this.moduleForm.reset();
+    this.isEdit = false;
   }
 
   editModuleList(id: any){

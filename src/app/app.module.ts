@@ -55,6 +55,8 @@ import { AllCapInputDirective } from './directives/all-cap-input.directive';
 import { NumberInputDirective } from './directives/number-input.directive';
 import { StringInputDirective } from './directives/string-input.directive';
 import { SkipSpecialCharInputDirective } from './directives/skip-special-char-input.directive';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
   declarations: [
@@ -112,8 +114,9 @@ import { SkipSpecialCharInputDirective } from './directives/skip-special-char-in
     HttpClientModule,
     FontAwesomeModule,
     BrowserAnimationsModule,
+    MatSelectModule,
+    NgxMatSelectSearchModule,
     ToastrModule.forRoot()
-    
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]
