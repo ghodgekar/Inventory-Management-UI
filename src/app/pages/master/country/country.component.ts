@@ -10,6 +10,8 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CountryService } from 'src/app/services/master/country.service';
 import { Subject } from 'rxjs';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
+import { DatePipe } from '@angular/common';
 
 
 
@@ -19,20 +21,20 @@ import { Subject } from 'rxjs';
   styleUrls: ['./country.component.css']
 })
 export class CountryComponent {
-
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
   countryForm!: FormGroup;
   submitted: boolean = false;
-  data:any=[];
-  parent_menu: any=[];
   submitBtn:String ='SAVE';
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-  
   dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject();
+  data:any=[];
 
-  constructor(private fb: FormBuilder, private CountryHttp:CountryService) {
+  constructor(private fb: FormBuilder, private countryHttp:CountryService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
   }
   
@@ -43,47 +45,70 @@ export class CountryComponent {
       currency_code: ['', Validators.required ],
       status: ['Active'],
       created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
       _id: []
     });
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-      lengthMenu: [10,20,30],
-      order:[[1,'desc']],
-      destroy: true
-    };
-    this.getCompanyList();
-    this.dtTrigger.next(null);
+    this.getCountryDatatable();
   }
 
   get f(): { [key: string]: AbstractControl } {
     return this.countryForm.controls;
   }
 
-  getCompanyList(){
-    this.submitBtn == 'SAVE';
-    this.CountryHttp.list().subscribe((res:any) => {
-      this.data = res.data;
-      this.dtTrigger.next(null);
-      this.dtTrigger.subscribe();
-    })
+  getCountryDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    const that = this;
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: false,
+      scrollCollapse: true,
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        that.countryHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+            that.data = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
+      }
+    };
   }
 
   onSubmit(): void {
     this.countryForm.value['updated_by'] = localStorage.getItem('username');
+    this.countryForm.value['updated_at'] = new Date();
+    this.countryForm.value['status'] = 'Active';
     this.submitted = true;
     if (this.countryForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.countryForm.value['created_by'] = localStorage.getItem('username');
-        this.CountryHttp.save( this.countryForm.value).subscribe((res:any) => {
-          this.getCompanyList();
+        this.countryForm.value['created_at'] = new Date();
+        this.countryHttp.save( this.countryForm.value).subscribe((res:any) => {
           this.onReset();
+          this.toastr.showSuccess(res.message);
+          $('#evaluator_table').DataTable().ajax.reload();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -98,36 +123,51 @@ export class CountryComponent {
               }
             });
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CountryHttp.update(this.countryForm.value).subscribe((res:any) => {
-          this.getCompanyList();
+        this.countryHttp.update(this.countryForm.value).subscribe((res:any) => {
+          $('#evaluator_table').DataTable().ajax.reload();
+          this.isEdit = false;
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
   }
 
   onReset(): void {
+    this.submitBtn = 'SAVE';
     this.submitted = false;
     this.countryForm.reset();
+    this.isEdit = false;
   }
 
-  editCompanyList(id: any){
+  editCountryList(id: any){
+    this.isEdit = true;
     this.submitBtn = 'UPDATE'
-    this.CountryHttp.list(id).subscribe((res:any) => {
+    this.countryHttp.list(id).subscribe((res:any) => {
       this.countryForm.patchValue({
         country_code: res.data[0].country_code,
         country_name: res.data[0].country_name,
         currency_code: res.data[0].currency_code,
+        status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: res.data[0].created_at,
+        updated_by: res.data[0].updated_by,
+        updated_at: res.data[0].updated_at,
         _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
   }
 
-  deleteCompanyList(id:any){
-    this.CountryHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getCompanyList();
+  deleteCountryList(id:any){
+    this.countryHttp.delete( {'_id':id} ).subscribe((res:any) => {
     })
   }
 
@@ -195,7 +235,4 @@ export class CountryComponent {
     pdfMake.createPdf(documentDefinition).open();
   }
 
-  test(id:any){
-    alert(id)
-  }
 } 

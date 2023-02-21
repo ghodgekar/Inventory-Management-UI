@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -9,10 +9,11 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CityService } from 'src/app/services/master/city.service';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { StateService } from 'src/app/services/master/state.service';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 import { DatePipe } from '@angular/common';
+import { MatSelect } from '@angular/material/select';
 
 
 
@@ -26,22 +27,22 @@ export class CityComponent {
   created_at: any;
   updated_by: any;
   updated_at: any;
-  isEdit:boolean=false;
-
   cityForm!: FormGroup;
   submitted: boolean = false;
-  data:any=[];
-  parent_menu: any=[];
   submitBtn:String ='SAVE';
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-  
   dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject();
-  stateData: any;
+  data:any=[];
+  state_data: any=[];
+  
+  stateFilterCtrl: FormControl<string> = new FormControl<any>('');
+  @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
+  state_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
+  _onDestroy = new Subject<void>();
 
-  constructor(private fb: FormBuilder, private CityHttp:CityService, private stateHttp:StateService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
+  constructor(private fb: FormBuilder, private cityHttp:CityService, private stateHttp:StateService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
   }
   
@@ -50,35 +51,57 @@ export class CityComponent {
       city_name: ['', Validators.required],
       state_code: ['', Validators.required ],
       status: ['Active'],
+      created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
       _id: []
     });
   }
 
   ngOnInit(): void {
-    // this.getCityList();
     this.getCityDatatable()
     this.getStateList();
-    this.dtTrigger.next(null);
+  }
+
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
+  filterState() {
+    if (!this.state_data) {
+      return;
+    }
+    let search = this.stateFilterCtrl.value;
+    if (!search) {
+      this.state_data_arr.next(this.state_data.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.state_data_arr.next(
+      this.state_data.filter((data:any) => data.state_name.toLowerCase().indexOf(search) > -1
+      )
+    );
   }
 
   getStateList(){
+    this.submitBtn == 'SAVE';
     this.stateHttp.list().subscribe((res:any) => {
-      this.stateData = res.data
+      this.state_data = res.data;
+      this.state_data_arr.next(this.state_data.slice());
+      this.stateFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterState();
+        });
     })
   }
 
   get f(): { [key: string]: AbstractControl } {
     return this.cityForm.controls;
   }
-
-  getCityList(){
-    this.CityHttp.list().subscribe((res:any) => {
-      this.data = res.data;
-      this.dtTrigger.next(null);
-      this.dtTrigger.subscribe();
-    })
-  }
-  
 
   getCityDatatable(){
     var formData = {
@@ -96,13 +119,13 @@ export class CityComponent {
       searching: false,
       lengthChange: true,
       ordering: false,
-      scrollX: true,
+      scrollX: false,
       scrollCollapse: true,
       pageLength: 15,
       lengthMenu: [15, 30, 45, 60],
       ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
         Object.assign(dataTablesParameters, formData)
-        that.CityHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+        that.cityHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
             that.data = resp.data;
             callback({
               recordsTotal: resp.recordsTotal,
@@ -117,6 +140,7 @@ export class CityComponent {
   onSubmit(): void {
     this.cityForm.value['updated_by'] = localStorage.getItem('username');
     this.cityForm.value['updated_at'] = new Date();
+    this.cityForm.value['status'] = 'Active';
     this.submitted = true;
     if (this.cityForm.invalid) {
       return;
@@ -124,7 +148,7 @@ export class CityComponent {
       if(this.submitBtn == 'SAVE'){
         this.cityForm.value['created_by'] = localStorage.getItem('username');
         this.cityForm.value['created_at'] = new Date();
-        this.CityHttp.save( this.cityForm.value).subscribe((res:any) => {
+        this.cityHttp.save( this.cityForm.value).subscribe((res:any) => {
           $('#evaluator_table').DataTable().ajax.reload();
           this.onReset();
           this.toastr.showSuccess(res.message);
@@ -145,7 +169,7 @@ export class CityComponent {
           this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CityHttp.update(this.cityForm.value).subscribe((res:any) => {
+        this.cityHttp.update(this.cityForm.value).subscribe((res:any) => {
           $('#evaluator_table').DataTable().ajax.reload();
           this.isEdit = false;
           this.submitBtn = 'SAVE';
@@ -157,14 +181,16 @@ export class CityComponent {
   }
 
   onReset(): void {
+    this.submitBtn = 'SAVE';
     this.submitted = false;
     this.cityForm.reset();
+    this.isEdit = false;
   }
 
-  editCompanyList(id: any){
+  editCityList(id: any){
     this.isEdit = true;
     this.submitBtn = 'UPDATE'
-    this.CityHttp.list(id).subscribe((res:any) => {
+    this.cityHttp.list(id).subscribe((res:any) => {
       this.cityForm.patchValue({
         city_name: res.data[0].city_name,
         state_code: res.data[0].state_code,
@@ -182,52 +208,10 @@ export class CityComponent {
     })
   }
 
-  deleteCompanyList(id:any){
-    this.CityHttp.delete( {'_id':id} ).subscribe((res:any) => {
+  deleteCityList(id:any){
+    this.cityHttp.delete( {'_id':id} ).subscribe((res:any) => {
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.data.map((el:any, i:any) => [el.data.list_code, el.data.list_value, el.data.list_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {

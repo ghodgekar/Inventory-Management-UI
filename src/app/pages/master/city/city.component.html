@@ -9,25 +9,38 @@
                           <div class="head-1">
                             <div class="row">
                               <div class="col-sm-4 form-group">
-                                <label class="center-block">City Name: </label>
+                                <label class="center-block">City Name: <span class="mandatory-input">*</span> </label>
                                 <div>
-                                  <input class="form-control" formControlName="city_name">
+                                  <input class="form-control" appInitialCapInput formControlName="city_name">
                                 </div>
+                                <span class="validation-error mandatory-input" *ngIf="(submitted || f['city_name'].touched) && f['city_name'].errors?.['required']">City Name is required</span>
                               </div>
                               <div class="col-sm-4 form-group">
-                                <label class="center-block">State Code: </label>
+                                <label class="center-block">State Code: <span class="mandatory-input">*</span> </label>
                                 <div>
-                                  <select class="form-control" formControlName="state_code" id="">
-                                    <option [value]="val.state_code" *ngFor="let val of stateData">{{val.state_name}}</option>
-                                  </select>
+                                  <mat-form-field>
+                                    <mat-select formControlName="state_code" #singleSelect>
+                                      <mat-option>
+                                        <ngx-mat-select-search placeholderLabel="Select" [formControl]="stateFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                                          <span ngxMatSelectNoEntriesFound>
+                                            No data found
+                                          </span>
+                                        </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let val of state_data_arr | async" [value]="val.state_code">
+                                        {{val.state_name}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
                                 </div>
+                                <span class="validation-error mandatory-input" *ngIf="(submitted || f['state_code'].touched) && f['state_code'].errors?.['required']">State Code is required</span>
                               </div>
                               <div class="col-sm-4 form-group" *ngIf="isEdit">
                                 <label class="center-block">Status: </label>
                                 <div>
                                   <select class="form-control" formControlName="status">
-                                    <option>Select</option>
-                                    <option value="Active">Active</option>
+                                    <option disabled>Select</option>
+                                    <option value="Active" selected>Active</option>
                                     <option value="Inactive">Inactive</option>
                                   </select>
                                 </div>
@@ -72,8 +85,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                      <table datatable [dtOptions]="dtOptions" class="row-border hover"
-                      id="evaluator_table">
+                      <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
                         <thead>
                             <tr>
                               <th width="25">Action</th>
@@ -89,11 +101,8 @@
                         <tbody *ngIf="data?.length != 0">
                             <tr *ngFor="let val of data">
                               <td class="text-center">
-                                <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
+                                <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCityList(val._id)"> 
                                   <span class="tooltiptext">EDIT</span>
-                                </span>  | 
-                                <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
-                                  <span class="tooltiptext">DELETE</span>
                                 </span>
                               </td>
                               <td>{{val.city_name}}</td>
@@ -117,36 +126,3 @@
         </div>
     </div>
 </div>
-
-<div class="display-view" style="display: none;">
-  <table class="table" id="table" #pdfTable>
-    <thead>
-      <tr>
-        <th>Code</th>
-        <th>Name</th>
-        <th>Page</th>
-        <th>Parent Module</th>
-        <th>Image</th>
-        <th>Is Home</th>
-        <th>Status</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let val of data">
-        <td>{{val.module_code}}</td>
-        <td>{{val.module_name}}</td>
-        <td>{{val.module_slug}}</td>
-        <td>{{val.parent_madule_code}}</td>
-        <td>{{val.module_image}}</td>
-        <td>{{val.is_home}}</td>
-        <td>{{val.status}}</td>
-        <td>{{val.created_by}}</td>
-        <td>{{val.created_at}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<app-footer></app-footer>

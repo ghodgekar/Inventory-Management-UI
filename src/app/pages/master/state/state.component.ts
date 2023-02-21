@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -9,8 +9,11 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { StateService } from 'src/app/services/master/state.service';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { CountryService } from 'src/app/services/master/country.service';
+import { MatSelect } from '@angular/material/select';
+import { DatePipe } from '@angular/common';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 
 
 
@@ -20,21 +23,26 @@ import { CountryService } from 'src/app/services/master/country.service';
   styleUrls: ['./state.component.css']
 })
 export class StateComponent {
-
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
   stateForm!: FormGroup;
   submitted: boolean = false;
-  data:any=[];
-  parent_menu: any=[];
   submitBtn:String ='SAVE';
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-  
   dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject();
-  countryData: any;
+  data:any=[];
+  country_data: any=[];
+  
+  countryFilterCtrl: FormControl<string> = new FormControl<any>('');
+  @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
+  country_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
+  _onDestroy = new Subject<void>();
 
-  constructor(private fb: FormBuilder, private StateHttp:StateService, private countryHttp:CountryService) {
+  constructor(private fb: FormBuilder, private stateHttp:StateService, private countryHttp:CountryService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
   }
   
@@ -45,27 +53,52 @@ export class StateComponent {
       country_code: ['', Validators.required ],
       state_type: ['', Validators.required ],
       gst_state_code: ['', Validators.required ],
+      status: ['Active'],
+      created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
       _id: []
     });
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-      lengthMenu: [10,20,30],
-      order:[[1,'desc']],
-      destroy: true
-    };
-    this.getCompanyList();
-    this.dtTrigger.next(null);
+    this.getCityDatatable()
     this.getCountryList();
   }
 
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
+  filterState() {
+    if (!this.country_data) {
+      return;
+    }
+    let search = this.countryFilterCtrl.value;
+    if (!search) {
+      this.country_data_arr.next(this.country_data.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.country_data_arr.next(
+      this.country_data.filter((data:any) => data.country_name.toLowerCase().indexOf(search) > -1
+      )
+    );
+  }
+
   getCountryList(){
+    this.submitBtn == 'SAVE';
     this.countryHttp.list().subscribe((res:any) => {
-      this.countryData = res.data
+      this.country_data = res.data;
+      this.country_data_arr.next(this.country_data.slice());
+      this.countryFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterState();
+        });
     })
   }
 
@@ -73,25 +106,55 @@ export class StateComponent {
     return this.stateForm.controls;
   }
 
-  getCompanyList(){
-    this.StateHttp.list().subscribe((res:any) => {
-      this.data = res.data;
-      this.dtTrigger.next(null);
-      this.dtTrigger.subscribe();
-    })
+  getCityDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    const that = this;
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: false,
+      scrollCollapse: true,
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        that.stateHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+            that.data = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
+      }
+    };
   }
 
   onSubmit(): void {
     this.stateForm.value['updated_by'] = localStorage.getItem('username');
+    this.stateForm.value['updated_at'] = new Date();
+    this.stateForm.value['status'] = 'Active';
     this.submitted = true;
     if (this.stateForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.stateForm.value['created_by'] = localStorage.getItem('username');
-        this.StateHttp.save( this.stateForm.value).subscribe((res:any) => {
-          this.getCompanyList();
+        this.stateForm.value['created_at'] = new Date();
+        this.stateHttp.save( this.stateForm.value).subscribe((res:any) => {
+          $('#evaluator_table').DataTable().ajax.reload();
           this.onReset();
+          this.toastr.showSuccess(res.message);
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -106,82 +169,55 @@ export class StateComponent {
               }
             });
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.StateHttp.update(this.stateForm.value).subscribe((res:any) => {
-          this.getCompanyList();
+        this.stateHttp.update(this.stateForm.value).subscribe((res:any) => {
+          $('#evaluator_table').DataTable().ajax.reload();
+          this.isEdit = false;
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
   }
 
   onReset(): void {
+    this.submitBtn = 'SAVE';
     this.submitted = false;
     this.stateForm.reset();
+    this.isEdit = false;
   }
 
-  editCompanyList(id: any){
+  editCountryList(id: any){
+    this.isEdit = true;
     this.submitBtn = 'UPDATE'
-    this.StateHttp.list(id).subscribe((res:any) => {
+    this.stateHttp.list(id).subscribe((res:any) => {
       this.stateForm.patchValue({
         state_code: res.data[0].state_code,
         state_name: res.data[0].state_name,
         country_code: res.data[0].country_code,
         state_type: res.data[0].state_type,
         gst_state_code: res.data[0].gst_state_code,
+        status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: res.data[0].created_at,
+        updated_by: res.data[0].updated_by,
+        updated_at: res.data[0].updated_at,
         _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
   }
 
-  deleteCompanyList(id:any){
-    this.StateHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getCompanyList();
+  deleteCountryList(id:any){
+    this.stateHttp.delete( {'_id':id} ).subscribe((res:any) => {
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.data.map((el:any, i:any) => [el.data.list_code, el.data.list_value, el.data.list_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {
@@ -204,4 +240,4 @@ export class StateComponent {
     };
     pdfMake.createPdf(documentDefinition).open();
   }
-} 
+}
