@@ -1,290 +1,347 @@
 <div class="top-menu">
-    <div class="row">
-        <div class="col-sm-12">
-            <ul>
-                <li class="topmenu">Test : By Peacock Infotech </li>
-                <li class="topmenu company-name">Administrator (AMG)</li>
-                <li class="topmenu active">Customer Master</li>
-            </ul>
-        </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <ul>
+        <li class="topmenu">Test : By Peacock Infotech </li>
+        <li class="topmenu company-name">Administrator (AMG)</li>
+        <li class="topmenu active">Customer Master</li>
+      </ul>
     </div>
+  </div>
 </div>
 <div class="top-menu module-menu">
-    <div class="row">
-        <div class="col-sm-12">
-            <ul>
-                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
-                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
-                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
-                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
-                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
-            </ul>
-        </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <ul>
+        <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save"
+            class="save-icon"><span class="tooltiptext">SAVE</span></li>
+        <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF"
+            class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+        <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL"
+            class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+        <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET"
+            class="reset-icon"><span class="tooltiptext">RESET</span></li>
+        <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon"
+            routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+      </ul>
     </div>
+  </div>
 </div>
 <div class="main">
-    <div class="card">
-        <div class="card-body">
-            <form [formGroup]="CustomerForm">
-              <div class="head-1">
-                <div class="row">
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Location: </label>
-                      <div>
-                        <input class="form-control" value="{{loc_code}}" readonly disabled>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Code: </label>
-                      <div>
-                        <input class="form-control" formControlName="cust_code" oninput="this.value = this.value.toUpperCase()">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Name: </label>
-                      <div>
-                        <input class="form-control" formControlName="cust_name">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Gender: </label>
-                      <div>
-                        <select formControlName="gender" id="" class="form-control">
-                            <option>Female</option>
-                            <option>Male</option>
-                            <option>Transgender</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                    <label class="center-block">Barcode: </label>
-                    <div>
-                        <input class="form-control" formControlName="barcode">
-                    </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Birth Date: </label>
-                      <div>
-                        <input type="date" class="form-control" formControlName="birth_date">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Join Date: </label>
-                      <div>
-                        <input type="text" class="form-control" formControlName="join_date" readonly >
-                      </div>
-                    </div>
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="customerForm">
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="head-1">
+              <div class="row">
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Location: </label>
+                  <div>
+                    <input class="form-control" value="{{loc_code}}" readonly disabled>
+                  </div>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Code: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="cust_code" appAllCapInput>
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['cust_code'].touched) && f['cust_code'].errors?.['required']">Required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Name: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="cust_name" appInitialCapInput>
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['cust_name'].touched) && f['cust_name'].errors?.['required']">Required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Gender: </label>
+                  <div>
+                    <select formControlName="gender" id="" class="form-control">
+                      <option>Female</option>
+                      <option>Male</option>
+                      <option>Transgender</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Barcode: </label>
+                  <div>
+                    <input class="form-control" formControlName="barcode">
+                  </div>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Birth Date: </label>
+                  <div>
+                    <input type="date" class="form-control" formControlName="birth_date">
+                  </div>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Join Date: </label>
+                  <div>
+                    <input type="text" class="form-control" formControlName="join_date" readonly>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group" *ngIf="isEdit">
+                  <label class="center-block">Status: </label>
+                  <div>
+                    <select class="form-control" formControlName="status">
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="head-1" *ngIf="isEdit">
+              <div class="row">
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Created By: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{created_by}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Created At: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{created_at}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Updated By: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{updated_by}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Updated At: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{updated_at}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="head-2">
+              <h4>Address Details</h4>
+              <div class="row">
+                <div class="col-sm-4 form-group">
+                  <label class="center-block">Address 1: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="addr1">
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['addr1'].touched) && f['addr1'].errors?.['required']">Required</span>
+                </div>
+                <div class="col-sm-4 form-group">
+                  <label class="center-block">Address 2: </label>
+                  <div>
+                    <input class="form-control" formControlName="addr2">
+                  </div>
+                </div>
+                <div class="col-sm-4 form-group">
+                  <label class="center-block">City: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <mat-form-field>
+                      <mat-select formControlName="city" (selectionChange)="onChanheCity($event)" #singleSelect>
+                        <mat-option>
+                          <ngx-mat-select-search placeholderLabel="Select" [formControl]="cityFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                            <span ngxMatSelectNoEntriesFound>
+                              No data found
+                            </span>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let val of city_data_arr | async" [value]="val.city_name">
+                          {{val.city_name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['city'].touched) && f['city'].errors?.['required']">Required</span>
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-6">
-                  <div class="head-2">
-                    <h4>Address Details</h4>
-                    <div class="row">
-                        <div class="col-sm-4 form-group">
-                          <label class="center-block">Address 1: </label>
-                          <div>
-                            <input class="form-control" formControlName="addr1">
-                          </div>
-                        </div>
-                        <div class="col-sm-4 form-group">
-                          <label class="center-block">Address 2: </label>
-                          <div>
-                            <input class="form-control" formControlName="addr2">
-                          </div>
-                        </div>
-                        <div class="col-sm-4 form-group">
-                          <label class="center-block">City: </label>
-                          <div>
-                            <input class="form-control" formControlName="city">
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4 form-group">
-                          <label class="center-block">State: </label>
-                          <div>
-                            <input class="form-control" formControlName="state">
-                          </div>
-                        </div>
-                        <div class="col-sm-4 form-group">
-                          <label class="center-block">Country: </label>
-                          <div>
-                            <input class="form-control" formControlName="country">
-                          </div>
-                        </div>
-                        <div class="col-sm-4 form-group">
-                          <label class="center-block">Pin Code: </label>
-                          <div>
-                            <input class="form-control" formControlName="pincode">
-                          </div>
-                        </div>
-                    </div>
+                <div class="col-sm-4 form-group">
+                  <label class="center-block">State: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="state" readonly>
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['state'].touched) && f['state'].errors?.['required']">Required</span>
+                </div>
+                <div class="col-sm-4 form-group">
+                  <label class="center-block">Country: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="country" readonly>
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['country'].touched) && f['country'].errors?.['required']">Required</span>
+                </div>
+                <div class="col-sm-4 form-group">
+                  <label class="center-block">Pin Code: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="pincode">
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['pincode'].touched) && f['pincode'].errors?.['required']">Required</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="head-3">
+              <h4>Other Details</h4>
+              <div class="row">
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Mobile: </label>
+                  <div>
+                    <input class="form-control" formControlName="mobile">
                   </div>
                 </div>
-                <div class="col-sm-6">
-                  <div class="head-3">
-                    <h4>Other Details</h4>
-                    <div class="row">
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">Mobile: </label>
-                          <div>
-                            <input class="form-control" formControlName="mobile">
-                          </div>
-                        </div>
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">Email: </label>
-                          <div>
-                            <input class="form-control" formControlName="email">
-                          </div>
-                        </div>
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">PAN: </label>
-                          <div>
-                            <input class="form-control" formControlName="pan_no">
-                          </div>
-                        </div>
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">Aadhar No: </label>
-                          <div>
-                            <input class="form-control" formControlName="aadhar_no">
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">GSTIN: </label>
-                          <div>
-                            <input class="form-control" formControlName="gstin">
-                          </div>
-                        </div>
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">Customer Type: </label>
-                          <div>
-                            <select class="form-control" formControlName="cust_type">
-                              <option [value]="val.list_value" *ngFor="let val of custTypeData">{{val.list_desc}}</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">Ref. Customer: </label>
-                          <div>
-                            <select class="form-control" formControlName="ref_cust_code">
-                              <option [value]="val.cust_code" *ngFor="let val of customerData">{{val.cust_name}}</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">Credit Limit: </label>
-                          <div>
-                            <input class="form-control" formControlName="cr_limit">
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">CR Over days: </label>
-                          <div>
-                            <input class="form-control" formControlName="cr_overdue_days">
-                          </div>
-                        </div>
-                        <div class="col-sm-3 form-group">
-                          <label class="center-block">Points: </label>
-                          <div>
-                            <input class="form-control" formControlName="points">
-                          </div>
-                        </div>
-                        <div class="col-sm-3 form-group">
-                        </div>
-                        <div class="col-sm-3 form-group">
-                        </div>
-                    </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Email: </label>
+                  <div>
+                    <input class="form-control" formControlName="email">
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">PAN: </label>
+                  <div>
+                    <input class="form-control" formControlName="pan_no">
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Aadhar No: </label>
+                  <div>
+                    <input class="form-control" formControlName="aadhar_no">
                   </div>
                 </div>
               </div>
-            </form>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" datatable >
-                    <thead>
-                        <tr>
-                          <th width="25">Action</th>
-                          <th>Code</th>
-                          <th>Name</th>
-                          <th>Gender</th>
-                          <th>Barcode</th>
-                          <th>Birth Date</th>
-                          <th>Join Date</th>
-                          <th>Address 1</th>
-                          <th>Address 2</th>
-                          <th>City</th>
-                          <th>Status</th>
-                          <th>Created By</th>
-                          <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let val of data">
-                            <td class="text-center">
-                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
-                                <span class="tooltiptext">EDIT</span>
-                              </span>  | 
-                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
-                                <span class="tooltiptext">DELETE</span>
-                              </span>
-                            </td>
-                            <td>{{val.cust_code}}</td>
-                            <td>{{val.cust_name}}</td>
-                            <td>{{val.gender}}</td>
-                            <td>{{val.barcode}}</td>
-                            <td>{{val.birth_date}}</td>
-                            <td>{{val.join_date}}</td>
-                            <td>{{val.addr1}}</td>
-                            <td>{{val.addr2}}</td>
-                            <td>{{val.city}}</td>
-                            <td>{{val.status}}</td>
-                            <td>{{val.created_by}}</td>
-                            <td>{{val.created_at}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+              <div class="row">
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">GSTIN: </label>
+                  <div>
+                    <input class="form-control" formControlName="gstin">
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Customer Type: </label>
+                  <div>
+                    <select class="form-control" formControlName="cust_type">
+                      <option [value]="val.list_value" *ngFor="let val of custTypeData">{{val.list_desc}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Ref. Customer: </label>
+                  <div>
+                    <select class="form-control" formControlName="ref_cust_code">
+                      <option [value]="val.cust_code" *ngFor="let val of customerData">{{val.cust_name}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Credit Limit: </label>
+                  <div>
+                    <input class="form-control" formControlName="cr_limit">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">CR Over days: </label>
+                  <div>
+                    <input class="form-control" formControlName="cr_overdue_days">
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Points: </label>
+                  <div>
+                    <input class="form-control" formControlName="points">
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                </div>
+                <div class="col-sm-3 form-group">
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </form>
     </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
+          <thead class="text-center">
+            <tr>
+              <th width="25">Action</th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Gender</th>
+              <th>Barcode</th>
+              <th>Birth Date</th>
+              <th>Join Date</th>
+              <th>Address 1</th>
+              <th>Address 2</th>
+              <th>City</th>
+              <th>State</th>
+              <th>Country</th>
+              <th>Pin Code</th>
+              <th>Status</th>
+              <th>Created By</th>
+              <th>Created Date</th>
+              <th>Updated By</th>
+              <th>Updated Date</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="data?.length != 0" class="text-center">
+            <tr *ngFor="let val of data">
+              <td class="text-center">
+                <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png"
+                    (click)="editCustomerList(val._id)">
+                  <span class="tooltiptext">EDIT</span>
+                </span>
+              </td>
+              <td>{{val.cust_code}}</td>
+              <td>{{val.cust_name}}</td>
+              <td>{{val.gender}}</td>
+              <td>{{val.barcode}}</td>
+              <td>{{val.birth_date}}</td>
+              <td>{{val.join_date}}</td>
+              <td>{{val.addr1}}</td>
+              <td>{{val.addr2}}</td>
+              <td>{{val.city}}</td>
+              <td>{{val.state}}</td>
+              <td>{{val.country}}</td>
+              <td>{{val.pincode}}</td>
+              <td>{{val.status}}</td>
+              <td>{{val.created_by}}</td>
+              <td>{{val.created_by}}</td>
+              <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
+              <td>{{val.updated_by}}</td>
+              <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="data?.length == 0">
+            <tr>
+              <td colspan="3" class="no-data-available">No data!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div class="display-view" style="display: none;">
-  <table class="table" id="table" #pdfTable>
-    <thead>
-      <tr>
-        <th>Code</th>
-        <th>Name</th>
-        <th>Page</th>
-        <th>Parent Module</th>
-        <th>Image</th>
-        <th>Is Home</th>
-        <th>Status</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let val of data">
-        <td>{{val.module_code}}</td>
-        <td>{{val.module_name}}</td>
-        <td>{{val.module_slug}}</td>
-        <td>{{val.parent_madule_code}}</td>
-        <td>{{val.module_image}}</td>
-        <td>{{val.is_home}}</td>
-        <td>{{val.status}}</td>
-        <td>{{val.created_by}}</td>
-        <td>{{val.created_at}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 <app-footer></app-footer>

@@ -1,103 +1,127 @@
 <div class="main">
-    <div class="row">
-        <div class="col-sm-12" style="padding: 0;">
-            <div class="card">
-                <div class="card-body">
-                    <form [formGroup]="manufracturerForm">
-                        <div class="row head-1">
-                            <div class="col-sm-2 form-group">
-                              <label class="center-block">Code: </label>
-                              <div>
-                                <input class="form-control" formControlName="manufact_code">
-                              </div>
-                            </div>
-                            <div class="col-sm-2 form-group">
-                              <label class="center-block">Name: </label>
-                              <div>
-                                <input class="form-control" formControlName="manufact_name">
-                              </div>
-                            </div>
-                            <div class="col-sm-2 form-group">
-                              <label class="center-block">Type: </label>
-                              <div>
-                                <select formControlName="type" id="" class="form-control">
-                                  <option>Branded</option>
-                                  <option>Unbranded</option>
-                                </select>
-                              </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-striped table-bordered table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                            <thead>
-                                <tr>
-                                  <th width="25">Action</th>
-                                  <th>Code</th>
-                                  <th>Name</th>
-                                  <th>Type</th>
-                                  <th>Status</th>
-                                  <th>Created By</th>
-                                  <th>Created Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let val of data">
-                                    <td class="text-center">
-                                      <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
-                                        <span class="tooltiptext">EDIT</span>
-                                      </span>  | 
-                                      <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
-                                        <span class="tooltiptext">DELETE</span>
-                                      </span>
-                                    </td>
-                                    <td>{{val.manufact_code}}</td>
-                                    <td>{{val.manufact_name}}</td>
-                                    <td>{{val.type}}</td>
-                                    <td>{{val.status}}</td>
-                                    <td>{{val.created_by}}</td>
-                                    <td>{{val.created_at | date}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+  <div class="row">
+    <div class="col-sm-12" style="padding: 0;">
+      <div class="card">
+        <div class="card-body">
+          <form [formGroup]="manufracturerForm">
+            <div class="row">
+              <div class="col-sm-8">
+                <div class="head-1">
+                  <div class="row">
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Code: <span class="mandatory-input">*</span></label>
+                      <div>
+                        <input class="form-control" formControlName="manufact_code" appAllCapInput appSkipSpecialCharInput [readonly]='isEdit'>
+                      </div>
+                      <span class="validation-error mandatory-input" *ngIf="(submitted || f['manufact_code'].touched) && f['manufact_code'].errors?.['required']">Code is required</span>
                     </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Name: <span class="mandatory-input">*</span></label>
+                      <div>
+                        <input class="form-control" formControlName="manufact_name" appInitialCapInput>
+                      </div>
+                      <span class="validation-error mandatory-input" *ngIf="(submitted || f['manufact_name'].touched) && f['manufact_name'].errors?.['required']">Name is required</span>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Type: <span class="mandatory-input">*</span></label>
+                      <div>
+                        <select formControlName="type" id="" class="form-control">
+                          <option>Branded</option>
+                          <option>Unbranded</option>
+                        </select>
+                      </div>
+                      <span class="validation-error mandatory-input" *ngIf="(submitted || f['type'].touched) && f['type'].errors?.['required']">Type is required</span>
+                    </div>
+                    <div class="col-sm-3 form-group" *ngIf="isEdit">
+                      <label class="center-block">Status: </label>
+                      <div>
+                        <select class="form-control" formControlName="status">
+                          <option disabled>Select</option>
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <div class="col-sm-4" *ngIf="isEdit">
+                <div class="head-1">
+                  <div class="row">
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Created By: </label>
+                      <div>
+                        <p class="form-control readonly" readonly>{{created_by}}</p>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Created At: </label>
+                      <div>
+                        <p class="form-control readonly" readonly>{{created_at}}</p>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Updated By: </label>
+                      <div>
+                        <p class="form-control readonly" readonly>{{updated_by}}</p>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                      <label class="center-block">Updated At: </label>
+                      <div>
+                        <p class="form-control readonly" readonly>{{updated_at}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </form>
         </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
+              <thead>
+                <tr>
+                  <th width="25">Action</th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Created By</th>
+                  <th>Created Date</th>
+                  <th>Updated By</th>
+                  <th>Updated Date</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="data?.length != 0">
+                <tr *ngFor="let val of data">
+                  <td class="text-center">
+                    <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editManufracturerList(val._id)">
+                      <span class="tooltiptext">EDIT</span>
+                    </span>
+                  </td>
+                  <td>{{val.manufact_code}}</td>
+                  <td>{{val.manufact_name}}</td>
+                  <td>{{val.type}}</td>
+                  <td>{{val.status}}</td>
+                  <td>{{val.created_by}}</td>
+                  <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
+                  <td>{{val.updated_by}}</td>
+                  <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="data?.length == 0">
+                <tr>
+                  <td colspan="3" class="no-data-available">No data!</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
-
-<div class="display-view" style="display: none;">
-  <table class="table" id="table" #pdfTable>
-    <thead>
-      <tr>
-        <th>Code</th>
-        <th>Name</th>
-        <th>Page</th>
-        <th>Parent Module</th>
-        <th>Image</th>
-        <th>Is Home</th>
-        <th>Status</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let val of data">
-        <td>{{val.module_code}}</td>
-        <td>{{val.module_name}}</td>
-        <td>{{val.module_slug}}</td>
-        <td>{{val.parent_madule_code}}</td>
-        <td>{{val.module_image}}</td>
-        <td>{{val.is_home}}</td>
-        <td>{{val.status}}</td>
-        <td>{{val.created_by}}</td>
-        <td>{{val.created_at}}</td>
-      </tr>
-    </tbody>
-  </table>
+  </div>
 </div>

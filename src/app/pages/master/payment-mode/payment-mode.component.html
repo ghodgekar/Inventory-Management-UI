@@ -1,154 +1,184 @@
 <div class="top-menu">
-    <div class="row">
-        <div class="col-sm-12">
-            <ul>
-                <li class="topmenu">Test : By Peacock Infotech </li>
-                <li class="topmenu company-name">Administrator (AMG)</li>
-                <li class="topmenu active">Payment Mode Master</li>
-            </ul>
-        </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <ul>
+        <li class="topmenu">Test : By Peacock Infotech </li>
+        <li class="topmenu company-name">Administrator (AMG)</li>
+        <li class="topmenu active">Payment Mode Master</li>
+      </ul>
     </div>
+  </div>
 </div>
 <div class="top-menu module-menu">
-    <div class="row">
-        <div class="col-sm-12">
-            <ul>
-                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
-                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
-                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
-                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
-                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
-            </ul>
-        </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <ul>
+        <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save"
+            class="save-icon"><span class="tooltiptext">SAVE</span></li>
+        <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF"
+            class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+        <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL"
+            class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+        <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET"
+            class="reset-icon"><span class="tooltiptext">RESET</span></li>
+        <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon"
+            routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+      </ul>
     </div>
+  </div>
 </div>
 <div class="main">
-    <div class="card">
-        <div class="card-body">
-            <form [formGroup]="companyForm">
-              <div class="head-1">
-                <div class="row">
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Code: </label>
-                      <div>
-                        <input class="form-control" formControlName="pmt_code" oninput="this.value = this.value.toUpperCase()">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Name: </label>
-                      <div>
-                        <input class="form-control" formControlName="pmt_name">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Calculate ON: </label>
-                      <div>
-                        <select formControlName="calc_on" id="" class="form-control">
-                            <option>MRP</option>
-                            <option>Sale</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                    <label class="center-block">Charge %: </label>
-                    <div>
-                        <input class="form-control" formControlName="charge_per">
-                    </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Allow Multi: </label>
-                      <div>
-                        <select formControlName="allow_multi" id="" class="form-control">
-                            <option>Yes</option>
-                            <option>No</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Bill Copy: </label>
-                      <div>
-                        <input class="form-control" formControlName="bill_copy">
-                      </div>
-                    </div>
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="paymentModeForm">
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="head-1">
+              <div class="row">
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Code: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="pmt_code" appAllCapInput appSkipSpecialCharInput [readonly]='isEdit'>
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['pmt_code'].touched) && f['pmt_code'].errors?.['required']">Code is required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Name: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="pmt_name">
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['pmt_name'].touched) && f['pmt_name'].errors?.['required']">Name is required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Calculate ON: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <select formControlName="calc_on" id="" class="form-control">
+                      <option>MRP</option>
+                      <option>Sale</option>
+                    </select>
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['calc_on'].touched) && f['calc_on'].errors?.['required']">Calculate ON is required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Charge %: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="charge_per">
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['charge_per'].touched) && f['charge_per'].errors?.['required']">Charge % is required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Allow Multi: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <select formControlName="allow_multi" id="" class="form-control">
+                      <option>Yes</option>
+                      <option>No</option>
+                    </select>
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['allow_multi'].touched) && f['allow_multi'].errors?.['required']">Allow Multi is required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Bill Copy: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="bill_copy">
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['bill_copy'].touched) && f['bill_copy'].errors?.['required']">Bill Copy is required</span>
+                </div>
+                <div class="col-sm-3 form-group" *ngIf="isEdit">
+                  <label class="center-block">Status:</label>
+                  <div>
+                    <select class="form-control" formControlName="status">
+                      <option disabled>Select</option>
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-            </form>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" datatable >
-                    <thead>
-                        <tr>
-                          <th width="25">Action</th>
-                          <th>Code</th>
-                          <th>Name</th>
-                          <th>Calculate On</th>
-                          <th>Charge %</th>
-                          <th>Allow Multi</th>
-                          <th>Bill Copy</th>
-                          <th>Status</th>
-                          <th>Created By</th>
-                          <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let val of data">
-                            <td class="text-center">
-                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
-                                <span class="tooltiptext">EDIT</span>
-                              </span>  | 
-                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
-                                <span class="tooltiptext">DELETE</span>
-                              </span>
-                            </td>
-                            <td>{{val.pmt_code}}</td>
-                            <td>{{val.pmt_name}}</td>
-                            <td>{{val.calc_on}}</td>
-                            <td>{{val.charge_per}}</td>
-                            <td>{{val.allow_multi}}</td>
-                            <td>{{val.bill_copy}}</td>
-                            <td>{{val.status}}</td>
-                            <td>{{val.created_by}}</td>
-                            <td>{{val.created_at}}</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
+          </div>
+          <div class="col-sm-4" *ngIf="isEdit">
+            <div class="head-1">
+              <div class="row">
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Created By: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{created_by}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Created At: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{created_at}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Updated By: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{updated_by}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Updated At: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{updated_at}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </form>
     </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
+          <thead>
+            <tr>
+              <th width="25">Action</th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Calculate On</th>
+              <th>Charge %</th>
+              <th>Allow Multi</th>
+              <th>Bill Copy</th>
+              <th>Status</th>
+              <th>Created By</th>
+              <th>Created Date</th>
+              <th>Updated By</th>
+              <th>Updated Date</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="data?.length != 0">
+            <tr *ngFor="let val of data">
+              <td class="text-center">
+                <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png"
+                    (click)="editPaymentModeList(val._id)">
+                  <span class="tooltiptext">EDIT</span>
+                </span>
+              </td>
+              <td>{{val.pmt_code}}</td>
+              <td>{{val.pmt_name}}</td>
+              <td>{{val.calc_on}}</td>
+              <td>{{val.charge_per}}</td>
+              <td>{{val.allow_multi}}</td>
+              <td>{{val.bill_copy}}</td>
+              <td>{{val.status}}</td>
+              <td>{{val.created_by}}</td>
+              <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
+              <td>{{val.updated_by}}</td>
+              <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="data?.length == 0">
+            <tr>
+              <td colspan="3" class="no-data-available">No data!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div class="display-view" style="display: none;">
-  <table class="table" id="table" #pdfTable>
-    <thead>
-      <tr>
-        <th>Code</th>
-        <th>Name</th>
-        <th>Page</th>
-        <th>Parent Module</th>
-        <th>Image</th>
-        <th>Is Home</th>
-        <th>Status</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let val of data">
-        <td>{{val.pmt_code}}</td>
-        <td>{{val.pmt_name}}</td>
-        <td>{{val.calc_on}}</td>
-        <td>{{val.charge_per}}</td>
-        <td>{{val.allow_multi}}</td>
-        <td>{{val.bill_copy}}</td>
-        <td>{{val.status}}</td>
-        <td>{{val.created_by}}</td>
-        <td>{{val.created_at}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 <app-footer></app-footer>

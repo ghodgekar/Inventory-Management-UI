@@ -136,10 +136,20 @@
             <div class="col-sm-2 form-group">
               <label class="center-block">City: <span class="mandatory-input">*</span></label>
               <div>
-                <select class="form-control" formControlName="city" (change)="onChanheCity($event)">
-                  <option value="" disabled>Select</option>
-                  <option [value]="val.city_name" *ngFor="let val of cityData">{{val.city_name}}</option>
-                </select>
+                <mat-form-field>
+                  <mat-select formControlName="city" (selectionChange)="onChanheCity($event)" #singleSelect>
+                    <mat-option>
+                      <ngx-mat-select-search placeholderLabel="Select" [formControl]="cityFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                        <span ngxMatSelectNoEntriesFound>
+                          No data found
+                        </span>
+                      </ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let val of city_data_arr | async" [value]="val.city_name">
+                      {{val.city_name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
               <span class="validation-error mandatory-input"
                 *ngIf="(submitted || f['city'].touched) && f['city'].errors?.['required']">City is required</span>

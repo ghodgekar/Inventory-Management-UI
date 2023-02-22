@@ -1,145 +1,206 @@
 <div class="top-menu">
-    <div class="row">
-        <div class="col-sm-12">
-            <ul>
-                <li class="topmenu">Test : By Peacock Infotech </li>
-                <li class="topmenu company-name">Administrator (AMG)</li>
-                <li class="topmenu active">Item Tax Master</li>
-            </ul>
-        </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <ul>
+        <li class="topmenu">Test : By Peacock Infotech </li>
+        <li class="topmenu company-name">Administrator (AMG)</li>
+        <li class="topmenu active">Item Tax Master</li>
+      </ul>
     </div>
+  </div>
 </div>
 <div class="top-menu module-menu">
-    <div class="row">
-        <div class="col-sm-12">
-            <ul>
-                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
-                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
-                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
-                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
-                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
-            </ul>
-        </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <ul>
+        <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save"
+            class="save-icon"><span class="tooltiptext">SAVE</span></li>
+        <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF"
+            class="pdf-icon"><span class="tooltiptext">PDF</span></li>
+        <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL"
+            class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
+        <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET"
+            class="reset-icon"><span class="tooltiptext">RESET</span></li>
+        <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon"
+            routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
+      </ul>
     </div>
+  </div>
 </div>
 <div class="main">
-    <div class="card">
-        <div class="card-body">
-            <form [formGroup]="ItemTaxForm">
-              <div class="head-1">
-                  <div class="row">
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">State: </label>
-                      <div>
-                        <select formControlName="state_code" id="" class="form-control">
-                            <option [value]="val.state_name" *ngFor="let val of stateData">{{val.state_name}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Item: </label>
-                      <div>
-                        <select formControlName="item_code" id="" class="form-control">
-                          <option [value]="val.item_name" *ngFor="let val of itemData">{{val.item_name}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Tax: </label>
-                      <div>
-                        <select formControlName="tax_code" id="" class="form-control">
-                          <option [value]="val.tax_name" *ngFor="let val of taxData">{{val.tax_name}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                        <label class="center-block">Start Date: </label>
-                        <div>
-                            <input type="date" class="form-control" formControlName="start_date">
-                        </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                        <label class="center-block">End Date: </label>
-                        <div>
-                            <input type="date" class="form-control" formControlName="end_date">
-                        </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                    </div>
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="itemTaxForm">
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="head-1">
+              <div class="row">
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">State: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <mat-form-field>
+                      <mat-select formControlName="state_code" #singleSelect>
+                        <mat-option>
+                          <ngx-mat-select-search placeholderLabel="Select" [formControl]="searchStateFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                            <span ngxMatSelectNoEntriesFound>
+                              No data found
+                            </span>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let val of search_state_data_arr | async" [value]="val.state_name">
+                          {{val.state_name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['state_code'].touched) && f['state_code'].errors?.['required']">State is
+                    required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Item: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <mat-form-field>
+                      <mat-select formControlName="item_code" #singleItemSelect>
+                        <mat-option>
+                          <ngx-mat-select-search placeholderLabel="Select" [formControl]="searchItemFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                            <span ngxMatSelectNoEntriesFound>
+                              No data found
+                            </span>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let val of search_item_data_arr | async" [value]="val.item_name">
+                          {{val.item_name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['item_code'].touched) && f['item_code'].errors?.['required']">Item Name is
+                    required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Tax: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <select formControlName="tax_code" id="" class="form-control">
+                      <option [value]="val.tax_name" *ngFor="let val of taxData">{{val.tax_name}}</option>
+                    </select>
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['tax_code'].touched) && f['tax_code'].errors?.['required']">Tax Name is
+                    required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Start Date: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input type="date" class="form-control" formControlName="start_date">
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['start_date'].touched) && f['start_date'].errors?.['required']">Start Date is
+                    required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">End Date: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input type="date" class="form-control" formControlName="end_date">
+                  </div>
+                  <span class="validation-error mandatory-input"
+                    *ngIf="(submitted || f['end_date'].touched) && f['end_date'].errors?.['required']">End Date is
+                    required</span>
+                </div>
+                <div class="col-sm-2 form-group" *ngIf="isEdit">
+                  <label class="center-block">Status: </label>
+                  <div>
+                    <select class="form-control" formControlName="status">
+                      <option disabled>Select</option>
+                      <option value="Active" selected>Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-            </form>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-striped table-bordered table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                    <thead>
-                        <tr>
-                          <th width="25">Action</th>
-                          <th>State</th>
-                          <th>Item</th>
-                          <th>Tax</th>
-                          <th>Start Date</th>
-                          <th>End Date</th>
-                          <th>Status</th>
-                          <th>Created By</th>
-                          <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let val of data">
-                            <td class="text-center">
-                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCompanyList(val._id)"> 
-                                <span class="tooltiptext">EDIT</span>
-                              </span>  | 
-                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCompanyList(val._id)"> 
-                                <span class="tooltiptext">DELETE</span>
-                              </span>
-                            </td>
-                            <td>{{val.state_code}}</td>
-                            <td>{{val.item_code}}</td>
-                            <td>{{val.tax_code}}</td>
-                            <td>{{val.start_date}}</td>
-                            <td>{{val.end_date}}</td>
-                            <td>{{val.status}}</td>
-                            <td>{{val.created_by}}</td>
-                            <td>{{val.created_at}}</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
+          </div>
+          <div class="col-sm-4" *ngIf="isEdit">
+            <div class="head-1">
+              <div class="row">
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Created By: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{created_by}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Created At: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{created_at}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Updated By: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{updated_by}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Updated At: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{updated_at}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </form>
     </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
+          <thead>
+            <tr>
+              <th width="25">Action</th>
+              <th>State</th>
+              <th>Item</th>
+              <th>Tax</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+              <th>Created By</th>
+              <th>Created Date</th>
+              <th>Updated By</th>
+              <th>Updated Date</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="data?.length != 0">
+            <tr *ngFor="let val of data">
+              <td class="text-center">
+                <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editItemTaxList(val._id)">
+                  <span class="tooltiptext">EDIT</span>
+                </span>
+              </td>
+              <td>{{val.state_code}}</td>
+              <td>{{val.item_code}}</td>
+              <td>{{val.tax_code}}</td>
+              <td>{{val.start_date}}</td>
+              <td>{{val.end_date}}</td>
+              <td>{{val.status}}</td>
+              <td>{{val.created_by}}</td>
+              <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
+              <td>{{val.updated_by}}</td>
+              <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="data?.length == 0">
+            <tr>
+              <td colspan="3" class="no-data-available">No data!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div class="display-view" style="display: none;">
-  <table class="table" id="table" #pdfTable>
-    <thead>
-      <tr>
-        <th>State</th>
-        <th>Item</th>
-        <th>Tax</th>
-        <th>Start Date</th>
-        <th>End Date</th>
-        <th>Status</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let val of data">
-        <td>{{val.module_code}}</td>
-        <td>{{val.module_code}}</td>
-        <td>{{val.module_name}}</td>
-        <td>{{val.module_slug}}</td>
-        <td>{{val.status}}</td>
-        <td>{{val.created_by}}</td>
-        <td>{{val.created_at}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 <app-footer></app-footer>

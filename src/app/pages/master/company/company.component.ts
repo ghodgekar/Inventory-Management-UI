@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -9,11 +9,12 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CompanyService } from 'src/app/services/master/company.service';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { CommonListService } from 'src/app/services/master/common-list.service';
 import { DatePipe } from '@angular/common';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 import { CityService } from 'src/app/services/master/city.service';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-company',
@@ -35,9 +36,14 @@ export class CompanyComponent implements OnInit{
   data:any=[];
   parent_menu: any=[];
   typeData: any;
-  cityData: any;
+  city_data: any=[];
+  
+  cityFilterCtrl: FormControl<string> = new FormControl<any>('');
+  @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
+  city_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
+  _onDestroy = new Subject<void>();
 
-  constructor(private fb: FormBuilder, private CompanyHttp:CompanyService, private CommonListHttp:CommonListService,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService, private cityHttp:CityService) {
+  constructor(private fb: FormBuilder, private companyHttp:CompanyService, private commonListHttp:CommonListService,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService, private cityHttp:CityService) {
     this.createForm();
   }
   
@@ -83,20 +89,49 @@ export class CompanyComponent implements OnInit{
     this.getCityList();
   }
 
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
+  filterCity() {
+    if (!this.city_data) {
+      return;
+    }
+    let search = this.cityFilterCtrl.value;
+    if (!search) {
+      this.city_data_arr.next(this.city_data.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.city_data_arr.next(
+      this.city_data.filter((data:any) => data.city_name.toLowerCase().indexOf(search) > -1
+      )
+    );
+  }
+
+  getCityList(){
+    this.submitBtn == 'SAVE';
+    this.cityHttp.list().subscribe((res:any) => {
+      this.city_data = res.data;
+      this.city_data_arr.next(this.city_data.slice());
+      this.cityFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterCity();
+        });
+    })
+  }
+
   getTypeList(){
-    this.CommonListHttp.codeList('COMP_TYPE').subscribe((res:any) => {
+    this.commonListHttp.codeList('COMP_TYPE').subscribe((res:any) => {
       this.typeData = res.data
     })
   }
 
-  getCityList(){
-    this.cityHttp.list().subscribe((res:any) => {
-      this.cityData = res.data
-    })
-  }
-
   onChanheCity(e:any){
-    this.cityHttp.getStateCountry(e.target.value).subscribe((res:any) => {
+    this.cityHttp.getStateCountry(e.value).subscribe((res:any) => {
       this.companyForm.patchValue({
         state: res.data.state,
         country: res.data.country
@@ -130,7 +165,7 @@ export class CompanyComponent implements OnInit{
       lengthMenu: [15, 30, 45, 60, 100],
       ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
         Object.assign(dataTablesParameters, formData)
-        this.CompanyHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+        this.companyHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
           this.data = resp.data;
           callback({
             recordsTotal: resp.recordsTotal,
@@ -152,7 +187,7 @@ export class CompanyComponent implements OnInit{
       if(this.submitBtn == 'SAVE'){
         this.companyForm.value['created_by'] = localStorage.getItem('username');
         this.companyForm.value['created_at'] = new Date();
-        this.CompanyHttp.save( this.companyForm.value).subscribe((res:any) => {  
+        this.companyHttp.save( this.companyForm.value).subscribe((res:any) => {  
           this.onReset();
           this.toastr.showSuccess(res.message);
           $('#evaluator_table').DataTable().ajax.reload();
@@ -173,7 +208,7 @@ export class CompanyComponent implements OnInit{
           this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.CompanyHttp.update( this.companyForm.value).subscribe((res:any) => {
+        this.companyHttp.update( this.companyForm.value).subscribe((res:any) => {
           this.isEdit = false;
           this.submitBtn = 'SAVE';
           this.onReset();
@@ -187,11 +222,13 @@ export class CompanyComponent implements OnInit{
   onReset(): void {
     this.submitted = false;
     this.companyForm.reset();
+    this.submitBtn = 'SAVE';
+    this.isEdit = false;
   }
 
   editCompanyList(id: any){
     this.submitBtn = 'UPDATE'
-    this.CompanyHttp.list(id).subscribe((res:any) => {
+    this.companyHttp.list(id).subscribe((res:any) => {
       this.companyForm.patchValue({
         comp_code: res.data[0].comp_code,
         comp_name: res.data[0].comp_name,
@@ -233,7 +270,7 @@ export class CompanyComponent implements OnInit{
   }
 
   deleteCompanyList(id:any){
-    this.CompanyHttp.delete( {'_id':id} ).subscribe((res:any) => {
+    this.companyHttp.delete( {'_id':id} ).subscribe((res:any) => {
       $('#evaluator_table').DataTable().ajax.reload();
     })
   }
