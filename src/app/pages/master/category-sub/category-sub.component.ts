@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -10,7 +10,10 @@ import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CategoryService } from 'src/app/services/master/category.service';
 import { CategorySubService } from 'src/app/services/master/category_sub.service';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
+import { DatePipe } from '@angular/common';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-category-sub',
@@ -18,21 +21,26 @@ import { Subject } from 'rxjs';
   styleUrls: ['./category-sub.component.css']
 })
 export class CategorySubComponent  implements OnInit {
-
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
   categorySubForm!: FormGroup;
   submitted: boolean = false;
-  data:any=[];
-
   submitBtn:String ='SAVE';
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-  categorydata: any=[];
-  
   dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject();
+  data:any=[];
+  search_data: any=[];
+  
+  searchFilterCtrl: FormControl<string> = new FormControl<any>('');
+  @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
+  search_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
+  _onDestroy = new Subject<void>();
 
-  constructor(private fb: FormBuilder, private categoryHttp:CategoryService, private categorySubHttp:CategorySubService) {
+  constructor(private fb: FormBuilder, private categoryHttp:CategoryService, private categorySubHttp:CategorySubService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
   }
   
@@ -41,64 +49,112 @@ export class CategorySubComponent  implements OnInit {
       sub_category_code: ['', Validators.required ],
       sub_category_name: ['', Validators.required ],
       category_code: ['', Validators.required ],
-      markup: ['', Validators.required ],
-      markdown: ['', Validators.required ],
-      shelf_life_p: ['', Validators.required ],
-      shelf_life_dm: ['', Validators.required ],
+      markup: [''],
+      markdown: [''],
+      shelf_life_p: [''],
+      shelf_life_dm: [''],
+      status: ['Active'],
       created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
       _id: []
     });
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-      lengthMenu: [10,20,30],
-      order:[[1,'desc']],
-      destroy: true
-    };
-    this.getCategorySubList();
-    this.getCategoryList();
-    this.dtTrigger.next(null);
+    this.getCategorySubDatatable()
+    this.getCategoryTypeList();
+  }
+
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
+  filterCategory() {
+    if (!this.search_data) {
+      return;
+    }
+    let search = this.searchFilterCtrl.value;
+    if (!search) {
+      this.search_data_arr.next(this.search_data.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.search_data_arr.next(
+      this.search_data.filter((data:any) => data.category_name.toLowerCase().indexOf(search) > -1
+      )
+    );
+  }
+
+  getCategoryTypeList(){
+    this.submitBtn == 'SAVE';
+    this.categoryHttp.list().subscribe((res:any) => {
+      this.search_data = res.data;
+      this.search_data_arr.next(this.search_data.slice());
+      this.searchFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterCategory();
+        });
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {
     return this.categorySubForm.controls;
   }
 
-  getCategoryList(){
-    this.submitBtn == 'SAVE';
-    this.categoryHttp.list().subscribe((res:any) => {
-      if(res.data){
-        this.categorydata = res.data;
+  getCategorySubDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    const that = this;
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: false,
+      scrollCollapse: true,
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        that.categorySubHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+            that.data = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
       }
-    })
-  }
-
-  getCategorySubList(){
-    this.submitBtn == 'SAVE';
-    this.categorySubHttp.list().subscribe((res:any) => {
-      if(res.data){
-        this.data = res.data;
-        this.dtTrigger.next(null);
-        this.dtTrigger.subscribe();
-      }
-    })
+    };
   }
 
   onSubmit(): void {
     this.categorySubForm.value['updated_by'] = localStorage.getItem('username');
+    this.categorySubForm.value['updated_at'] = new Date();
+    this.categorySubForm.value['status'] = 'Active';
     this.submitted = true;
     if (this.categorySubForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.categorySubForm.value['created_by'] = localStorage.getItem('username');
+        this.categorySubForm.value['created_at'] = new Date();
         this.categorySubHttp.save( this.categorySubForm.value).subscribe((res:any) => {
-          this.getCategorySubList();
+          $('#evaluator_table').DataTable().ajax.reload();
           this.onReset();
+          this.toastr.showSuccess(res.message);
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -113,26 +169,32 @@ export class CategorySubComponent  implements OnInit {
               }
             });
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.categorySubHttp.update(this.categorySubForm.value).subscribe((res:any) => {
-          this.getCategorySubList();
+          $('#evaluator_table').DataTable().ajax.reload();
+          this.isEdit = false;
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
   }
 
   onReset(): void {
+    this.submitBtn = 'SAVE';
     this.submitted = false;
     this.categorySubForm.reset();
+    this.isEdit = false;
   }
 
   editCategorySubList(id: any){
+    this.isEdit = true;
     this.submitBtn = 'UPDATE'
     this.categorySubHttp.list(id).subscribe((res:any) => {
       this.categorySubForm.patchValue({
-        _id: res.data[0]._id,
         sub_category_code: res.data[0].sub_category_code,
         sub_category_name: res.data[0].sub_category_name,
         category_code: res.data[0].category_code,
@@ -141,57 +203,23 @@ export class CategorySubComponent  implements OnInit {
         shelf_life_p: res.data[0].shelf_life_p,
         shelf_life_dm: res.data[0].shelf_life_dm,
         status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: res.data[0].created_at,
+        updated_by: res.data[0].updated_by,
+        updated_at: res.data[0].updated_at,
+        _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
   }
 
   deleteCategorySubList(id:any){
     this.categorySubHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getCategorySubList();
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.data.map((el:any, i:any) => [el.data.list_code, el.data.list_value, el.data.list_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {

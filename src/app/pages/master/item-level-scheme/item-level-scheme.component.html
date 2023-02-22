@@ -43,9 +43,20 @@
                     <div class="col-sm-2 form-group">
                       <label class="center-block">Item: </label>
                       <div>
-                        <select formControlName="item_code" name="" id="" class="form-control">
-                            <option [value]="val.item_name" *ngFor="let val of itemData">{{val.item_name}}</option>
-                        </select>
+                        <mat-form-field>
+                          <mat-select formControlName="item_code" #singleSelect>
+                            <mat-option>
+                              <ngx-mat-select-search placeholderLabel="Select" [formControl]="searchFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                                <span ngxMatSelectNoEntriesFound>
+                                  No data found
+                                </span>
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let val of search_data_arr | async" [value]="val.item_name">
+                              {{val.item_name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
                       </div>
                     </div>
                     <div class="col-sm-2 form-group">

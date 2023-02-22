@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -8,11 +8,13 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { MatSelect } from '@angular/material/select';
+import { DatePipe } from '@angular/common';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 import { UserService } from 'src/app/services/master/user.service';
 import { UserPermissionService } from 'src/app/services/master/user-permission.service';
 import { ModuleService } from 'src/app/services/master/module.service';
-import { DataTableDirective } from 'angular-datatables';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-user-permission',
@@ -20,25 +22,31 @@ import { Subject } from 'rxjs';
   styleUrls: ['./user-permission.component.css']
 })
 export class UserPermissionComponent implements OnInit {
-
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
   userForm!: FormGroup;
   submitted: boolean = false;
-  userdata:any=[];
-  data:any=[];
-
   submitBtn:String ='SAVE';
-
-  role:any=["Accts.Assistant","Accts.Executive","Accts.Manager","Asst.Manager","Ast.Manager/Hd.Cashr","Auditor","Br.Manager","Ca","Cashier","Cashier/Acc","Cashier/Inv","Checker","Clu.Manager","Delivery Boy","Dept.Assistant","Head Cashier","Helper","Hod.Marketting","Inv.Branch","Inv.Clerk","Inv.Who","It.Admin","It.Edp","Mat.Manager","Pur.Manager","Rwadmin","Wh_Picker"]
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-  moduledata: any;
-
-  @ViewChild(DataTableDirective) datatableElement!: DataTableDirective;
   dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject();
+  data:any=[];
+  search_data: any=[];
+  search_module_data: any=[];
+  
+  searchFilterCtrl: FormControl<string> = new FormControl<any>('');
+  @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
+  search_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
+  _onDestroy = new Subject<void>();
+  
+  searchModuleFilterCtrl: FormControl<string> = new FormControl<any>('');
+  @ViewChild('singleSelect', { static: true })singleModuleSelect!: MatSelect;
+  search_module_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
 
-  constructor(private fb: FormBuilder, private userPermissionHttp:UserPermissionService, private userHttp:UserService, private moduleHttp:ModuleService,private readonly chRef: ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private userPermissionHttp:UserPermissionService, private userHttp:UserService, private moduleHttp:ModuleService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
   }
   
@@ -46,101 +54,142 @@ export class UserPermissionComponent implements OnInit {
     this.userForm = this.fb.group({
       user_code: ['', Validators.required ],
       module_code: ['', Validators.required ],
-      is_open: ['', Validators.required ],
-      is_entry: ['', Validators.required ],
-      is_modify: ['', Validators.required ],
-      is_auth: ['', Validators.required ],
+      is_open: ['Yes', Validators.required ],
+      is_entry: ['Yes', Validators.required ],
+      is_modify: ['Yes', Validators.required ],
+      is_auth: ['Yes', Validators.required ],
+      status: ['Active'],
       created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
       _id: []
     });
   }
-
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-      lengthMenu: [10,20,30],
-      order:[[1,'desc']],
-      destroy: true
-    };
-    this.dtTrigger.subscribe();
-    this.getUserList();
-    this.getModuleList();
-    this.getUserPermissionList();
+    this.getUserPermissionDatatable()
+    this.getSearchList();
+    this.getSearchModuleList();
   }
 
   ngOnDestroy() {
-    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.destroy();
-    })
-    this.dtTrigger.unsubscribe();
+    this._onDestroy.next();
+    this._onDestroy.complete();
   }
 
-  ngAfterViewInit() {
-      this.dtTrigger.next(true);
+  filterSearch() {
+    if (!this.search_data) {
+      return;
+    }
+    let search = this.searchFilterCtrl.value;
+    if (!search) {
+      this.search_data_arr.next(this.search_data.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.search_data_arr.next(
+      this.search_data.filter((data:any) => data.user_code.toLowerCase().indexOf(search) > -1
+      )
+    );
+  }
+
+  filterSearchModule() {
+    if (!this.search_module_data) {
+      return;
+    }
+    let search = this.searchFilterCtrl.value;
+    if (!search) {
+      this.search_module_data_arr.next(this.search_module_data.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.search_module_data_arr.next(
+      this.search_module_data.filter((data:any) => data.module_name.toLowerCase().indexOf(search) > -1
+      )
+    );
+  }
+
+  getSearchList(){
+    this.submitBtn == 'SAVE';
+    this.userHttp.list().subscribe((res:any) => {
+      this.search_data = res.data;
+      this.search_data_arr.next(this.search_data.slice());
+      this.searchFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterSearch();
+        });
+    })
+  }
+
+  getSearchModuleList(){
+    this.submitBtn == 'SAVE';
+    this.moduleHttp.list().subscribe((res:any) => {
+      this.search_module_data = res.data;
+      this.search_module_data_arr.next(this.search_module_data.slice());
+      this.searchModuleFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterSearchModule();
+        });
+    })
   }
 
   get f(): { [key: string]: AbstractControl } {
     return this.userForm.controls;
   }
 
-  getUserList(){
-    this.userHttp.list().subscribe((res:any) => {
-      if(res.data){
-        this.userdata = res.data;
+  getUserPermissionDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    const that = this;
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: false,
+      scrollCollapse: true,
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        that.userPermissionHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+            that.data = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
       }
-    })
-  }
-
-  getModuleList(){
-    this.moduleHttp.list().subscribe((res:any) => {
-      if(res.data){
-        this.moduledata = res.data;
-      }
-    })
-  }
-
-  getUserPermissionList(){
-    this.submitBtn == 'SAVE';
-    this.userPermissionHttp.list().subscribe((res:any) => {
-      if(res.data){
-        this.data = res.data;
-        setTimeout(()=>{   
-          $('.table').DataTable( {
-            pagingType: 'full_numbers',
-            pageLength: 5,
-            processing: true,
-            lengthMenu : [5, 10, 25],
-            destroy: true
-        } );
-        }, 1);
-      }
-    })
-  }
-
-  public rerender() {
-    this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.destroy();
-        this.userPermissionHttp.list().subscribe((res:any) => {
-          this.data = res.data;
-          this.chRef.detectChanges();
-          this.dtTrigger.next(null);
-        })
-    });
+    };
   }
 
   onSubmit(): void {
     this.userForm.value['updated_by'] = localStorage.getItem('username');
+    this.userForm.value['updated_at'] = new Date();
+    this.userForm.value['status'] = 'Active';
     this.submitted = true;
     if (this.userForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.userForm.value['created_by'] = localStorage.getItem('username');
+        this.userForm.value['created_at'] = new Date();
         this.userPermissionHttp.save( this.userForm.value).subscribe((res:any) => {
-          this.getUserList();
+          $('#evaluator_table').DataTable().ajax.reload();
           this.onReset();
+          this.toastr.showSuccess(res.message);
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -155,83 +204,56 @@ export class UserPermissionComponent implements OnInit {
               }
             });
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.userPermissionHttp.update(this.userForm.value).subscribe((res:any) => {
-          this.getUserList();
+          $('#evaluator_table').DataTable().ajax.reload();
+          this.isEdit = false;
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
   }
 
   onReset(): void {
+    this.submitBtn = 'SAVE';
     this.submitted = false;
     this.userForm.reset();
+    this.isEdit = false;
   }
 
   editUserList(id: any){
+    this.isEdit = true;
     this.submitBtn = 'UPDATE'
     this.userPermissionHttp.list(id).subscribe((res:any) => {
       this.userForm.patchValue({
-        _id: res.data[0]._id,
         user_code: res.data[0].user_code,
         module_code: res.data[0].module_code,
         is_open: res.data[0].is_open,
         is_entry: res.data[0].is_entry,
         is_modify: res.data[0].is_modify,
-        is_auth: res.data[0].is_auth
+        is_auth: res.data[0].is_auth,
+        status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: res.data[0].created_at,
+        updated_by: res.data[0].updated_by,
+        updated_at: res.data[0].updated_at,
+        _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
   }
 
   deleteUserList(id:any){
     this.userPermissionHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getUserList();
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.userdata.map((el:any, i:any) => [el.data.list_code, el.data.list_value, el.data.list_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {
@@ -254,4 +276,5 @@ export class UserPermissionComponent implements OnInit {
     };
     pdfMake.createPdf(documentDefinition).open();
   }
+
 } 

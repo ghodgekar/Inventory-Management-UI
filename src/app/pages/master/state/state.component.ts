@@ -52,7 +52,7 @@ export class StateComponent {
       state_name: ['', Validators.required ],
       country_code: ['', Validators.required ],
       state_type: ['', Validators.required ],
-      gst_state_code: ['', Validators.required ],
+      gst_state_code: [''],
       status: ['Active'],
       created_by: [''],
       created_at: [''],
@@ -63,7 +63,7 @@ export class StateComponent {
   }
 
   ngOnInit(): void {
-    this.getCityDatatable()
+    this.getStateDatatable()
     this.getCountryList();
   }
 
@@ -106,7 +106,7 @@ export class StateComponent {
     return this.stateForm.controls;
   }
 
-  getCityDatatable(){
+  getStateDatatable(){
     var formData = {
       searchStatus: 'Active',
     };

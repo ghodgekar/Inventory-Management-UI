@@ -26,155 +26,190 @@
     <div class="card">
         <div class="card-body">
             <form [formGroup]="userForm">
-                <div class="row">
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">User Code: </label>
-                      <div>
-                        <select class="form-control" formControlName="user_code">
-                          <option>Select</option>
-                          <option value="{{val.user_code}}" *ngFor="let val of userdata">{{val.user_code}}</option>
-                        </select>
-                      </div>
+              <div class="row">
+                <div class="col-sm-8">
+                  <div class="head-1">
+                    <div class="row">
+                        <div class="col-sm-2 form-group">
+                          <label class="center-block">User Code: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <mat-form-field>
+                              <mat-select formControlName="user_code" #singleSelect>
+                                <mat-option>
+                                  <ngx-mat-select-search placeholderLabel="Select" [formControl]="searchFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                                    <span ngxMatSelectNoEntriesFound>
+                                      No data found
+                                    </span>
+                                  </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let val of search_data_arr | async" [value]="val.user_code">
+                                  {{val.user_code}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['user_code'].touched) && f['user_code'].errors?.['required']">User Code is required</span>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                          <label class="center-block">Module Name: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <mat-form-field>
+                              <mat-select formControlName="module_code" #singleModuleSelect>
+                                <mat-option>
+                                  <ngx-mat-select-search placeholderLabel="Select" [formControl]="searchModuleFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                                    <span ngxMatSelectNoEntriesFound>
+                                      No data found
+                                    </span>
+                                  </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let val of search_module_data_arr | async" [value]="val.module_name">
+                                  {{val.module_name}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['module_code'].touched) && f['module_code'].errors?.['required']">Module Name is required</span>
+                        </div>
+                        <div class="col-sm-1 form-group">
+                          <label class="center-block">Open: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <select class="form-control" formControlName="is_open">
+                              <option disabled>Select</option>
+                              <option value="Yes" selected>Yes</option>
+                              <option value="No">No</option>
+                            </select>
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['is_open'].touched) && f['is_open'].errors?.['required']">Is required</span>
+                        </div>
+                        <div class="col-sm-1 form-group">
+                          <label class="center-block">Entry: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <select class="form-control" formControlName="is_entry">
+                              <option disabled>Select</option>
+                              <option value="Yes" selected>Yes</option>
+                              <option value="No">No</option>
+                            </select>
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['is_entry'].touched) && f['is_entry'].errors?.['required']">Is required</span>
+                        </div>
+                        <div class="col-sm-1 form-group">
+                          <label class="center-block">Modify: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <select class="form-control" formControlName="is_modify">
+                              <option disabled>Select</option>
+                              <option value="Yes" selected>Yes</option>
+                              <option value="No">No</option>
+                            </select>
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['is_modify'].touched) && f['is_modify'].errors?.['required']">Is required</span>
+                        </div>
+                        <div class="col-sm-1 form-group">
+                          <label class="center-block">Authorize: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <select class="form-control" formControlName="is_auth">
+                              <option disabled>Select</option>
+                              <option value="Yes" selected>Yes</option>
+                              <option value="No">No</option>
+                            </select>
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['is_auth'].touched) && f['is_auth'].errors?.['required']">Is required</span>
+                        </div>
+                        <div class="col-sm-2 form-group" *ngIf="isEdit">
+                          <label class="center-block">Status: </label>
+                          <div>
+                            <select class="form-control" formControlName="status">
+                              <option value="Active" selected>Active</option>
+                              <option value="Inactive">Inactive</option>
+                            </select>
+                          </div>
+                        </div>
                     </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Module Name: </label>
-                      <div>
-                        <select class="form-control" formControlName="module_code">
-                          <option>Select</option>
-                          <option value="{{val.module_name}}" *ngFor="let val of moduledata">{{val.module_name}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-1 form-group">
-                      <label class="center-block">Open: </label>
-                      <div>
-                        <select class="form-control" formControlName="is_open">
-                          <option>Select</option>
-                          <option value="Yes">Yes</option>
-                          <option value="No">No</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-1 form-group">
-                      <label class="center-block">Entry: </label>
-                      <div>
-                        <select class="form-control" formControlName="is_entry">
-                          <option>Select</option>
-                          <option value="Yes">Yes</option>
-                          <option value="No">No</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-1 form-group">
-                      <label class="center-block">Modify: </label>
-                      <div>
-                        <select class="form-control" formControlName="is_modify">
-                          <option>Select</option>
-                          <option value="Yes">Yes</option>
-                          <option value="No">No</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-1 form-group">
-                      <label class="center-block">Authorize: </label>
-                      <div>
-                        <select class="form-control" formControlName="is_auth">
-                          <option>Select</option>
-                          <option value="Yes">Yes</option>
-                          <option value="No">No</option>
-                        </select>
-                      </div>
-                    </div>
+                  </div>
                 </div>
+                <div class="col-sm-4" *ngIf="isEdit">
+                  <div class="head-1">
+                    <div class="row">
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Created By: </label>
+                        <div>
+                          <p class="form-control readonly" readonly>{{created_by}}</p>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Created At: </label>
+                        <div>
+                          <p class="form-control readonly" readonly>{{created_at}}</p>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Updated By: </label>
+                        <div>
+                          <p class="form-control readonly" readonly>{{updated_by}}</p>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Updated At: </label>
+                        <div>
+                          <p class="form-control readonly" readonly>{{updated_at}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
         </div>
     </div>
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-striped table-bordered table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                    <thead>
-                        <tr>
-                          <th width="25">Action</th>
-                          <th>User Name</th>
-                          <!-- <th>User Name</th> -->
-                          <th>Module Name</th>
-                          <!-- <th>Module Name</th> -->
-                          <th>Is Open</th>
-                          <th>Is Entry</th>
-                          <th>Is Modify</th>
-                          <th>Is Authorize</th>
-                          <th>Created By</th>
-                          <th>Created Date</th>
-                          <th>Updated By</th>
-                          <th>Updated Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let val of data">
-                            <td class="text-center">
-                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editUserList(val._id)"> 
-                                <span class="tooltiptext">EDIT</span>
-                              </span>  | 
-                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteUserList(val._id)"> 
-                                <span class="tooltiptext">DELETE</span>
-                              </span>
-                            </td>
-                            <td>{{val.user_code}}</td>
-                            <!-- <td>{{val.user_name}}</td> -->
-                            <td>{{val.module_code}}</td>
-                            <!-- <td>{{val.module_name}}</td> -->
-                            <td>{{val.is_open}}</td>
-                            <td>{{val.is_entry}}</td>
-                            <td>{{val.is_modify}}</td>
-                            <td>{{val.is_auth}}</td>
-                            <td>{{val.created_by}}</td>
-                            <td>{{val.created_at | date}}</td>
-                            <td>{{val.created_by}}</td>
-                            <td>{{val.updated_at | date}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+              <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
+                <thead>
+                  <tr>
+                    <th width="25">Action</th>
+                    <th>User Name</th>
+                    <th>Module Name</th>
+                    <th>Is Open</th>
+                    <th>Is Entry</th>
+                    <th>Is Modify</th>
+                    <th>Is Authorize</th>
+                    <th>Status</th>
+                    <th>Created By</th>
+                    <th>Created Date</th>
+                    <th>Updated By</th>
+                    <th>Updated Date</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="data?.length != 0">
+                  <tr *ngFor="let val of data">
+                    <td class="text-center">
+                      <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editUserList(val._id)"> 
+                        <span class="tooltiptext">EDIT</span>
+                      </span>
+                    </td>
+                    <td>{{val.user_code}}</td>
+                    <td>{{val.module_code}}</td>
+                    <td>{{val.is_open}}</td>
+                    <td>{{val.is_entry}}</td>
+                    <td>{{val.is_modify}}</td>
+                    <td>{{val.is_auth}}</td>
+                    <td>{{val.status}}</td>
+                    <td>{{val.created_by}}</td>
+                    <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
+                    <td>{{val.updated_by}}</td>
+                    <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="data?.length == 0">
+                  <tr>
+                    <td colspan="3" class="no-data-available">No data!</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
         </div>
     </div>
 </div>
-
-<div class="display-view" style="display: none;">
-  <table class="table" id="table" #pdfTable>
-    <thead>
-      <tr>
-        <th>User Code</th>
-        <th>User Name</th>
-        <th>Module Code</th>
-        <th>Module Name</th>
-        <th>Is Open</th>
-        <th>Is Entry</th>
-        <th>Is Modify</th>
-        <th>Is Authorize</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let val of data">
-        <td>{{val.user_code}}</td>
-        <td>{{val.user_name}}</td>
-        <td>{{val.module_code}}</td>
-        <td>{{val.module_name}}</td>
-        <td>{{val.is_open}}</td>
-        <td>{{val.is_entry}}</td>
-        <td>{{val.is_modify}}</td>
-        <td>{{val.is_auth}}</td>
-        <td>{{val.created_by}}</td>
-        <td>{{val.created_at}}</td>
-        <td>{{val.updated_by}}</td>
-        <td>{{val.updated_at}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 <app-footer></app-footer>
 
                     

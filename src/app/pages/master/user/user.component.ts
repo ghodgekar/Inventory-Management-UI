@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -8,6 +8,10 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { MatSelect } from '@angular/material/select';
+import { DatePipe } from '@angular/common';
+import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 import { UserService } from 'src/app/services/master/user.service';
 import { CommonListService } from 'src/app/services/master/common-list.service';
 
@@ -18,19 +22,26 @@ import { CommonListService } from 'src/app/services/master/common-list.service';
   styleUrls: ['./user.component.css']
 })
 export class UserComponent  implements OnInit {
-
+  created_by: any;
+  created_at: any;
+  updated_by: any;
+  updated_at: any;
   userForm!: FormGroup;
   submitted: boolean = false;
-  data:any=[];
-  dtOptions: DataTables.Settings = {};
-
   submitBtn:String ='SAVE';
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-  roleData: any;
-
-  constructor(private fb: FormBuilder, private userHttp:UserService, private CommonListHttp:CommonListService) {
+  dtOptions: DataTables.Settings = {};
+  data:any=[];
+  search_data: any=[];
+  
+  searchFilterCtrl: FormControl<string> = new FormControl<any>('');
+  @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
+  search_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
+  _onDestroy = new Subject<void>();
+  
+  constructor(private fb: FormBuilder, private userHttp:UserService, private commonListHttp:CommonListService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
   }
   
@@ -42,20 +53,52 @@ export class UserComponent  implements OnInit {
       role: ['', Validators.required ],
       mobile: ['', Validators.required ],
       email: ['', Validators.required ],
-      status: ['', Validators.required ],
+      status: ['Active'],
       created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
       _id: []
     });
   }
-
+  
   ngOnInit(): void {
-    this.getUserList();
-    this.getUserRoleList();
+    this.getUserDatatable()
+    this.getSearchList();
   }
 
-  getUserRoleList(){
-    this.CommonListHttp.codeList('USER_ROLE').subscribe((res:any) => {
-      this.roleData = res.data
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
+  filterState() {
+    if (!this.search_data) {
+      return;
+    }
+    let search = this.searchFilterCtrl.value;
+    if (!search) {
+      this.search_data_arr.next(this.search_data.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.search_data_arr.next(
+      this.search_data.filter((data:any) => data.list_desc.toLowerCase().indexOf(search) > -1
+      )
+    );
+  }
+
+  getSearchList(){
+    this.submitBtn == 'SAVE';
+    this.commonListHttp.list().subscribe((res:any) => {
+      this.search_data = res.data;
+      this.search_data_arr.next(this.search_data.slice());
+      this.searchFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterState();
+        });
     })
   }
 
@@ -63,35 +106,55 @@ export class UserComponent  implements OnInit {
     return this.userForm.controls;
   }
 
-  getUserList(){
-    this.submitBtn == 'SAVE';
-    this.userHttp.list().subscribe((res:any) => {
-      if(res.data){
-        this.data = res.data;
-        setTimeout(()=>{   
-          $('.table').DataTable( {
-            pagingType: 'full_numbers',
-            pageLength: 5,
-            processing: true,
-            lengthMenu : [5, 10, 25],
-            destroy: true
-        } );
-        }, 1);
+  getUserDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    const that = this;
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: false,
+      scrollCollapse: true,
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        that.userHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+            that.data = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
       }
-    })
+    };
   }
 
   onSubmit(): void {
     this.userForm.value['updated_by'] = localStorage.getItem('username');
+    this.userForm.value['updated_at'] = new Date();
+    this.userForm.value['status'] = 'Active';
     this.submitted = true;
     if (this.userForm.invalid) {
       return;
     }else{
       if(this.submitBtn == 'SAVE'){
         this.userForm.value['created_by'] = localStorage.getItem('username');
+        this.userForm.value['created_at'] = new Date();
         this.userHttp.save( this.userForm.value).subscribe((res:any) => {
-          this.getUserList();
+          $('#evaluator_table').DataTable().ajax.reload();
           this.onReset();
+          this.toastr.showSuccess(res.message);
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -106,26 +169,32 @@ export class UserComponent  implements OnInit {
               }
             });
           }
+          this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
         this.userHttp.update(this.userForm.value).subscribe((res:any) => {
-          this.getUserList();
+          $('#evaluator_table').DataTable().ajax.reload();
+          this.isEdit = false;
+          this.submitBtn = 'SAVE';
           this.onReset();
+          this.toastr.showSuccess(res.message)
         })
       }
     }
   }
 
   onReset(): void {
+    this.submitBtn = 'SAVE';
     this.submitted = false;
     this.userForm.reset();
+    this.isEdit = false;
   }
 
   editUserList(id: any){
+    this.isEdit = true;
     this.submitBtn = 'UPDATE'
     this.userHttp.list(id).subscribe((res:any) => {
       this.userForm.patchValue({
-        _id: res.data[0]._id,
         user_code: res.data[0].user_code,
         user_name: res.data[0].user_name,
         user_pass: res.data[0].user_pass,
@@ -133,57 +202,23 @@ export class UserComponent  implements OnInit {
         mobile: res.data[0].mobile,
         email: res.data[0].email,
         status: res.data[0].status,
+        created_by: res.data[0].created_by,
+        created_at: res.data[0].created_at,
+        updated_by: res.data[0].updated_by,
+        updated_at: res.data[0].updated_at,
+        _id: res.data[0]._id
       });
+      this.created_by = res.data[0].created_by;
+      this.created_at = this.datepipe.transform(res.data[0].created_at, 'dd-MM-YYYY HH:MM:SS');
+      this.updated_by = res.data[0].updated_by;
+      this.updated_at = this.datepipe.transform(res.data[0].updated_at, 'dd-MM-YYYY HH:MM:SS');
     })
   }
 
   deleteUserList(id:any){
     this.userHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getUserList();
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.data.map((el:any, i:any) => [el.data.list_code, el.data.list_value, el.data.list_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {

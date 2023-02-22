@@ -26,97 +26,155 @@
     <div class="card">
         <div class="card-body">
             <form [formGroup]="userForm">
-                <div class="row">
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Code: </label>
-                      <div>
-                        <input class="form-control" formControlName="user_code" oninput="this.value = this.value.toUpperCase()">
-                      </div>
+              <div class="row">
+                <div class="col-sm-8">
+                  <div class="head-1">
+                    <div class="row">
+                        <div class="col-sm-2 form-group">
+                          <label class="center-block">Code: <span class="mandatory-input">*</span></label>
+                          <div>
+                            <input class="form-control" formControlName="user_code" appAllCapInput appStringInput [readonly]='isEdit'>
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['user_code'].touched) && f['user_code'].errors?.['required']">Code is required</span>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                          <label class="center-block">UserName: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <input class="form-control" formControlName="user_name">
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['user_name'].touched) && f['user_name'].errors?.['required']">UserName is required</span>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                          <label class="center-block">Password: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <input type="password" class="form-control" formControlName="user_pass">
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['user_pass'].touched) && f['user_pass'].errors?.['required']">Password is required</span>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                          <label class="center-block">Role: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <mat-form-field>
+                              <mat-select formControlName="role" #singleSelect>
+                                <mat-option>
+                                  <ngx-mat-select-search placeholderLabel="Select" [formControl]="searchFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                                    <span ngxMatSelectNoEntriesFound>
+                                      No data found
+                                    </span>
+                                  </ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let val of search_data_arr | async" [value]="val.list_value">
+                                  {{val.list_desc}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['role'].touched) && f['role'].errors?.['required']">Role is required</span>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                          <label class="center-block">Mobile: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <input class="form-control" formControlName="mobile">
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['mobile'].touched) && f['mobile'].errors?.['required']">Mobile is required</span>
+                        </div>
+                        <div class="col-sm-2 form-group">
+                          <label class="center-block">Email: <span class="mandatory-input">*</span> </label>
+                          <div>
+                            <input class="form-control" formControlName="email">
+                          </div>
+                          <span class="validation-error mandatory-input" *ngIf="(submitted || f['email'].touched) && f['email'].errors?.['required']">Email is required</span>
+                        </div>
+                        <div class="col-sm-2 form-group" *ngIf="isEdit">
+                          <label class="center-block">Status: </label>
+                          <div>
+                            <select class="form-control" formControlName="status">
+                              <option value="Active" selected>Active</option>
+                              <option value="Inactive">Inactive</option>
+                            </select>
+                          </div>
+                        </div>
                     </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">UserName: </label>
-                      <div>
-                        <input class="form-control" formControlName="user_name">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Password: </label>
-                      <div>
-                        <input type="password" class="form-control" formControlName="user_pass">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Role: </label>
-                      <div>
-                        <select class="form-control" formControlName="role">
-                          <option>Select</option>
-                          <option [value]="val.list_value" *ngFor="let val of roleData">{{val.list_desc}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Mobile: </label>
-                      <div>
-                        <input class="form-control" formControlName="mobile">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Email: </label>
-                      <div>
-                        <input class="form-control" formControlName="email">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Status: </label>
-                      <div>
-                        <select class="form-control" formControlName="status">
-                          <option value="Active" selected>Active</option>
-                          <option value="Inactive">Inactive</option>
-                        </select>
-                      </div>
-                    </div>
+                  </div>
                 </div>
+                <div class="col-sm-4" *ngIf="isEdit">
+                  <div class="head-1">
+                    <div class="row">
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Created By: </label>
+                        <div>
+                          <p class="form-control readonly" readonly>{{created_by}}</p>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Created At: </label>
+                        <div>
+                          <p class="form-control readonly" readonly>{{created_at}}</p>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Updated By: </label>
+                        <div>
+                          <p class="form-control readonly" readonly>{{updated_by}}</p>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 form-group">
+                        <label class="center-block">Updated At: </label>
+                        <div>
+                          <p class="form-control readonly" readonly>{{updated_at}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
         </div>
     </div>
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" datatable >
-                    <thead>
-                        <tr>
-                          <th width="25">Action</th>
-                          <th>Code</th>
-                          <th>Username</th>
-                          <th>Role</th>
-                          <th>Mobile</th>
-                          <th>Email</th>
-                          <th>Status</th>
-                          <th>Created By</th>
-                          <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let val of data">
-                            <td class="text-center">
-                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editUserList(val._id)"> 
-                                <span class="tooltiptext">EDIT</span>
-                              </span>  | 
-                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteUserList(val._id)"> 
-                                <span class="tooltiptext">DELETE</span>
-                              </span>
-                            </td>
-                            <td>{{val.user_code}}</td>
-                            <td>{{val.user_name}}</td>
-                            <td>{{val.role}}</td>
-                            <td>{{val.mobile}}</td>
-                            <td>{{val.email}}</td>
-                            <td>{{val.status}}</td>
-                            <td>{{val.created_by}}</td>
-                            <td>{{val.created_at}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+              <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
+                <thead>
+                  <tr>
+                    <th width="25">Action</th>
+                    <th>Code</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Created By</th>
+                    <th>Created Date</th>
+                    <th>Updated By</th>
+                    <th>Updated Date</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="data?.length != 0">
+                  <tr *ngFor="let val of data">
+                    <td class="text-center">
+                      <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editUserList(val._id)"> 
+                        <span class="tooltiptext">EDIT</span>
+                      </span> 
+                    </td>
+                    <td>{{val.user_code}}</td>
+                    <td>{{val.user_name}}</td>
+                    <td>{{val.role}}</td>
+                    <td>{{val.mobile}}</td>
+                    <td>{{val.email}}</td>
+                    <td>{{val.status}}</td>
+                    <td>{{val.created_by}}</td>
+                    <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
+                    <td>{{val.updated_by}}</td>
+                    <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="data?.length == 0">
+                  <tr>
+                    <td colspan="3" class="no-data-available">No data!</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
         </div>
     </div>

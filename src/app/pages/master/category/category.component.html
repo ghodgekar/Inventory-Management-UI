@@ -1,119 +1,144 @@
 <div class="main">
-    <div class="card">
-        <div class="card-body">
-            <form [formGroup]="categoryForm">
-                <div class="row head-1">
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Code: </label>
-                      <div>
-                        <input class="form-control" formControlName="category_code" oninput="this.value = this.value.toUpperCase()">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Name: </label>
-                      <div>
-                        <input class="form-control" formControlName="category_name">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Type: </label>
-                      <div>
-                        <select class="form-control" formControlName="category_type">
-                          <option>Select</option>
-                          <option [value]="val.list_value" *ngFor="let val of categoryTypeData">{{val.list_desc}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Group: </label>
-                      <div>
-                        <input class="form-control" formControlName="group">
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <label class="center-block">Inventory: </label>
-                      <div>
-                        <select class="form-control" formControlName="inventory">
-                          <option>Select</option>
-                          <option>Yes</option>
-                          <option>No</option>
-                        </select>
-                      </div>
-                    </div>
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="categoryForm">
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="head-1">
+              <div class="row">
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Code: <span class="mandatory-input">*</span></label>
+                  <div>
+                    <input class="form-control" formControlName="category_code" appAllCapInput appSkipSpecialCharInput [readonly]='isEdit'>
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['category_code'].touched) && f['category_code'].errors?.['required']">Code is required</span>
                 </div>
-            </form>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-striped table-bordered table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
-                    <thead>
-                        <tr>
-                          <th width="25">Action</th>
-                          <th>Code</th>
-                          <th>Name</th>
-                          <th>Type</th>
-                          <th>Group</th>
-                          <th>Inventory</th>
-                          <th>Status</th>
-                          <th>Created By</th>
-                          <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let val of data">
-                            <td class="text-center">
-                              <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCategoryList(val._id)"> 
-                                <span class="tooltiptext">EDIT</span>
-                              </span>  | 
-                              <span class="tooltip"><img class="delete-icon" src="../../../assets/icons/delete.png" (click)="deleteCategoryList(val._id)"> 
-                                <span class="tooltiptext">DELETE</span>
-                              </span>
-                            </td>
-                            <td>{{val.category_code}}</td>
-                            <td>{{val.category_name}}</td>
-                            <td>{{val.category_type}}</td>
-                            <td>{{val.group}}</td>
-                            <td>{{val.inventory}}</td>
-                            <td>{{val.status}}</td>
-                            <td>{{val.created_by}}</td>
-                            <td>{{val.created_at}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Name: <span class="mandatory-input">*</span> </label>
+                  <div>
+                    <input class="form-control" formControlName="category_name">
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['category_name'].touched) && f['category_name'].errors?.['required']">Name is required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Type: <span class="mandatory-input">*</span> </label>
+                  <div>
+                    <mat-form-field>
+                      <mat-select formControlName="category_type" #singleSelect>
+                        <mat-option>
+                          <ngx-mat-select-search placeholderLabel="Select" [formControl]="searchFilterCtrl" [preventHomeEndKeyPropagation]="true">
+                            <span ngxMatSelectNoEntriesFound>
+                              No data found
+                            </span>
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let val of search_data_arr | async" [value]="val.list_value">
+                          {{val.list_desc}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['category_type'].touched) && f['category_type'].errors?.['required']">Type is required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Group: <span class="mandatory-input">*</span> </label>
+                  <div>
+                    <input class="form-control" formControlName="group">
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['group'].touched) && f['group'].errors?.['required']">Group is required</span>
+                </div>
+                <div class="col-sm-2 form-group">
+                  <label class="center-block">Inventory: <span class="mandatory-input">*</span> </label>
+                  <div>
+                    <select class="form-control" formControlName="inventory">
+                      <option>Select</option>
+                      <option>Yes</option>
+                      <option>No</option>
+                    </select>
+                  </div>
+                  <span class="validation-error mandatory-input" *ngIf="(submitted || f['inventory'].touched) && f['inventory'].errors?.['required']">Inventory is required</span>
+                </div>
+              </div>
             </div>
+          </div>
+          <div class="col-sm-4" *ngIf="isEdit">
+            <div class="head-1">
+              <div class="row">
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Created By: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{created_by}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Created At: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{created_at}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Updated By: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{updated_by}}</p>
+                  </div>
+                </div>
+                <div class="col-sm-3 form-group">
+                  <label class="center-block">Updated At: </label>
+                  <div>
+                    <p class="form-control readonly" readonly>{{updated_at}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </form>
     </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
+          <thead>
+            <tr>
+              <th width="25">Action</th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Group</th>
+              <th>Inventory</th>
+              <th>Status</th>
+              <th>Created By</th>
+              <th>Created Date</th>
+              <th>Updated By</th>
+              <th>Updated Date</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="data?.length != 0">
+            <tr *ngFor="let val of data">
+              <td class="text-center">
+                <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCategoryTypeList(val._id)"><span class="tooltiptext">EDIT</span></span>
+              </td>
+              <td>{{val.category_code}}</td>
+              <td>{{val.category_name}}</td>
+              <td>{{val.category_type}}</td>
+              <td>{{val.group}}</td>
+              <td>{{val.inventory}}</td>
+              <td>{{val.status}}</td>
+              <td>{{val.created_by}}</td>
+              <td>{{val.created_at | date:'dd-MM-y HH:MM:SS'}}</td>
+              <td>{{val.updated_by}}</td>
+              <td>{{val.updated_at | date:'dd-MM-y HH:MM:SS'}}</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="data?.length == 0">
+            <tr>
+              <td colspan="3" class="no-data-available">No data!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div class="display-view" style="display: none;">
-  <table class="table" id="table" #pdfTable>
-    <thead>
-      <tr>
-        <th>Code</th>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Group</th>
-        <th>Inventory</th>
-        <th>Status</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let val of data">
-        <td>{{val.category_code}}</td>
-        <td>{{val.category_name}}</td>
-        <td>{{val.category_type}}</td>
-        <td>{{val.group}}</td>
-        <td>{{val.inventory}}</td>
-        <td>{{val.status}}</td>
-        <td>{{val.created_by}}</td>
-        <td>{{val.created_at}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 <app-footer></app-footer>

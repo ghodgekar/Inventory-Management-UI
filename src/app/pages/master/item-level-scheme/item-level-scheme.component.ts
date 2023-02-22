@@ -39,7 +39,7 @@ export class ItemLevelSchemeComponent {
   
   searchFilterCtrl: FormControl<string> = new FormControl<any>('');
   @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
-  search_field: ReplaySubject<any> = new ReplaySubject<any>(1);
+  search_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
   _onDestroy = new Subject<void>();
   
 
@@ -66,7 +66,11 @@ export class ItemLevelSchemeComponent {
       calc_on: ['', Validators.required ],
       cust_type_incl: ['', Validators.required ],
       cust_type_excl: ['', Validators.required ],
+      status: ['Active'],
       created_by: [''],
+      created_at: [''],
+      updated_by: [''],
+      updated_at: [''],
       _id: []
     });
   }
@@ -87,12 +91,12 @@ export class ItemLevelSchemeComponent {
     }
     let search = this.searchFilterCtrl.value;
     if (!search) {
-      this.search_field.next(this.search_data.slice());
+      this.search_data_arr.next(this.search_data.slice());
       return;
     } else {
       search = search.toLowerCase();
     }
-    this.search_field.next(
+    this.search_data_arr.next(
       this.search_data.filter((data:any) => data.item_name.toLowerCase().indexOf(search) > -1
       )
     );
@@ -102,7 +106,7 @@ export class ItemLevelSchemeComponent {
     this.submitBtn == 'SAVE';
     this.itemHttp.list().subscribe((res:any) => {
       this.search_data = res.data;
-      this.search_field.next(this.search_data.slice());
+      this.search_data_arr.next(this.search_data.slice());
       this.searchFilterCtrl.valueChanges
         .pipe(takeUntil(this._onDestroy))
         .subscribe(() => {
