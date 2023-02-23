@@ -292,7 +292,7 @@
         <table datatable [dtOptions]="dtOptions" class="row-border hover" id="evaluator_table">
           <thead>
             <tr>
-              <th width="25">Action</th>
+              <th>Action</th>
               <th>Company Code</th>
               <th>Company Name</th>
               <th>Type</th>
@@ -317,7 +317,7 @@
           </thead>
           <tbody *ngIf="data?.length != 0">
             <tr *ngFor="let val of data">
-              <td class="text-center">
+              <td>
                 <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png"
                     (click)="editCompanyList(val._id)">
                   <span class="tooltiptext">EDIT</span>
