@@ -20,11 +20,6 @@ p{
     margin-bottom: 5px !important;
 }
 
-<<<<<<< HEAD
-h4{
-    font-size: 14px !important;
-    text-decoration: none !important;
-=======
 .col-sm-1,
 .col-sm-10,
 .col-sm-11,
@@ -110,7 +105,6 @@ h4{
 }
 .text-right{
     text-align: right;
->>>>>>> 244f3a98f6ebb7db474d51d88d45ce4a0040056a
 }
 
 input.form-control.ng-pristine.ng-invalid.ng-touched {
@@ -335,14 +329,6 @@ th {
     text-align: -webkit-match-parent;
 }
 
-<<<<<<< HEAD
-=======
-.card-body .row {
-    margin-left: -5px;
-    margin-right: -5px;
-}
-
->>>>>>> 244f3a98f6ebb7db474d51d88d45ce4a0040056a
 a {
     color: #fff;
     text-decoration: none;
