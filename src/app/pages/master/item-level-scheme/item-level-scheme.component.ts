@@ -199,6 +199,7 @@ export class ItemLevelSchemeComponent {
     this.submitted = false;
     this.itemLevelForm.reset();
     this.isEdit = false;
+    this.submitBtn = 'SAVE';
   }
 
   editItemLevelSchemeList(id: any){

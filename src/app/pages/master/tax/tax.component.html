@@ -1,32 +1,4 @@
-<div class="top-menu">
-  <div class="row">
-    <div class="col-sm-12">
-      <ul>
-        <li class="topmenu">Test : By Peacock Infotech </li>
-        <li class="topmenu company-name">Administrator (AMG)</li>
-        <li class="topmenu active">Tax Master</li>
-      </ul>
-    </div>
-  </div>
-</div>
-<div class="top-menu module-menu">
-  <div class="row">
-    <div class="col-sm-12">
-      <ul>
-        <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save"
-            class="save-icon"><span class="tooltiptext">SAVE</span></li>
-        <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF"
-            class="pdf-icon"><span class="tooltiptext">PDF</span></li>
-        <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL"
-            class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
-        <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET"
-            class="reset-icon"><span class="tooltiptext">RESET</span></li>
-        <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon"
-            routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
-      </ul>
-    </div>
-  </div>
-</div>
+<app-module-header (onSubmitChild)="onSubmit()" (downloadAsPDFChild)="downloadAsPDF()" (generateExcelChild)="generateExcel()" (onResetChild)="onReset()" moduleTitle="Tax Master"></app-module-header>
 <div class="main">
   <div class="card">
     <div class="card-body">
@@ -38,7 +10,7 @@
                 <div class="col-sm-2 form-group">
                   <label class="center-block">Type:  <span class="mandatory-input">*</span></label>
                   <div>
-                    <select class="form-control" formControlName="tax_type">
+                    <select class="form-control" formControlName="tax_type" (change)="taxTypeChange($event)">
                       <option>GST</option>
                       <option>VAT</option>
                     </select>
@@ -60,60 +32,60 @@
                   <span class="validation-error mandatory-input" *ngIf="(submitted || f['tax_name'].touched) && f['tax_name'].errors?.['required']">Name is required</span>
                 </div>
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">Tax(%):  <span class="mandatory-input">*</span></label>
+                  <label class="center-block">Tax(%):</label>
                   <div>
                     <input class="form-control" formControlName="tax_per" appNumberInput>
                   </div>
                   <span class="validation-error mandatory-input" *ngIf="(submitted || f['tax_per'].touched) && f['tax_per'].errors?.['required']">Tax(%) is required</span>
                 </div>
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">Tax Indicator:  <span class="mandatory-input">*</span></label>
+                  <label class="center-block">Tax Indicator:</label>
                   <div>
                     <input class="form-control" formControlName="tax_indicator">
                   </div>
                   <span class="validation-error mandatory-input" *ngIf="(submitted || f['tax_indicator'].touched) && f['tax_indicator'].errors?.['required']">Tax Indicator is required</span>
                 </div>
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">IGST (%):  <span class="mandatory-input">*</span></label>
+                  <label class="center-block">IGST (%):</label>
                   <div>
-                    <input class="form-control" formControlName="igst" appNumberInput>
+                    <input class="form-control" formControlName="igst" appNumberInput [readonly]="isVAT">
                   </div>
                   <span class="validation-error mandatory-input" *ngIf="(submitted || f['igst'].touched) && f['igst'].errors?.['required']">IGST (%) is required</span>
                 </div>
               </div>
               <div class="row">
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">SGST (%):  <span class="mandatory-input">*</span></label>
+                  <label class="center-block">SGST (%):</label>
                   <div>
-                    <input class="form-control" formControlName="sgst" appNumberInput>
+                    <input class="form-control" formControlName="sgst" appNumberInput [readonly]="isVAT">
                   </div>
                   <span class="validation-error mandatory-input" *ngIf="(submitted || f['sgst'].touched) && f['sgst'].errors?.['required']">SGST (%) is required</span>
                 </div>
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">CGST (%):  <span class="mandatory-input">*</span></label>
+                  <label class="center-block">CGST (%):</label>
                   <div>
-                    <input class="form-control" formControlName="cgst" appNumberInput>
+                    <input class="form-control" formControlName="cgst" appNumberInput [readonly]="isVAT">
                   </div>
                   <span class="validation-error mandatory-input" *ngIf="(submitted || f['cgst'].touched) && f['cgst'].errors?.['required']">CGST (%) is required</span>
                 </div>
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">UTGST (%):  <span class="mandatory-input">*</span></label>
+                  <label class="center-block">UTGST (%):</label>
                   <div>
-                    <input class="form-control" formControlName="utgst" appNumberInput>
+                    <input class="form-control" formControlName="utgst" appNumberInput [readonly]="isVAT">
                   </div>
                   <span class="validation-error mandatory-input" *ngIf="(submitted || f['utgst'].touched) && f['utgst'].errors?.['required']">UTGST (%) is required</span>
                 </div>
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">CESS (%):  <span class="mandatory-input">*</span></label>
+                  <label class="center-block">CESS (%):</label>
                   <div>
-                    <input class="form-control" formControlName="cess" appNumberInput>
+                    <input class="form-control" formControlName="cess" appNumberInput [readonly]="isVAT">
                   </div>
                   <span class="validation-error mandatory-input" *ngIf="(submitted || f['cess'].touched) && f['cess'].errors?.['required']">CESS (%) is required</span>
                 </div>
                 <div class="col-sm-2 form-group">
-                  <label class="center-block">Cess/Peice (%):  <span class="mandatory-input">*</span></label>
+                  <label class="center-block">Cess/Peice (%):</label>
                   <div>
-                    <input class="form-control" formControlName="cessperpiece" appNumberInput>
+                    <input class="form-control" formControlName="cessperpiece" appNumberInput [readonly]="isVAT">
                   </div>
                   <span class="validation-error mandatory-input" *ngIf="(submitted || f['cessperpiece'].touched) && f['cessperpiece'].errors?.['required']">Cess/Peice (%) is required</span>
                 </div>
@@ -194,9 +166,7 @@
           <tbody *ngIf="data?.length != 0">
             <tr *ngFor="let val of data">
               <td class="text-center">
-                <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editTaxList(val._id)">
-                  <span class="tooltiptext">EDIT</span>
-                </span>
+                <img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editTaxList(val._id)" placement="bottom" ngbTooltip="EDIT">
               </td>
               <td>{{val.tax_type}}</td>
               <td>{{val.tax_code}}</td>

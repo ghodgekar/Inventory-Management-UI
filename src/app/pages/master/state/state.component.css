@@ -4,3 +4,8 @@
     margin: 0px;
     border: 1px solid #d3d3d3;
 }
+
+.main{
+    margin-top: 10px;
+    margin: 5px !important;
+}

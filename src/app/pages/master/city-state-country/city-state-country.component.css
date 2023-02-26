@@ -1,4 +1,8 @@
 button.btn.btn-primary.activeBtn {
-    background-color: #4e61e7;
-    border-color: #4e61e7;
+    background-color: #31b0d5;
+    border-color: #31b0d5;
+}
+
+.col-sm-2 .btn{
+    width: 100%;
 }

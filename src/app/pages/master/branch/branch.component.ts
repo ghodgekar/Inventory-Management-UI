@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -9,10 +9,11 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import * as XLSX from 'xlsx';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { BranchService } from 'src/app/services/master/branch.service';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { ToastrMsgService } from 'src/app/services/components/toastr-msg.service';
 import { CityService } from 'src/app/services/master/city.service';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-branch',
@@ -24,22 +25,24 @@ export class BranchComponent {
   created_at: any;
   updated_by: any;
   updated_at: any;
-
   branchForm!: FormGroup;
   submitted: boolean = false;
-  data:any=[];
-  parent_menu: any=[];
   submitBtn:String ='SAVE';
-
+  isEdit:boolean=false;
   @ViewChild('pdfTable')
   pdfTable!: ElementRef;
-
   dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject();
-  isEdit:boolean=false;
-  cityData: any;
+  data:any=[];
+  parent_menu: any=[];
+  typeData: any;
+  city_data: any=[];
+  
+  cityFilterCtrl: FormControl<string> = new FormControl<any>('');
+  @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
+  city_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
+  _onDestroy = new Subject<void>();
 
-  constructor(private fb: FormBuilder, private BranchHttp:BranchService,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService, private cityHttp:CityService) {
+  constructor(private fb: FormBuilder, private branchHttp:BranchService,public datepipe: DatePipe, private ref: ElementRef, private toastr: ToastrMsgService, private cityHttp:CityService) {
     this.createForm();
   }
   
@@ -70,58 +73,47 @@ export class BranchComponent {
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-      lengthMenu: [10,20,30],
-      order:[[1,'desc']],
-      destroy: true
-    };
-    this.getCompanyList();
+    this.getBranchListDatatable();
     this.getCityList();
   }
 
-  keyPressText(e:any) {
-    var regex = new RegExp("^[a-zA-Z0-9_-]+$");
-    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-    if (regex.test(str)) {
-        return true;
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+
+  filterCity() {
+    if (!this.city_data) {
+      return;
     }
-    e.preventDefault();
-    return false;
-  }
-
-  keyPressNumber(e:any) {
-    var regex = new RegExp("^[0-9]+$");
-    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-    if (regex.test(str)) {
-        return true;
+    let search = this.cityFilterCtrl.value;
+    if (!search) {
+      this.city_data_arr.next(this.city_data.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
     }
-    e.preventDefault();
-    return false;
-  }
-
-  get f(): { [key: string]: AbstractControl } {
-    return this.branchForm.controls;
-  }
-
-  getCompanyList(){
-    this.submitBtn == 'SAVE';
-    this.BranchHttp.list().subscribe((res:any) => {
-      this.data = res.data;
-      this.dtTrigger.next(null);
-    })
+    this.city_data_arr.next(
+      this.city_data.filter((data:any) => data.city_name.toLowerCase().indexOf(search) > -1
+      )
+    );
   }
 
   getCityList(){
+    this.submitBtn == 'SAVE';
     this.cityHttp.list().subscribe((res:any) => {
-      this.cityData = res.data
+      this.city_data = res.data;
+      this.city_data_arr.next(this.city_data.slice());
+      this.cityFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterCity();
+        });
     })
   }
-
+  
   onChanheCity(e:any){
-    this.cityHttp.getStateCountry(e.target.value).subscribe((res:any) => {
+    this.cityHttp.getStateCountry(e.value).subscribe((res:any) => {
       this.branchForm.patchValue({
         state: res.data.state,
         country: res.data.country
@@ -129,6 +121,44 @@ export class BranchComponent {
     })
   }
 
+  get f(): { [key: string]: AbstractControl } {
+    return this.branchForm.controls;
+  }
+  
+
+  getBranchListDatatable(){
+    var formData = {
+      searchStatus: 'Active',
+    };
+    this.dtOptions = {
+      processing: false,
+      responsive: true,
+      serverSide: true,
+      destroy: true,
+      autoWidth: false,
+      info: true,
+      dom: 'Rfrtlip',
+      searching: false,
+      lengthChange: true,
+      ordering: false,
+      scrollX: true,
+      scrollCollapse: false,
+      pageLength: 15,
+      lengthMenu: [15, 30, 45, 60, 100],
+      ajax: (dataTablesParameters: any, callback: (arg0: { recordsTotal: any; recordsFiltered: any; data: never[]; }) => void) => {
+        Object.assign(dataTablesParameters, formData)
+        this.branchHttp.datatable(dataTablesParameters).subscribe((resp:any) => {
+          this.data = resp.data;
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: []
+          });
+        });
+      }
+    };
+  }
+  
   onSubmit(): void {
     this.branchForm.value['updated_by'] = localStorage.getItem('username');
     this.branchForm.value['updated_at'] = new Date();
@@ -139,9 +169,10 @@ export class BranchComponent {
       if(this.submitBtn == 'SAVE'){
         this.branchForm.value['created_by'] = localStorage.getItem('username');
         this.branchForm.value['created_at'] = new Date();
-        this.BranchHttp.save( this.branchForm.value).subscribe((res:any) => {
+        this.branchHttp.save( this.branchForm.value).subscribe((res:any) => {  
           this.onReset();
-          this.toastr.showSuccess(res.message)
+          this.toastr.showSuccess(res.message);
+          $('#evaluator_table').DataTable().ajax.reload();
         }, (err:any) => {
           if (err.status == 400) {
             const validationError = err.error.errors;
@@ -159,11 +190,12 @@ export class BranchComponent {
           this.toastr.showError(err.error.message)
         })
       }else if(this.submitBtn == 'UPDATE'){
-        this.BranchHttp.update(this.branchForm.value).subscribe((res:any) => {
+        this.branchHttp.update( this.branchForm.value).subscribe((res:any) => {
           this.isEdit = false;
           this.submitBtn = 'SAVE';
           this.onReset();
           this.toastr.showSuccess(res.message)
+          $('#evaluator_table').DataTable().ajax.reload();
         })
       }
     }
@@ -172,11 +204,13 @@ export class BranchComponent {
   onReset(): void {
     this.submitted = false;
     this.branchForm.reset();
+    this.submitBtn = 'SAVE';
+    this.isEdit = false;
   }
 
   editCompanyList(id: any){
     this.submitBtn = 'UPDATE'
-    this.BranchHttp.list(id).subscribe((res:any) => {
+    this.branchHttp.list(id).subscribe((res:any) => {
       this.branchForm.patchValue({
         loc_code: res.data[0].loc_code,
         loc_no: res.data[0].loc_no,
@@ -209,52 +243,10 @@ export class BranchComponent {
   }
 
   deleteCompanyList(id:any){
-    this.BranchHttp.delete( {'_id':id} ).subscribe((res:any) => {
-      this.getCompanyList();
+    this.branchHttp.delete( {'_id':id} ).subscribe((res:any) => {
+      $('#evaluator_table').DataTable().ajax.reload();
     })
   }
-
-  generatePDF() {  
-    let docDefinition = {  
-      content: [
-        {
-          text: 'TEST Company',
-          style: 'header'
-        },	
-        {
-          text: 'Paramater Master Report',
-          style: ['subheader']
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', '*', '*', '*', '*'],
-            body: [
-              ['Code', 'Value', 'Description', 'Data Type', 'Created By']
-            ].concat(this.data.map((el:any, i:any) => [el.data.list_code, el.data.list_value, el.data.list_desc, el.data.data_type, el.data.created_by]))
-          }
-        },
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true
-        },
-        subheader: {
-          fontSize: 15,
-          bold: true
-        },
-        quote: {
-          italics: true
-        },
-        small: {
-          fontSize: 8
-        }
-      }
-    };  
-   
-    pdfMake.createPdf(docDefinition).print();  
-  } 
 
   generateExcel(): void
   {
@@ -265,7 +257,7 @@ export class BranchComponent {
     XLSX.writeFile(wb, 'Download.xls');
   }
 
-  public downloadAsPDF() {
+  downloadAsPDF() {
     const doc = new jsPDF();
     const pdfTable = this.pdfTable.nativeElement;
     var html = htmlToPdfmake(pdfTable.innerHTML);

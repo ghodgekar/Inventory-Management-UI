@@ -183,6 +183,7 @@ export class ModuleComponent implements OnInit{
     this.submitted = false;
     this.moduleForm.reset();
     this.isEdit = false;
+    this.submitBtn = 'SAVE';
   }
 
   editModuleList(id: any){

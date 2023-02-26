@@ -38,6 +38,7 @@ export class TaxComponent implements OnInit{
   @ViewChild('singleSelect', { static: true })singleSelect!: MatSelect;
   search_data_arr: ReplaySubject<any> = new ReplaySubject<any>(1);
   _onDestroy = new Subject<void>();
+  isVAT: boolean = false;
 
   constructor(private fb: FormBuilder, private taxHttp:TaxService, private toastr:ToastrMsgService,public datepipe: DatePipe) {
     this.createForm();
@@ -48,14 +49,14 @@ export class TaxComponent implements OnInit{
       tax_type: ['', Validators.required ],
       tax_code: ['', Validators.required ],
       tax_name: ['', Validators.required ],
-      tax_per: ['', Validators.required ],
-      tax_indicator: ['', Validators.required ],
-      igst: ['', Validators.required ],
-      sgst: ['', Validators.required ],
-      cgst: ['', Validators.required ],
-      utgst: ['', Validators.required ],
-      cess: ['', Validators.required ],
-      cessperpiece: ['', Validators.required ],
+      tax_per: ['', Validators.required],
+      tax_indicator: [''],
+      igst: [''],
+      sgst: [''],
+      cgst: [''],
+      utgst: [''],
+      cess: [''],
+      cessperpiece: [''],
       status: ['Active'],
       created_by: [''],
       created_at: [''],
@@ -155,6 +156,7 @@ export class TaxComponent implements OnInit{
     this.submitted = false;
     this.taxForm.reset();
     this.isEdit = false;
+    this.isVAT = false;
   }
 
   editTaxList(id: any){
@@ -212,5 +214,13 @@ export class TaxComponent implements OnInit{
       }
     };
     pdfMake.createPdf(documentDefinition).open();
+  }
+
+  taxTypeChange(e:any){
+    if(e.target.value == 'VAT'){
+      this.isVAT = true
+    }else{
+      this.isVAT = false
+    }
   }
 } 

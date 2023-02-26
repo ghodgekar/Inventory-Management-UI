@@ -15,95 +15,14 @@ p, span, label,.btn, a{
     font-size: 13px;
 }
 
-h4{
-    font-size: 14px;
+p{
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
 }
 
-.col-sm-1,
-.col-sm-10,
-.col-sm-11,
-.col-sm-12,
-.col-sm-2,
-.col-sm-3,
-.col-sm-4,
-.col-sm-5,
-.col-sm-6,
-.col-sm-7,
-.col-sm-8,
-.col-sm-9,
-.container {
-    padding-right: 15px;
-    padding-left: 15px;
-}
-.row {
-    display: flex;
-}
-.col-sm-1 {
-    width: 8.333%;
-}
-.col-sm-2 {
-    width: 16.666%;
-}
-.col-sm-3 {
-    width: 25%;
-}
-.col-sm-4 {
-    width: 33.333%;
-}
-.col-sm-5 {
-    width: 41.66667%;
-}
-.col-sm-6 {
-    width: 50%;
-}
-.col-sm-7 {
-    width: 58.33333%;
-}
-.col-sm-8 {
-    width: 66.66667%;
-}
-.col-sm-9 {
-    width: 75%;
-}
-.col-sm-10 {
-    width: 83.33333%;
-}
-.col-sm-11 {
-    width: 91.66667%;
-}
-.col-sm-12,
-.container {
-    width: 100%;
-}
-.container {
-    margin-right: auto;
-    margin-left: auto;
-}
-@media (min-width: 576px) {
-    .container {
-        max-width: 540px;
-    }
-}
-@media (min-width: 768px) {
-    .container {
-        max-width: 720px;
-    }
-}
-@media (min-width: 992px) {
-    .container {
-        max-width: 960px;
-    }
-}
-@media (min-width: 1200px) {
-    .container {
-        max-width: 1140px;
-    }
-}
-.text-center{
-    text-align: center;
-}
-.text-right{
-    text-align: right;
+h4{
+    font-size: 14px !important;
+    text-decoration: none !important;
 }
 
 input.form-control.ng-pristine.ng-invalid.ng-touched {
@@ -112,6 +31,14 @@ input.form-control.ng-pristine.ng-invalid.ng-touched {
 
 input.form-control.ng-touched.ng-dirty.ng-valid {
     border: 1px solid #1ecd1e;
+}
+
+.text-right{
+    text-align: right;
+}
+
+.text-left{
+    text-align: left;
 }
 
 .pt-1, .pt-2{
@@ -126,6 +53,18 @@ input.form-control.ng-touched.ng-dirty.ng-valid {
     background-color: #fff;
 }
 
+.row{
+    width: 100%;
+    --bs-gutter-x: 10px !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.card-body .row{
+    margin-left: -5px !important;
+    margin-right: -5px !important;
+}
+
 .form-control {
     box-sizing: border-box;
     height: 32px;
@@ -133,16 +72,14 @@ input.form-control.ng-touched.ng-dirty.ng-valid {
     border-radius: 1px;
     color: #202124;
     border: 1px solid #e7e9ec;
-    padding: 5px;
+    padding: 5px !important;
     transition: 250ms;
-    font-size: 12px;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    font-size: 11px !important;
 }
 
 .btn{
-    width: 100%;
-    font-size: 13px;
+    /* width: 100%; */
+    font-size: 13px !important;
     border-radius: 0px;
     padding: 10px 12px;
     border: 3px solid transparent;
@@ -165,11 +102,6 @@ input.form-control.ng-touched.ng-dirty.ng-valid {
 .logo{
     width: 80%;
 }
-p {
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
-
 .top-menu {
     background-color: #4e61e7;
     position: relative;
@@ -227,6 +159,12 @@ p {
 	padding: .2em 1.5em;
 	font-size: .9rem;
 }
+
+.top-menu ul.submenu li a{
+    color: #fff;
+    text-decoration: none;
+}
+
 .top-menu li.divider {
 	padding: 0;
 	border-top: 1px solid #343434;
@@ -292,7 +230,6 @@ table.dataTable {
     margin-bottom: 1rem;
     margin-top: 10px;
     color: #212529;
-    padding-top: 10px !important;
 }
 .table-bordered thead td, .table-bordered thead th {
     border-bottom-width: 2px;
@@ -308,11 +245,6 @@ table.dataTable {
 th {
     text-align: inherit;
     text-align: -webkit-match-parent;
-}
-
-.card-body .row {
-    margin-left: -15px;
-    margin-right: -15px;
 }
 
 a {
@@ -376,8 +308,9 @@ option {
 }
 
 input:read-only, .readonly {
-    border: 1px solid rgb(160, 160, 160);
-    background-color: #d6dae0;
+    border: 1px solid rgb(160, 160, 160) !important;
+    background-color: #d6dae0 !important;
+    margin: 0px !important;
 }
 
 .mandatory-input{
@@ -392,7 +325,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .mat-mdc-text-field-wrapper {
     flex: auto;
-    margin-top: 5px;
     background: #fff !important;
     box-sizing: border-box;
     height: 32px !important;
@@ -403,8 +335,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     padding: 5px;
     transition: 250ms;
     font-size: 12px;
-    margin-bottom: 5px;
-    margin-top: 5px;
 }
 
 .mat-mdc-form-field{
@@ -433,9 +363,21 @@ table.dataTable th, table.dataTable td, .dataTables_wrapper .dataTables_info{
 footer{
     text-align: center;
     background: #4e61e7;
-    position: fixed;
+    position: sticky;
     left: 0;
     right: 0;
     bottom: 0;
     color: #fff;
+}
+
+.toast-message{
+    font-size: 13px;
+}
+
+.tooltip {
+    font-size: 10px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate{
+    float: none !important;
 }

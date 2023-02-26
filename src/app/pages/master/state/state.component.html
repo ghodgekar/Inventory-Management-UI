@@ -114,10 +114,7 @@
               <tbody *ngIf="data?.length != 0">
                 <tr *ngFor="let val of data">
                   <td class="text-center">
-                    <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png"
-                        (click)="editCountryList(val._id)">
-                      <span class="tooltiptext">EDIT</span>
-                    </span>
+                    <img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCountryList(val._id)" placement="bottom" ngbTooltip="EDIT">
                   </td>
                   <td>{{val.state_code}}</td>
                   <td>{{val.state_name}}</td>

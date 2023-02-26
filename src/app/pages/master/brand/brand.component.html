@@ -115,9 +115,7 @@
               <tbody *ngIf="data?.length != 0">
                 <tr *ngFor="let val of data">
                   <td class="text-center">
-                    <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editBrandList(val._id)">
-                      <span class="tooltiptext">EDIT</span>
-                    </span>
+                    <img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editBrandList(val._id)" placement="bottom" ngbTooltip="EDIT">
                   </td>
                   <td>{{val.brand_code}}</td>
                   <td>{{val.brand_name}}</td>

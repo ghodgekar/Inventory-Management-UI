@@ -1,27 +1,4 @@
-<div class="top-menu">
-    <div class="row">
-        <div class="col-sm-12">
-            <ul>
-                <li class="topmenu">Test : By Peacock Infotech </li>
-                <li class="topmenu company-name">Administrator (AMG)</li>
-                <li class="topmenu active">Common List Master</li>
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="top-menu module-menu">
-    <div class="row">
-        <div class="col-sm-12">
-            <ul>
-                <li class="topmenu tooltip" (click)="onSubmit()"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"><span class="tooltiptext">SAVE</span></li>
-                <li class="topmenu tooltip" (click)="downloadAsPDF()"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"><span class="tooltiptext">PDF</span></li>
-                <li class="topmenu tooltip" (click)="generateExcel()"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"><span class="tooltiptext">EXCEL</span></li>
-                <li class="topmenu tooltip" (click)="onReset()"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"><span class="tooltiptext">RESET</span></li>
-                <li class="topmenu tooltip"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon" routerLink="/dashboard"><span class="tooltiptext">EXIT</span></li>
-            </ul>
-        </div>
-    </div>
-</div>
+<app-module-header (onSubmitChild)="onSubmit()" (downloadAsPDFChild)="downloadAsPDF()" (generateExcelChild)="generateExcel()" (onResetChild)="onReset()" moduleTitle="Common List Master"></app-module-header>
 <div class="main">
     <div class="card">
         <div class="card-body">
@@ -40,28 +17,28 @@
                         <div class="col-sm-2 form-group">
                           <label class="center-block">Value: <span class="mandatory-input">*</span></label>
                           <div>
-                            <input class="form-control" formControlName="list_value">
+                            <input class="form-control" formControlName="list_value" appInitialCapInput>
                           </div>
                           <span class="validation-error mandatory-input" *ngIf="(submitted || f['list_value'].touched) && f['list_value'].errors?.['required']">Value is required</span>
                         </div>
                         <div class="col-sm-2 form-group">
                           <label class="center-block">Description: <span class="mandatory-input">*</span></label>
                           <div>
-                            <input class="form-control" appInitialCapInput formControlName="list_desc" appInitialCapInput>
+                            <input class="form-control" formControlName="list_desc" appInitialCapInput>
                           </div>
                           <span class="validation-error mandatory-input" *ngIf="(submitted || f['list_desc'].touched) && f['list_desc'].errors?.['required']">Description is required</span>
                         </div>
                         <div class="col-sm-2 form-group">
                           <label class="center-block">Order By: </label>
                           <div>
-                            <input class="form-control" formControlName="order_by">
+                            <input class="form-control" formControlName="order_by" appNumberInput>
                           </div>
                         </div>
                         <div class="col-sm-2 form-group">
                           <label class="center-block">Location: <span class="mandatory-input">*</span></label>
                           <div>
                             <select class="form-control" formControlName="loc_code">
-                              <option value="0">All Location</option>
+                              <option value="0" selected>All Location</option>
                               <option [value]="val.loc_code" *ngFor="let val of branchData">{{val.loc_name}}</option>
                             </select>
                           </div>
@@ -136,9 +113,7 @@
                 <tbody *ngIf="data?.length != 0">
                     <tr *ngFor="let val of data">
                       <td class="text-center">
-                        <span class="tooltip"><img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCommonList(val._id)"> 
-                          <span class="tooltiptext">EDIT</span>
-                        </span>
+                        <img class="edit-icon" src="../../../assets/icons/edit.png" (click)="editCommonList(val._id)" placement="bottom" ngbTooltip="EDIT">
                       </td>
                       <td>{{val.list_code}}</td>
                       <td>{{val.list_value}}</td>

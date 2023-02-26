@@ -44,7 +44,7 @@ export class CommonListComponent implements OnInit {
       list_value: ['', Validators.required ],
       list_desc: ['', Validators.required ],
       order_by: [''],
-      loc_code: ['', Validators.required ],
+      loc_code: ['0', Validators.required ],
       created_by: [''],
       created_at: [''],
       updated_by: [''],
@@ -147,6 +147,8 @@ export class CommonListComponent implements OnInit {
   onReset(): void {
     this.submitted = false;
     this.commonlistForn.reset();
+    this.submitBtn = 'SAVE';
+    this.isEdit = false;
   }
 
   editCommonList(id: any){

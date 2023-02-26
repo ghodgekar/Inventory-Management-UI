@@ -4,7 +4,20 @@
             <ul>
                 <li class="topmenu">Test : By Peacock Infotech </li>
                 <li class="topmenu company-name">Administrator (AMG)</li>
-                <li class="topmenu active">Paramater Master</li>
+                <li class="topmenu active">{{moduleTitle}}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="top-menu module-menu">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                <li class="topmenu" (click)="onSubmit()" placement="bottom" ngbTooltip="SAVE"><img src="../../../assets/icons/save.png" alt="Save" class="save-icon"></li>
+                <li class="topmenu" (click)="downloadAsPDF()" placement="bottom" ngbTooltip="PDF"><img src="../../../assets/icons/pdf.png" alt="PDF" class="pdf-icon"></li>
+                <li class="topmenu" (click)="generateExcel()" placement="bottom" ngbTooltip="EXCEL"><img src="../../../assets/icons/xls.png" alt="EXCEL" class="excel-icon"></li>
+                <li class="topmenu" (click)="onReset()" placement="bottom" ngbTooltip="RESET"><img src="../../../assets/icons/reset.png" alt="RESET" class="reset-icon"></li>
+                <li class="topmenu" (click)="exitPage()" placement="bottom" ngbTooltip="EXIT"><img src="../../../assets/icons/exit.png" alt="EXIT" class="exit-icon"></li>
             </ul>
         </div>
     </div>

@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { environment } from 'src/environments/environment';
 
 import jsPDF from 'jspdf';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -19,7 +18,6 @@ import { ParameterService } from 'src/app/services/master/parameter.service';
   styleUrls: ['./parameter.component.css']
 })
 export class ParameterComponent implements  OnInit {
-
   created_by: any;
   created_at: any;
   updated_by: any;
@@ -138,6 +136,8 @@ export class ParameterComponent implements  OnInit {
   onReset(): void {
     this.submitted = false;
     this.parameterForm.reset();
+    this.submitBtn = 'SAVE';
+    this.isEdit = false;
   }
 
   editParameter(id: any){

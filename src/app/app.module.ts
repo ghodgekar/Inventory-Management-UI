@@ -57,6 +57,9 @@ import { StringInputDirective } from './directives/string-input.directive';
 import { SkipSpecialCharInputDirective } from './directives/skip-special-char-input.directive';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { ConfirmationDialogComponent } from './component/confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogService } from './component/confirmation-dialog/confirmation-dialog.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -104,7 +107,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     AllCapInputDirective,
     NumberInputDirective,
     StringInputDirective,
-    SkipSpecialCharInputDirective
+    SkipSpecialCharInputDirective,
+    ConfirmationDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -116,9 +120,10 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     BrowserAnimationsModule,
     MatSelectModule,
     NgxMatSelectSearchModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    NgbModule
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, ConfirmationDialogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
